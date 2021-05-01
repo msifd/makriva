@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_8",
+  "package": "msifeed.makriva.mixins",
+  "refmap": "makriva.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+    "NetHandlerPlayClientMixin",
+    "skin.ImageBufferDownloadMixin",
+    "skin.NetworkPlayerInfoMixin",
+    "skin.SkinManagerMixin"
+  ]
+}
