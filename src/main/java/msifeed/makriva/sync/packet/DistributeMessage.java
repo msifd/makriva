@@ -48,16 +48,11 @@ public class DistributeMessage implements IMessage, IMessageHandler<DistributeMe
      */
     @Override
     public IMessage onMessage(DistributeMessage message, MessageContext ctx) {
-        Makriva.LOG.info("Got " + message.shapes.size() + " shapes");
+        if (message.shapes == null) return null;
+        Makriva.LOG.info("Received " + message.shapes.size() + " shapes");
 
         FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> {
-//            final boolean login = ShapeSync.getShapes().isEmpty();
             ShapeSync.INSTANCE.updateShapes(message.shapes);
-
-//            if (login) {
-//                Makriva.LOG.info("Send my shape");
-//                ShapeSync.uploadShape(ClientStorage.getShape());
-//            }
         });
 
         return null;

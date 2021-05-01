@@ -23,6 +23,7 @@ public abstract class SkinManagerMixin {
     @Final
     @Shadow
     private MinecraftSessionService sessionService;
+
     @Accessor
     public abstract void setSessionService(MinecraftSessionService service);
 

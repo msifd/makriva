@@ -1,7 +1,6 @@
 package msifeed.makriva.sync.packet;
 
 import io.netty.buffer.ByteBuf;
-import msifeed.makriva.Makriva;
 import msifeed.makriva.data.Shape;
 import msifeed.makriva.sync.ShapeSync;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -36,7 +35,7 @@ public class UploadMessage implements IMessage, IMessageHandler<UploadMessage, I
      */
     @Override
     public IMessage onMessage(UploadMessage message, MessageContext ctx) {
-        Makriva.LOG.info("Got a shape");
+        if (message.shape == null) return null;
 
         FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> {
             final UUID uuid = ctx.getServerHandler().player.getGameProfile().getId();

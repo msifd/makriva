@@ -44,7 +44,11 @@ public enum ShapeSync {
     }
 
     public static void uploadCurrentShape() {
-        INSTANCE.network.sendToServer(new UploadMessage(ClientStorage.getShape()));
+        final Shape shape = ClientStorage.getCurrentShape();
+        if (shape != null) {
+            Makriva.LOG.info("Upload current shape");
+            INSTANCE.network.sendToServer(new UploadMessage(shape));
+        }
     }
 
     public static void broadcastShape(UUID uuid, Shape shape) {
@@ -69,14 +73,15 @@ public enum ShapeSync {
 
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
-        Makriva.LOG.info("Send " + shapes.size() + " shapes to " + event.player.getName());
-        network.sendTo(new DistributeMessage(shapes), (EntityPlayerMP) event.player);
+        if (!shapes.isEmpty()) {
+            network.sendTo(new DistributeMessage(shapes), (EntityPlayerMP) event.player);
+        }
     }
 
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void onClientLeave(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
-        Makriva.LOG.info("Shapes cleared");
+        Makriva.LOG.info("Sync shapes cleared");
         shapes.clear();
     }
 }
