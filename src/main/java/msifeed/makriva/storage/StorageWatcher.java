@@ -10,10 +10,13 @@ import static java.nio.file.StandardWatchEventKinds.*;
 public class StorageWatcher implements Runnable {
     private final Path dir;
     private final WatchService watcher;
+    private final ShapeStorage storage;
 
-    public StorageWatcher(Path dir) throws IOException {
+    public StorageWatcher(Path dir, ShapeStorage storage) throws IOException {
         this.dir = dir;
         this.watcher = FileSystems.getDefault().newWatchService();
+        this.storage = storage;
+
         dir.register(watcher, ENTRY_CREATE, ENTRY_MODIFY, ENTRY_DELETE);
 
         Makriva.LOG.info("Watching shapes dir: " + dir.toAbsolutePath());
@@ -48,9 +51,9 @@ public class StorageWatcher implements Runnable {
         if (!file.toString().endsWith(".json")) return;
 
         if (kind.equals(StandardWatchEventKinds.ENTRY_CREATE) || kind.equals(StandardWatchEventKinds.ENTRY_MODIFY)) {
-            ClientStorage.INSTANCE.updateShapeFile(dir.resolve(file));
+            storage.loadShapeFile(dir.resolve(file));
         } else if (kind.equals(StandardWatchEventKinds.ENTRY_DELETE)) {
-            ClientStorage.INSTANCE.removeShapeFile(file.toString());
+            storage.removeShape(file.toString());
         }
     }
 }

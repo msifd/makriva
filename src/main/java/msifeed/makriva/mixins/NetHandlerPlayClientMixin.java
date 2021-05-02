@@ -1,6 +1,6 @@
 package msifeed.makriva.mixins;
 
-import msifeed.makriva.sync.ShapeSync;
+import msifeed.makriva.Makriva;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.play.server.SPacketJoinGame;
 import org.spongepowered.asm.mixin.Mixin;
@@ -12,6 +12,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class NetHandlerPlayClientMixin {
     @Inject(method = "handleJoinGame", at = @At("RETURN"))
     public void handleJoinGame(SPacketJoinGame packetIn, CallbackInfo ci) {
-        ShapeSync.uploadCurrentShape();
+        Makriva.SYNC.uploadShape(Makriva.STORAGE.getCurrentShape());
     }
 }

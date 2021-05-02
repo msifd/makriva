@@ -1,9 +1,9 @@
 package msifeed.makriva.sync.packet;
 
 import io.netty.buffer.ByteBuf;
-import msifeed.makriva.data.CheckedShape;
+import msifeed.makriva.Makriva;
 import msifeed.makriva.data.Shape;
-import msifeed.makriva.sync.ShapeSync;
+import msifeed.makriva.utils.ShapeCodec;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -13,7 +13,6 @@ import java.util.UUID;
 
 public class UploadMessage implements IMessage, IMessageHandler<UploadMessage, IMessage> {
     private Shape shape;
-    private CheckedShape checkedShape;
 
     public UploadMessage() {
     }
@@ -24,7 +23,7 @@ public class UploadMessage implements IMessage, IMessageHandler<UploadMessage, I
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        checkedShape = ShapeCodec.readShapeToChecked(buf);
+        shape = ShapeCodec.readShape(buf);
     }
 
     @Override
@@ -37,14 +36,11 @@ public class UploadMessage implements IMessage, IMessageHandler<UploadMessage, I
      */
     @Override
     public IMessage onMessage(UploadMessage message, MessageContext ctx) {
-        if (message.checkedShape == null) return null;
+        if (message.shape == null) return null;
 
         FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> {
             final UUID uuid = ctx.getServerHandler().player.getGameProfile().getId();
-            if (ShapeSync.isKnownShape(uuid, message.checkedShape)) return;
-
-            ShapeSync.getShapes().put(uuid, message.checkedShape);
-            ShapeSync.broadcastShape(uuid, message.checkedShape);
+            Makriva.SYNC.maybeAddShape(uuid, message.shape);
         });
 
         return null;

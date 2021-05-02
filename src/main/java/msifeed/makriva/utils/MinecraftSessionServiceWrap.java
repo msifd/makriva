@@ -5,8 +5,8 @@ import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.exceptions.AuthenticationUnavailableException;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
+import msifeed.makriva.Makriva;
 import msifeed.makriva.data.Shape;
-import msifeed.makriva.sync.ShapeSync;
 
 import java.net.InetAddress;
 import java.util.Map;
@@ -32,7 +32,7 @@ public class MinecraftSessionServiceWrap implements MinecraftSessionService {
     public Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> getTextures(GameProfile profile, boolean requireSecure) {
         final Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> textures = inner.getTextures(profile, requireSecure);
 
-        final Shape shape = ShapeSync.get(profile.getId());
+        final Shape shape = Makriva.SYNC.get(profile.getId());
         if (shape != null) {
             textures.putAll(shape.textures);
         }

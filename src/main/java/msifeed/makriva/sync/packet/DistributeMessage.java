@@ -2,9 +2,8 @@ package msifeed.makriva.sync.packet;
 
 import io.netty.buffer.ByteBuf;
 import msifeed.makriva.Makriva;
-import msifeed.makriva.data.CheckedShape;
 import msifeed.makriva.data.Shape;
-import msifeed.makriva.sync.ShapeSync;
+import msifeed.makriva.utils.ShapeCodec;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -15,12 +14,12 @@ import java.util.Map;
 import java.util.UUID;
 
 public class DistributeMessage implements IMessage, IMessageHandler<DistributeMessage, IMessage> {
-    private Map<UUID, CheckedShape> shapes;
+    private Map<UUID, Shape> shapes;
 
     public DistributeMessage() {
     }
 
-    public DistributeMessage(Map<UUID, CheckedShape> shapes) {
+    public DistributeMessage(Map<UUID, Shape> shapes) {
         this.shapes = shapes;
     }
 
@@ -31,17 +30,17 @@ public class DistributeMessage implements IMessage, IMessageHandler<DistributeMe
         for (int i = 0; i < len; i++) {
             final UUID uuid = new UUID(buf.readLong(), buf.readLong());
             final Shape shape = ShapeCodec.readShape(buf);
-            shapes.put(uuid, new CheckedShape(shape));
+            shapes.put(uuid, shape);
         }
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
         buf.writeInt(shapes.size());
-        for (Map.Entry<UUID, CheckedShape> e : shapes.entrySet()) {
+        for (Map.Entry<UUID, Shape> e : shapes.entrySet()) {
             buf.writeLong(e.getKey().getMostSignificantBits());
             buf.writeLong(e.getKey().getLeastSignificantBits());
-            ShapeCodec.writeShape(buf, e.getValue().shape);
+            ShapeCodec.writeShape(buf, e.getValue());
         }
     }
 
@@ -54,7 +53,7 @@ public class DistributeMessage implements IMessage, IMessageHandler<DistributeMe
         Makriva.LOG.info("Received " + message.shapes.size() + " shapes");
 
         FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> {
-            ShapeSync.INSTANCE.updateShapes(message.shapes);
+            Makriva.SYNC.updateShapes(message.shapes);
         });
 
         return null;

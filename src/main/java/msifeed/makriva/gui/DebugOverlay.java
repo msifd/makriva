@@ -1,7 +1,7 @@
 package msifeed.makriva.gui;
 
+import msifeed.makriva.Makriva;
 import msifeed.makriva.data.Shape;
-import msifeed.makriva.sync.ShapeSync;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -12,7 +12,7 @@ public class DebugOverlay {
     public void onRender(RenderGameOverlayEvent.Post event) {
         if (event.getType() != RenderGameOverlayEvent.ElementType.TEXT) return;
 
-        final Shape shape = ShapeSync.get(Minecraft.getMinecraft().getSession().getProfile().getId());
+        final Shape shape = Makriva.SYNC.get(Minecraft.getMinecraft().getSession().getProfile().getId());
 
         final Printer p = new Printer();
         if (shape == null) {
