@@ -2,6 +2,7 @@ package msifeed.makriva.sync.packet;
 
 import io.netty.buffer.ByteBuf;
 import msifeed.makriva.Makriva;
+import msifeed.makriva.data.CheckedShape;
 import msifeed.makriva.data.Shape;
 import msifeed.makriva.sync.ShapeSync;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -14,12 +15,12 @@ import java.util.Map;
 import java.util.UUID;
 
 public class DistributeMessage implements IMessage, IMessageHandler<DistributeMessage, IMessage> {
-    private Map<UUID, Shape> shapes;
+    private Map<UUID, CheckedShape> shapes;
 
     public DistributeMessage() {
     }
 
-    public DistributeMessage(Map<UUID, Shape> shapes) {
+    public DistributeMessage(Map<UUID, CheckedShape> shapes) {
         this.shapes = shapes;
     }
 
@@ -29,17 +30,18 @@ public class DistributeMessage implements IMessage, IMessageHandler<DistributeMe
         shapes = new HashMap<>(len);
         for (int i = 0; i < len; i++) {
             final UUID uuid = new UUID(buf.readLong(), buf.readLong());
-            shapes.put(uuid, ShapeCodec.readShapeSpec(buf));
+            final Shape shape = ShapeCodec.readShape(buf);
+            shapes.put(uuid, new CheckedShape(shape));
         }
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
         buf.writeInt(shapes.size());
-        for (Map.Entry<UUID, Shape> e : shapes.entrySet()) {
+        for (Map.Entry<UUID, CheckedShape> e : shapes.entrySet()) {
             buf.writeLong(e.getKey().getMostSignificantBits());
             buf.writeLong(e.getKey().getLeastSignificantBits());
-            ShapeCodec.writeShapeSpec(buf, e.getValue());
+            ShapeCodec.writeShape(buf, e.getValue().shape);
         }
     }
 

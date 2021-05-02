@@ -2,6 +2,7 @@ package msifeed.makriva.storage;
 
 import com.google.gson.Gson;
 import msifeed.makriva.Makriva;
+import msifeed.makriva.data.CheckedShape;
 import msifeed.makriva.data.Shape;
 import msifeed.makriva.sync.ShapeSync;
 
@@ -18,13 +19,16 @@ public enum ClientStorage {
     INSTANCE;
 
     private final Gson gson = new Gson();
-    private final Map<String, Shape> shapes = new HashMap<>();
+    private final Map<String, CheckedShape> shapes = new HashMap<>();
 
     private String currentShape = "";
 
     @Nullable
     public static Shape getCurrentShape() {
-        return INSTANCE.shapes.get(INSTANCE.currentShape);
+        final CheckedShape checkedShape = INSTANCE.shapes.get(INSTANCE.currentShape);
+        return checkedShape != null
+                ? checkedShape.shape
+                : null;
     }
 
     public void init() {
@@ -41,7 +45,9 @@ public enum ClientStorage {
             Files.walk(dir)
                     .filter(file -> file.toString().endsWith(".json"))
                     .forEach(this::updateShapeFile);
-            currentShape = shapes.keySet().stream().findFirst().orElse("");
+            currentShape = shapes.keySet().stream()
+                    .findFirst()
+                    .orElse("");
         } catch (IOException e) {
             Makriva.LOG.error("Failed to walk through existing shapes", e);
         }
@@ -53,14 +59,22 @@ public enum ClientStorage {
         }
     }
 
+    public boolean isKnownShape(String filename, CheckedShape shape) {
+        final CheckedShape checkedShape = INSTANCE.shapes.get(filename);
+        if (checkedShape == null) return false;
+
+        return checkedShape.equals(shape);
+    }
+
     public void updateShapeFile(Path file) {
         final String filename = file.getFileName().toString();
-        Makriva.LOG.info("Update shape: " + filename);
 
         try {
-            final Shape shape = parseShape(file);
-            if (shape != null)
-                shapes.put(filename, shape);
+            final CheckedShape shape = parseShape(file);
+            if (shape == null || isKnownShape(filename, shape)) return;
+
+            Makriva.LOG.info("Update shape: " + filename + ":" + shape.checksum);
+            shapes.put(filename, shape);
         } catch (IOException e) {
             Makriva.LOG.error("Failed to read shape " + filename, e);
         }
@@ -71,11 +85,12 @@ public enum ClientStorage {
     }
 
     @Nullable
-    private Shape parseShape(Path file) throws IOException {
+    private CheckedShape parseShape(Path file) throws IOException {
         final String json = new String(Files.readAllBytes(file), StandardCharsets.UTF_8);
+        if (json.isEmpty()) return null;
 
         try {
-            return gson.fromJson(json, Shape.class);
+            return new CheckedShape(gson.fromJson(json, Shape.class));
         } catch (Exception e) {
             Makriva.LOG.warn("Failed to parse shape " + file.getFileName(), e);
             return null;

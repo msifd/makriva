@@ -1,6 +1,7 @@
 package msifeed.makriva.sync;
 
 import msifeed.makriva.Makriva;
+import msifeed.makriva.data.CheckedShape;
 import msifeed.makriva.data.Shape;
 import msifeed.makriva.mixins.skin.NetworkPlayerInfoMixin;
 import msifeed.makriva.storage.ClientStorage;
@@ -12,7 +13,6 @@ import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -27,7 +27,7 @@ public enum ShapeSync {
     INSTANCE;
 
     private final SimpleNetworkWrapper network = new SimpleNetworkWrapper(Makriva.MOD_ID);
-    private final Map<UUID, Shape> shapes = new HashMap<>();
+    private final Map<UUID, CheckedShape> shapes = new HashMap<>();
 
     ShapeSync() {
         network.registerMessage(UploadMessage.class, UploadMessage.class, 0, Side.SERVER);
@@ -36,10 +36,20 @@ public enum ShapeSync {
 
     @Nullable
     public static Shape get(UUID uuid) {
-        return INSTANCE.shapes.get(uuid);
+        final CheckedShape checkedShape = INSTANCE.shapes.get(uuid);
+        return checkedShape != null
+                ? checkedShape.shape
+                : null;
     }
 
-    public static Map<UUID, Shape> getShapes() {
+    public static boolean isKnownShape(UUID uuid, CheckedShape shape) {
+        final CheckedShape checkedShape = INSTANCE.shapes.get(uuid);
+        if (checkedShape == null) return false;
+
+        return checkedShape.equals(shape);
+    }
+
+    public static Map<UUID, CheckedShape> getShapes() {
         return INSTANCE.shapes;
     }
 
@@ -51,12 +61,12 @@ public enum ShapeSync {
         }
     }
 
-    public static void broadcastShape(UUID uuid, Shape shape) {
+    public static void broadcastShape(UUID uuid, CheckedShape shape) {
         INSTANCE.network.sendToAll(new DistributeMessage(Collections.singletonMap(uuid, shape)));
     }
 
     @SideOnly(Side.CLIENT)
-    public void updateShapes(Map<UUID, Shape> newShapes) {
+    public void updateShapes(Map<UUID, CheckedShape> newShapes) {
         final NetHandlerPlayClient conn = Minecraft.getMinecraft().getConnection();
         if (conn == null) return;
 
@@ -76,12 +86,5 @@ public enum ShapeSync {
         if (!shapes.isEmpty()) {
             network.sendTo(new DistributeMessage(shapes), (EntityPlayerMP) event.player);
         }
-    }
-
-    @SideOnly(Side.CLIENT)
-    @SubscribeEvent
-    public void onClientLeave(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
-        Makriva.LOG.info("Sync shapes cleared");
-        shapes.clear();
     }
 }
