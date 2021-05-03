@@ -56,8 +56,6 @@ public class ShapeSync extends ShapeRegistry<UUID> {
     @SideOnly(Side.CLIENT)
     public void updateShapes(Map<UUID, Shape> newShapes) {
         newShapes.forEach((uuid, shape) -> {
-//            if (isKnownShape(uuid, shape)) return;
-
             shapes.put(uuid, shape);
             Makriva.MODELS.invalidate(uuid);
         });

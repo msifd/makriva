@@ -1,8 +1,8 @@
 package msifeed.makriva.data;
 
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import msifeed.makriva.utils.ShapeCodec;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +16,8 @@ public class Shape {
         DEFAULT.updateChecksum(ShapeCodec.toBytes(DEFAULT));
     }
 
-    public final Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> textures = new HashMap<>();
+    public final Map<String, String> metadata = new HashMap<>();
+    public final Map<String, URL> textures = new HashMap<>();
     public final List<Bone> bones = new ArrayList<>();
 
     public transient long checksum;

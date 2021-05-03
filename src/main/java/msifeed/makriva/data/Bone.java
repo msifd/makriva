@@ -6,6 +6,7 @@ import java.util.List;
 public class Bone {
     public String id;
     public BipedPart parent;
+    public String texture;
 
 //    public int[] textureSize = new int[]{64, 64};
 //    public boolean mirrored = false;
@@ -17,5 +18,5 @@ public class Bone {
     public float[] rotation = new float[3];
 
     public List<Box> boxes = new ArrayList<>();
-    public List<Bone> children = new ArrayList<>();
+    public List<Bone> bones = new ArrayList<>();
 }

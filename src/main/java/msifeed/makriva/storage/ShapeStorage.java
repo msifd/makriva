@@ -5,6 +5,11 @@ import msifeed.makriva.Makriva;
 import msifeed.makriva.data.Shape;
 import msifeed.makriva.utils.ShapeCodec;
 import msifeed.makriva.utils.ShapeRegistry;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -88,6 +93,7 @@ public class ShapeStorage extends ShapeRegistry<String> {
             addShape(filename, ShapeCodec.fromBytes(bytes));
         } catch (JsonParseException e) {
             Makriva.LOG.warn("Failed to parse shape {}. Error: {}", filePath.getFileName(), e);
+            tryLogToPlayer("Failed to parse shape " + filePath.getFileName() + ". Error: " + e);
         }
     }
 
@@ -95,5 +101,14 @@ public class ShapeStorage extends ShapeRegistry<String> {
         currentShape = shapes.keySet().stream()
                 .findFirst()
                 .orElse("");
+    }
+
+    private void tryLogToPlayer(String msg) {
+        final EntityPlayer player = Minecraft.getMinecraft().player;
+        if (player == null) return;
+
+        final ITextComponent comp = new TextComponentString(msg);
+        comp.getStyle().setColor(TextFormatting.RED);
+        player.sendMessage(comp);
     }
 }

@@ -4,12 +4,15 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.exceptions.AuthenticationUnavailableException;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 import msifeed.makriva.Makriva;
 import msifeed.makriva.data.Shape;
 
 import java.net.InetAddress;
+import java.net.URL;
 import java.util.Map;
+
 
 public class MinecraftSessionServiceWrap implements MinecraftSessionService {
     private final MinecraftSessionService inner;
@@ -29,11 +32,16 @@ public class MinecraftSessionServiceWrap implements MinecraftSessionService {
     }
 
     @Override
-    public Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> getTextures(GameProfile profile, boolean requireSecure) {
-        final Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> textures = inner.getTextures(profile, requireSecure);
+    public Map<Type, MinecraftProfileTexture> getTextures(GameProfile profile, boolean requireSecure) {
+        final Map<Type, MinecraftProfileTexture> textures = inner.getTextures(profile, requireSecure);
 
         final Shape shape = Makriva.SYNC.get(profile.getId());
-        textures.putAll(shape.textures);
+        final URL skin = shape.textures.get("skin");
+        if (skin != null) textures.put(Type.SKIN, new MinecraftProfileTexture(skin.toString(), shape.metadata));
+        final URL cape = shape.textures.get("cape");
+        if (cape != null) textures.put(Type.CAPE, new MinecraftProfileTexture(cape.toString(), null));
+        final URL elytra = shape.textures.get("elytra");
+        if (elytra != null) textures.put(Type.ELYTRA, new MinecraftProfileTexture(elytra.toString(), null));
 
         return textures;
     }

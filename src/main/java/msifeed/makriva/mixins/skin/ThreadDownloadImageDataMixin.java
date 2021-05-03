@@ -1,6 +1,6 @@
 package msifeed.makriva.mixins.skin;
 
-import msifeed.makriva.utils.LocalTextureLoader;
+import msifeed.makriva.utils.FilesystemTextureLoader;
 import net.minecraft.client.renderer.IImageBuffer;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
 import org.spongepowered.asm.mixin.Final;
@@ -37,7 +37,7 @@ public class ThreadDownloadImageDataMixin {
         final File file = new File(imageUrl.replace("file://", ""));
 
         imageThread = new Thread(
-                new LocalTextureLoader(self, file, imageBuffer),
+                new FilesystemTextureLoader(self, file, imageBuffer),
                 "Local Texture Loader #" + TEXTURE_DOWNLOADER_THREAD_ID.incrementAndGet());
         imageThread.setDaemon(true);
         imageThread.start();

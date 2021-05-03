@@ -24,8 +24,6 @@ public class LayerMakrivaBones implements LayerRenderer<AbstractClientPlayer> {
         if (model.bones.isEmpty()) return;
 
         renderer.bindTexture(player.getLocationSkin());
-//        renderer.bindTexture(new ResourceLocation("asd", "asd"));
-
         model.render(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
     }
 

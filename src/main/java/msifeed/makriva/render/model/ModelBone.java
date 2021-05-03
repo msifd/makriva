@@ -27,7 +27,7 @@ public class ModelBone extends ModelRenderer {
                     box.delta, box.mirrored));
         }
 
-        for (Bone b : spec.children) {
+        for (Bone b : spec.bones) {
             addChild(new ModelBone(base, b, null));
         }
     }

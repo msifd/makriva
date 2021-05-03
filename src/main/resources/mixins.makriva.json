@@ -10,6 +10,7 @@
     "NetHandlerPlayClientMixin",
     "render.RenderPlayerMixin",
     "skin.ImageBufferDownloadMixin",
+    "skin.MinecraftAssetsMixin",
     "skin.NetworkPlayerInfoMixin",
     "skin.SkinManagerMixin",
     "skin.ThreadDownloadImageDataMixin"

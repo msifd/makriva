@@ -25,7 +25,7 @@ public class DebugOverlay {
             return;
         }
 
-        model.shape.textures.forEach((type, tx) -> p.print(type.toString() + ": " + tx.getUrl()));
+        model.shape.textures.forEach((key, url) -> p.print(key + ": " + url));
         p.print("Bones: " + model.bones.stream().map(b -> b.spec.id).collect(Collectors.joining(", ")));
     }
 
