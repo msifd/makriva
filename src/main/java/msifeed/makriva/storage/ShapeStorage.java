@@ -29,7 +29,6 @@ public class ShapeStorage extends ShapeRegistry<String> {
             Files.walk(dir)
                     .filter(file -> file.toString().endsWith(".json"))
                     .forEach(this::loadShapeFile);
-            findCurrentShape();
         } catch (IOException e) {
             Makriva.LOG.error("Failed to walk through existing shapes", e);
         }
@@ -44,8 +43,8 @@ public class ShapeStorage extends ShapeRegistry<String> {
     @Nonnull
     public Shape getCurrentShape() {
         return !currentShape.isEmpty()
-            ? shapes.get(currentShape)
-            : Shape.DEFAULT;
+                ? shapes.get(currentShape)
+                : Shape.DEFAULT;
     }
 
     @Override
@@ -55,6 +54,9 @@ public class ShapeStorage extends ShapeRegistry<String> {
         Makriva.LOG.info("Update shape: " + filename + ":" + shape.checksum);
         super.addShape(filename, shape);
 
+        if (currentShape.isEmpty()) {
+            findCurrentShape();
+        }
         if (currentShape.equals(filename)) {
             Makriva.SYNC.uploadShape(getCurrentShape());
         }

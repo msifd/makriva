@@ -8,6 +8,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class DebugOverlay {
     @SubscribeEvent
@@ -25,8 +26,7 @@ public class DebugOverlay {
         }
 
         model.shape.textures.forEach((type, tx) -> p.print(type.toString() + ": " + tx.getUrl()));
-        p.print("Groups:");
-        model.groups.forEach(map -> p.print("  " + String.join(", ", map.keySet())));
+        p.print("Bones: " + model.bones.stream().map(b -> b.spec.id).collect(Collectors.joining(", ")));
     }
 
     private static class Printer {

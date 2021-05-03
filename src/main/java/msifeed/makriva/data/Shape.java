@@ -13,17 +13,13 @@ public class Shape {
     public static Shape DEFAULT = new Shape();
 
     static {
-        DEFAULT.updateChecksum();
+        DEFAULT.updateChecksum(ShapeCodec.toBytes(DEFAULT));
     }
 
     public final Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> textures = new HashMap<>();
-    public final List<Map<String, Bone>> groups = new ArrayList<>();
+    public final List<Bone> bones = new ArrayList<>();
 
     public transient long checksum;
-
-    public void updateChecksum() {
-        updateChecksum(ShapeCodec.toBytes(this));
-    }
 
     public void updateChecksum(byte[] bytes) {
         final CRC32 crc32 = new CRC32();

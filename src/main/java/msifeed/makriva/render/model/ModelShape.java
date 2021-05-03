@@ -1,22 +1,24 @@
 package msifeed.makriva.render.model;
 
+import msifeed.makriva.data.BipedPart;
 import msifeed.makriva.data.Bone;
 import msifeed.makriva.data.Shape;
 import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelPlayer;
+import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ModelShape extends ModelBase {
     public final RenderPlayer render;
     public final Shape shape;
 
-    public final List<Map<String, ModelBone>> groups = new ArrayList<>();
+    public final List<ModelBone> bones = new ArrayList<>();
 
     public ModelShape(RenderPlayer render, Shape shape) {
         this.render = render;
@@ -25,23 +27,39 @@ public class ModelShape extends ModelBase {
         final ModelPlayer modelPlayer = render.getMainModel();
 
         // TODO: two-phase base model init
-        for (Map<String, Bone> bones : shape.groups) {
-            final Map<String, ModelBone> group = new HashMap<>();
-            for (Map.Entry<String, Bone> e : bones.entrySet()) {
-                final ModelBone model = new ModelBone(this, e.getValue());
-                model.setParent(modelPlayer.bipedBody);
-                group.put(e.getKey(), model);
-            }
-            groups.add(group);
+        for (Bone bone : shape.bones) {
+            final ModelBone model = new ModelBone(this, bone, findBipedPart(modelPlayer, bone.parent));
+            bones.add(model);
+        }
+    }
+
+    private static ModelRenderer findBipedPart(ModelBiped biped, BipedPart part) {
+        switch (part) {
+            case head:
+                return biped.bipedHead;
+            case body:
+                return biped.bipedBody;
+            case right_arm:
+                return biped.bipedRightArm;
+            case left_arm:
+                return biped.bipedLeftArm;
+            case right_leg:
+                return biped.bipedRightLeg;
+            case left_leg:
+                return biped.bipedLeftLeg;
+            default:
+                return null;
         }
     }
 
     @Override
-    public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        for (Map<String, ModelBone> bones : groups) {
-            for (ModelBone bone : bones.values()) {
-                bone.render(scale);
-            }
+    public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+        if (entity.isSneaking()) {
+            GlStateManager.translate(0.0F, 0.2F, 0.0F);
+        }
+
+        for (ModelBone bone : bones) {
+            bone.render(scale);
         }
     }
 }

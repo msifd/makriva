@@ -2,13 +2,9 @@ package msifeed.makriva.sync;
 
 import msifeed.makriva.Makriva;
 import msifeed.makriva.data.Shape;
-import msifeed.makriva.mixins.skin.NetworkPlayerInfoMixin;
 import msifeed.makriva.sync.packet.DistributeMessage;
 import msifeed.makriva.sync.packet.UploadMessage;
 import msifeed.makriva.utils.ShapeRegistry;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.network.NetHandlerPlayClient;
-import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -16,7 +12,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;

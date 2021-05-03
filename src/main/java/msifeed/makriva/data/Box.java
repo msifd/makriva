@@ -5,9 +5,6 @@ public class Box {
     public float[] pos = new float[3];
     public int[] size = new int[3];
 
-    public float[] offset = new float[3];
-    public float[] rotationPoint = new float[3];
-
-    public float delta = 1;
+    public float delta = 0;
     public boolean mirrored = false;
 }

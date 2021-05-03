@@ -17,6 +17,13 @@ import java.util.UUID;
 public class ShapeModels {
     protected final Map<UUID, ModelShape> models = new HashMap<>();
 
+    private static ModelShape build(RenderPlayer render, UUID uuid) {
+        final Shape shape = Makriva.SYNC.get(uuid);
+        Makriva.LOG.info("Build shape model uuid: {}, checksum: {}", uuid, shape.checksum);
+
+        return new ModelShape(render, shape);
+    }
+
     public ModelShape getOrCreate(RenderPlayer render, UUID uuid) {
         return models.computeIfAbsent(uuid, id -> build(render, uuid));
     }
@@ -24,13 +31,6 @@ public class ShapeModels {
     @Nullable
     public ModelShape getNullable(UUID uuid) {
         return models.get(uuid);
-    }
-
-    private static ModelShape build(RenderPlayer render, UUID uuid) {
-        final Shape shape = Makriva.SYNC.get(uuid);
-        Makriva.LOG.info("Build shape model uuid: {}, checksum: {}", uuid, shape.checksum);
-
-        return new ModelShape(render, shape);
     }
 
     public void invalidate(UUID uuid) {
