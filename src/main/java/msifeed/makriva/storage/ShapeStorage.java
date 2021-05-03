@@ -6,7 +6,7 @@ import msifeed.makriva.data.Shape;
 import msifeed.makriva.utils.ShapeCodec;
 import msifeed.makriva.utils.ShapeRegistry;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -41,9 +41,11 @@ public class ShapeStorage extends ShapeRegistry<String> {
         }
     }
 
-    @Nullable
+    @Nonnull
     public Shape getCurrentShape() {
-        return shapes.get(currentShape);
+        return !currentShape.isEmpty()
+            ? shapes.get(currentShape)
+            : Shape.DEFAULT;
     }
 
     @Override
@@ -88,8 +90,6 @@ public class ShapeStorage extends ShapeRegistry<String> {
     }
 
     private void findCurrentShape() {
-        if (!currentShape.isEmpty()) return;
-
         currentShape = shapes.keySet().stream()
                 .findFirst()
                 .orElse("");

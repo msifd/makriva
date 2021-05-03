@@ -2,7 +2,6 @@ package msifeed.makriva.utils;
 
 import msifeed.makriva.data.Shape;
 
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,11 +12,6 @@ public abstract class ShapeRegistry<K> {
         final Shape local = shapes.get(key);
         if (local == null) return false;
         return local.equals(shape);
-    }
-
-    @Nullable
-    public Shape get(K key) {
-        return shapes.get(key);
     }
 
     public void addShape(K key, Shape shape) {

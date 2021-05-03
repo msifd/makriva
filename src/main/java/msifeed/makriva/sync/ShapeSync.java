@@ -16,6 +16,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
@@ -26,6 +27,10 @@ public class ShapeSync extends ShapeRegistry<UUID> {
     public ShapeSync() {
         network.registerMessage(DistributeMessage.class, DistributeMessage.class, 0, Side.CLIENT);
         network.registerMessage(UploadMessage.class, UploadMessage.class, 1, Side.SERVER);
+    }
+
+    public Shape get(UUID uuid) {
+        return shapes.getOrDefault(uuid, Shape.DEFAULT);
     }
 
     public void uploadShape(Shape shape) {
@@ -55,23 +60,11 @@ public class ShapeSync extends ShapeRegistry<UUID> {
 
     @SideOnly(Side.CLIENT)
     public void updateShapes(Map<UUID, Shape> newShapes) {
-        final NetHandlerPlayClient conn = Minecraft.getMinecraft().getConnection();
-        if (conn == null) return;
-
         newShapes.forEach((uuid, shape) -> {
-            if (isKnownShape(uuid, shape)) return;
+//            if (isKnownShape(uuid, shape)) return;
 
             shapes.put(uuid, shape);
-            invalidateTexture(conn, uuid);
+            Makriva.MODELS.invalidate(uuid);
         });
-    }
-
-    @SideOnly(Side.CLIENT)
-    private void invalidateTexture(NetHandlerPlayClient conn, UUID uuid) {
-        final NetworkPlayerInfo net = conn.getPlayerInfo(uuid);
-        if (net != null) {
-            final NetworkPlayerInfoMixin mixin = (NetworkPlayerInfoMixin) net;
-            mixin.setPlayerTexturesLoaded(false);
-        }
     }
 }
