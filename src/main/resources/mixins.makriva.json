@@ -7,10 +7,11 @@
   "mixins": [
   ],
   "client": [
+    "NetHandlerPlayClientMixin",
     "render.RenderPlayerMixin",
     "skin.ImageBufferDownloadMixin",
     "skin.NetworkPlayerInfoMixin",
     "skin.SkinManagerMixin",
-    "NetHandlerPlayClientMixin"
+    "skin.ThreadDownloadImageDataMixin"
   ]
 }

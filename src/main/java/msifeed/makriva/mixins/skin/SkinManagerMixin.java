@@ -17,13 +17,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.io.File;
 
 @SideOnly(Side.CLIENT)
-//@Mixin(targets = "net/minecraft/client/resources/SkinManager$3")
 @Mixin(SkinManager.class)
 public abstract class SkinManagerMixin {
-    @Final
-    @Shadow
-    private MinecraftSessionService sessionService;
-
     @Accessor
     public abstract void setSessionService(MinecraftSessionService service);
 
@@ -31,16 +26,4 @@ public abstract class SkinManagerMixin {
     public void init(TextureManager textureManagerInstance, File skinCacheDirectory, MinecraftSessionService sessionService, CallbackInfo ci) {
         setSessionService(new MinecraftSessionServiceWrap(sessionService));
     }
-
-//    @ModifyVariable(
-//            method = "run",
-//            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;addScheduledTask(Ljava/lang/Runnable;)Lcom/google/common/util/concurrent/ListenableFuture;")
-//    )
-//    public Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> addTextures(Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> map) {
-//        final Map<String, String> meta = new HashMap<>();
-//        meta.put("model", "slim");
-//        map.put(MinecraftProfileTexture.Type.SKIN, new MinecraftProfileTexture("https://skins.ariadna.su/Korry.png", meta));
-//
-//        return map;
-//    }
 }
