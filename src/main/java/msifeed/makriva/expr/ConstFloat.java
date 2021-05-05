@@ -16,4 +16,9 @@ public class ConstFloat implements IExpr {
     public float asFloat(EvalContext ctx) {
         return value;
     }
+
+    @Override
+    public String toString() {
+        return "ConstFloat{" + value + '}';
+    }
 }

@@ -1,10 +1,10 @@
 package msifeed.makriva.expr;
 
 public class FunctorCall implements IExpr {
-    public final ExprFunctor func;
+    public final ExprFunction func;
     public final IExpr[] args;
 
-    public FunctorCall(ExprFunctor func) {
+    public FunctorCall(ExprFunction func) {
         this.func = func;
         this.args = new IExpr[func.args];
     }

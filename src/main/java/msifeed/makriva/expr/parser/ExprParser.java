@@ -7,10 +7,15 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 public class ExprParser {
-    private final Deque<ExprFunctor> functors = new ArrayDeque<>();
+    private final Deque<ExprFunction> operators = new ArrayDeque<>();
     private final Deque<IExpr> output = new ArrayDeque<>();
+    private TokenType prevToken = null;
 
     public IExpr parse(String input) throws ParsingException {
+        operators.clear();
+        output.clear();
+        prevToken = null;
+
         final Deque<Token> tokens;
         try {
             tokens = new ArrayDeque<>(Tokenizer.tokenize(input));
@@ -30,18 +35,30 @@ public class ExprParser {
                     output.push(parseNumber(tk));
                     break;
                 case operator:
-                    return parseOperator(tokens, tk);
+                    pushFunctor(parseOperator(tk));
+                    break;
                 case identifier:
                     handleIdentifier(tk.str);
                     break;
-                case lBracket:
-                    handleBrackets(tokens);
+                case bracket_open:
+                    pushFunctor(ExprFunction.brackets);
                     break;
-                case rBracket:
                 case comma:
-                    return output.pop();
+                    wrapArgument();
+                    break;
+                case bracket_close:
+                    wrapBrackets();
+                    break;
             }
+            prevToken = tk.type;
         }
+
+        while (!operators.isEmpty()) {
+            if (operators.peek() == ExprFunction.brackets) throw new ParsingException("Unexpected bracket");
+            output.push(wrapFunction(operators.pop()));
+        }
+
+        if (output.size() > 1) throw new ParsingException("Invalid expression output");
 
         return output.pop();
     }
@@ -55,14 +72,13 @@ public class ExprParser {
             return;
         }
 
-        final ExprFunctor func = ExprFunctor.find(name);
+        final ExprFunction func = ExprFunction.find(name);
         if (func != null) {
-            functors.add(func);
-            return;
+            operators.push(func);
+        } else {
+            // TODO: variables
+            output.push(new ConstBool(false));
         }
-
-        // TODO: add variables
-        output.push(new ConstBool(false));
     }
 
     private IExpr parseNumber(Token token) throws ParsingException {
@@ -71,42 +87,61 @@ public class ExprParser {
         return new ConstFloat(val);
     }
 
-    private IExpr parseOperator(Deque<Token> tokens, Token token) throws ParsingException {
-        final ExprFunctor func = ExprFunctor.find(token.str);
+    private ExprFunction parseOperator(Token token) throws ParsingException {
+        final ExprFunction func = ExprFunction.find(token.str);
+        if (func == null) throw new ParsingException("Unknown operator " + token.str);
 
-        if (output.isEmpty()) {
-            if (func != ExprFunctor.minus) throw new ParsingException("Expected operator parameter");
-
-            final FunctorCall call = new FunctorCall(ExprFunctor.negate);
-            call.args[0] = parseExpr(tokens);
-            return call;
+        if (canBinaryOperatorGoNext()) {
+            return func;
         } else {
-            final FunctorCall call = new FunctorCall(func);
-            call.args[0] = output.pop();
-            call.args[1] = parseExpr(tokens);
-            return call;
+            if (func == ExprFunction.minus) return ExprFunction.negate;
+            else if (func == ExprFunction.not) return ExprFunction.not;
+            else throw new ParsingException("Unexpected operator");
         }
     }
 
-    private void handleBrackets(Deque<Token> tokens) throws ParsingException {
-        if (!functors.isEmpty())
-            output.push(parseFunctor(tokens, functors.pop()));
-        else
-            output.push(parseExpr(tokens));
+    private boolean canBinaryOperatorGoNext() {
+        return prevToken == TokenType.bracket_close
+                || prevToken == TokenType.number
+                || prevToken == TokenType.identifier;
     }
 
-    private IExpr parseFunctor(Deque<Token> tokens, ExprFunctor func) throws ParsingException {
+    private void pushFunctor(ExprFunction func) throws ParsingException {
+        while (!operators.isEmpty()
+                && operators.peek().precedes(func)
+                && operators.peek() != ExprFunction.brackets) {
+            output.push(wrapFunction(operators.pop()));
+        }
+
+        operators.push(func);
+    }
+
+    private void wrapArgument() throws ParsingException {
+        while (!operators.isEmpty() && operators.peek() != ExprFunction.brackets) {
+            output.push(wrapFunction(operators.pop()));
+        }
+    }
+
+    private void wrapBrackets() throws ParsingException {
+        if (operators.isEmpty()) throw new ParsingException("Unexpected closing bracket");
+
+        while (!operators.isEmpty()) {
+            final ExprFunction func = operators.pop();
+            if (func == ExprFunction.brackets) return;
+
+            output.push(wrapFunction(func));
+        }
+
+        throw new ParsingException("Missing bracket");
+    }
+
+    private IExpr wrapFunction(ExprFunction func) throws ParsingException {
+        if (output.size() < func.args) throw new ParsingException("Functor '" + func.name + "' requires " + func.args);
+
         final FunctorCall call = new FunctorCall(func);
-
-        for (int i = 0; i < func.args; i++) {
-//            final Token tk = tokens.peek();
-//            if (tk == null) throw new ParsingException("Unexpected EOL");
-//            if (tk.type == TokenType.rBracket) throw new ParsingException("Unexpected right brace");
-            call.args[i] = parseExpr(tokens);
+        for (int i = func.args - 1; i >= 0; i--) {
+            call.args[i] = output.pop();
         }
-
-//        if (tokens.pop().type != TokenType.rBracket) throw new ParsingException("Expected right brace");
-
         return call;
     }
 }

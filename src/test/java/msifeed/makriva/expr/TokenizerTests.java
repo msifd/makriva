@@ -18,7 +18,7 @@ public class TokenizerTests {
         assertLinesMatch(listify("3.14"), tokenize("3.14"));
         assertLinesMatch(listify("-", "1"), tokenize("-1"));
         assertLinesMatch(listify("1", "+", "1"), tokenize("1+1"));
-        assertLinesMatch(listify("1", "-", "1"), tokenize("1-1"));
+        assertLinesMatch(listify("1", "-", "1"), tokenize("  1   - 1  "));
 
         assertLinesMatch(
                 listify("if", "(", "true", ",", "1", ",", "-", "1", ")"),

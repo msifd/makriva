@@ -12,27 +12,25 @@ public class Tokenizer {
         final List<Token> tokens = new ArrayList<>();
         final StringBuilder sb = new StringBuilder();
 
-        TokenType prev = TokenType.space;
+        TokenType prev = null;
         for (int c = reader.read(); c > 0; c = reader.read()) {
-            final TokenType curr = TokenType.identify(c);
-
-            if (curr == TokenType.space) {
+            if (Character.isWhitespace(c)) {
                 if (sb.length() > 0) {
                     tokens.add(new Token(sb.toString(), prev));
                     sb.setLength(0);
-                    prev = TokenType.space;
+                    prev = null;
                 }
                 continue;
             }
 
-            if (prev.canBeNext(curr)) {
+            if (prev == null || prev.canBeNext(c)) {
                 sb.appendCodePoint(c);
-                if (prev == TokenType.space)
-                    prev = curr;
+                if (prev == null)
+                    prev = TokenType.identify(c);
             } else {
                 tokens.add(new Token(sb.toString(), prev));
                 sb.setLength(0);
-                prev = TokenType.space;
+                prev = null;
                 reader.unread(c);
             }
         }

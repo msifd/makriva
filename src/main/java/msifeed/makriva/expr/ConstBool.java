@@ -16,4 +16,9 @@ public class ConstBool implements IExpr {
     public float asFloat(EvalContext ctx) {
         return value ? 1f : 0f;
     }
+
+    @Override
+    public String toString() {
+        return "ConstBool{" + value + '}';
+    }
 }
