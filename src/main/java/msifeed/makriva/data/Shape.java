@@ -3,29 +3,26 @@ package msifeed.makriva.data;
 import msifeed.makriva.utils.ShapeCodec;
 
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.CRC32;
 
 public class Shape {
-    public static Shape DEFAULT = new Shape();
-
-    static {
-        DEFAULT.updateChecksum(ShapeCodec.toBytes(DEFAULT));
-    }
+    public static Shape DEFAULT = ShapeCodec.fromBytes("{}".getBytes(StandardCharsets.UTF_8));
 
     public final Map<String, String> metadata = new HashMap<>();
     public final Map<String, URL> textures = new HashMap<>();
     public final List<Bone> bones = new ArrayList<>();
 
+    public transient String name = "";
+    public transient byte[] source;
     public transient long checksum;
 
-    public void updateChecksum(byte[] bytes) {
-        final CRC32 crc32 = new CRC32();
-        crc32.update(bytes);
-        this.checksum = crc32.getValue();
+    public void initBytes(byte[] bytes) {
+        this.source = bytes;
+        this.checksum = ShapeCodec.checksum(bytes);
     }
 
     @Override
@@ -39,5 +36,10 @@ public class Shape {
     @Override
     public int hashCode() {
         return (int) (checksum >> Integer.SIZE);
+    }
+
+    @Override
+    public String toString() {
+        return "Shape{" + name + ':' + checksum + '}';
     }
 }

@@ -11,16 +11,17 @@ import msifeed.makriva.expr.json.JsonAdapterExpr;
 
 import javax.annotation.Nullable;
 import java.nio.charset.StandardCharsets;
+import java.util.zip.CRC32;
 
 public final class ShapeCodec {
     private static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(IExpr.class, new JsonAdapterExpr())
             .create();
 
-    public static void writeShape(ByteBuf buf, Shape shape) {
-        final byte[] json = toBytes(shape);
-        buf.writeInt(json.length);
-        buf.writeBytes(json);
+    public static long checksum(byte[] bytes) {
+        final CRC32 checksum = new CRC32();
+        checksum.update(bytes);
+        return checksum.getValue();
     }
 
     @Nullable
@@ -36,14 +37,10 @@ public final class ShapeCodec {
         }
     }
 
-    public static byte[] toBytes(Shape shape) {
-        return GSON.toJson(shape).getBytes(StandardCharsets.UTF_8);
-    }
-
     public static Shape fromBytes(byte[] bytes) throws JsonParseException {
         final Shape shape = GSON.fromJson(new String(bytes, StandardCharsets.UTF_8), Shape.class);
         if (shape != null)
-            shape.updateChecksum(bytes);
+            shape.initBytes(bytes);
         return shape;
     }
 }

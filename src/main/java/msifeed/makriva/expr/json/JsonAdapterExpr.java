@@ -9,7 +9,7 @@ import msifeed.makriva.expr.parser.ParsingException;
 
 import java.lang.reflect.Type;
 
-public class JsonAdapterExpr implements JsonDeserializer<IExpr>, JsonSerializer<IExpr> {
+public class JsonAdapterExpr implements JsonDeserializer<IExpr> {
     private final ExprParser parser = new ExprParser();
 
     @Override
@@ -31,17 +31,6 @@ public class JsonAdapterExpr implements JsonDeserializer<IExpr>, JsonSerializer<
             }
         } else {
             throw new JsonParseException("The Float expression should be a number or a string.");
-        }
-    }
-
-    @Override
-    public JsonElement serialize(IExpr src, Type typeOfSrc, JsonSerializationContext context) {
-        if (src instanceof ConstBool) {
-            return new JsonPrimitive(((ConstBool) src).value);
-        } else if (src instanceof ConstFloat) {
-            return new JsonPrimitive(((ConstFloat) src).value);
-        } else {
-            return null; // TODO: add printer
         }
     }
 }

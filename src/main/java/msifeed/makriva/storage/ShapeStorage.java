@@ -3,21 +3,28 @@ package msifeed.makriva.storage;
 import com.google.gson.JsonParseException;
 import msifeed.makriva.Makriva;
 import msifeed.makriva.data.Shape;
+import msifeed.makriva.sync.SyncRelay;
 import msifeed.makriva.utils.ShapeCodec;
-import msifeed.makriva.utils.ShapeRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 
-public class ShapeStorage extends ShapeRegistry<String> {
+@SideOnly(Side.CLIENT)
+public class ShapeStorage {
+
+    private final Map<String, Shape> shapes = new HashMap<>();
     private String currentShape = "";
 
     public void init() {
@@ -47,30 +54,34 @@ public class ShapeStorage extends ShapeRegistry<String> {
 
     @Nonnull
     public Shape getCurrentShape() {
-        return !currentShape.isEmpty()
-                ? shapes.get(currentShape)
-                : Shape.DEFAULT;
+        return shapes.getOrDefault(currentShape, Shape.DEFAULT);
     }
 
-    @Override
+    public boolean isKnownShape(String name, Shape shape) {
+        final Shape local = shapes.get(name);
+        if (local == null) return false;
+        return local.equals(shape);
+    }
+
     public void addShape(String filename, Shape shape) {
         if (shape == null || isKnownShape(filename, shape)) return;
 
-        Makriva.LOG.info("Update shape: " + filename + ":" + shape.checksum);
-        super.addShape(filename, shape);
+        shape.name = filename;
+
+        Makriva.LOG.info("Update shape: " + shape.name + ":" + shape.checksum);
+        shapes.put(filename, shape);
 
         if (currentShape.isEmpty()) {
             findCurrentShape();
         }
         if (currentShape.equals(filename)) {
-            Makriva.SYNC.uploadShape(getCurrentShape());
+            SyncRelay.upload(getCurrentShape());
         }
     }
 
-    @Override
     public void removeShape(String filename) {
         Makriva.LOG.info("Remove shape: " + filename);
-        super.removeShape(filename);
+        shapes.remove(filename);
 
         if (currentShape.equals(filename)) {
             findCurrentShape();
@@ -93,7 +104,7 @@ public class ShapeStorage extends ShapeRegistry<String> {
             addShape(filename, ShapeCodec.fromBytes(bytes));
         } catch (JsonParseException e) {
             Makriva.LOG.warn("Failed to parse shape {}. Error: {}", filePath.getFileName(), e);
-            tryLogToPlayer("Failed to parse shape " + filePath.getFileName() + ". Error: " + e);
+            tryLogToPlayer("Failed to parse shape " + filePath.getFileName() + ". Error: " + e.getMessage());
         }
     }
 
