@@ -3,6 +3,7 @@ package msifeed.makriva.render.model;
 import msifeed.makriva.Makriva;
 import msifeed.makriva.data.Bone;
 import msifeed.makriva.data.Shape;
+import msifeed.makriva.expr.EvalContext;
 import msifeed.makriva.mixins.skin.MinecraftAssetsMixin;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -31,6 +32,8 @@ public class ModelShape extends ModelBase {
     public final Shape shape;
     public final List<ModelBone> bones = new ArrayList<>();
     public final Map<String, ResourceLocation> textures = new HashMap<>();
+
+    public final EvalContext context = new EvalContext();
 
     public ModelShape(RenderPlayer render, Shape shape) {
         this.render = render;
@@ -79,7 +82,7 @@ public class ModelShape extends ModelBase {
     private void loadTexture(String name, URL url) {
         if (name.equals("skin") || name.equals("cape") || name.equals("elytra")) return;
 
-        final String path = shape.checksum + "-" + name;
+        final String path = url.getProtocol() + url.getPath().replace('/', '-');
         final ResourceLocation resource = new ResourceLocation(Makriva.MOD_ID, path);
         textures.put(name, resource);
 

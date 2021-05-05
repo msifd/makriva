@@ -1,16 +1,21 @@
 package msifeed.makriva.utils;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import msifeed.makriva.data.Shape;
+import msifeed.makriva.expr.IExpr;
+import msifeed.makriva.expr.json.JsonAdapterExpr;
 
 import javax.annotation.Nullable;
 import java.nio.charset.StandardCharsets;
 
 public final class ShapeCodec {
-    private static final Gson GSON = new Gson();
+    private static final Gson GSON = new GsonBuilder()
+            .registerTypeAdapter(IExpr.class, new JsonAdapterExpr())
+            .create();
 
     public static void writeShape(ByteBuf buf, Shape shape) {
         final byte[] json = toBytes(shape);
@@ -20,11 +25,6 @@ public final class ShapeCodec {
 
     @Nullable
     public static Shape readShape(ByteBuf buf) {
-//        final int len = buf.readInt();
-//        final String json = buf.toString(buf.readerIndex(), len, StandardCharsets.UTF_8);
-//        buf.readerIndex(buf.readerIndex() + len);
-//        return GSON.fromJson(json, Shape.class);
-
         final int len = buf.readInt();
         final byte[] bytes = ByteBufUtil.getBytes(buf, buf.readerIndex(), len);
         buf.readerIndex(buf.readerIndex() + len);

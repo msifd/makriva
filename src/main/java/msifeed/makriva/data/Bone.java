@@ -1,5 +1,7 @@
 package msifeed.makriva.data;
 
+import msifeed.makriva.expr.IExpr;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +17,7 @@ public class Bone {
 //    public float[] position = new float[3];
 
     public float[] rotationPoint = new float[3];
-    public float[] rotation = new float[3];
+    public IExpr[] rotation = new IExpr[3];
 
     public List<Box> boxes = new ArrayList<>();
     public List<Bone> bones = new ArrayList<>();

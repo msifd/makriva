@@ -2,6 +2,7 @@ package msifeed.makriva.render.model;
 
 import msifeed.makriva.data.Bone;
 import msifeed.makriva.data.Box;
+import msifeed.makriva.expr.EvalContext;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -34,6 +35,8 @@ public class ModelBone extends ModelRenderer {
 
     @Override
     public void render(float scale) {
+        final EvalContext ctx = base.context;
+
         this.offsetX = spec.offset[0] * scale;
         this.offsetY = spec.offset[1] * scale;
         this.offsetZ = spec.offset[2] * scale;
@@ -41,9 +44,9 @@ public class ModelBone extends ModelRenderer {
         this.rotationPointX += spec.rotationPoint[0];
         this.rotationPointY += spec.rotationPoint[1];
         this.rotationPointZ += spec.rotationPoint[2];
-        this.rotateAngleX += spec.rotation[0];
-        this.rotateAngleY += spec.rotation[1];
-        this.rotateAngleZ += spec.rotation[2];
+        this.rotateAngleX += ctx.num(spec.rotation[0]);
+        this.rotateAngleY += ctx.num(spec.rotation[1]);
+        this.rotateAngleZ += ctx.num(spec.rotation[2]);
 
         if (parent != null) {
             renderWithParentTransform(scale);
@@ -62,37 +65,25 @@ public class ModelBone extends ModelRenderer {
 
         if (parent.rotateAngleX == 0 && parent.rotateAngleY == 0 && parent.rotateAngleZ == 0) {
             if (parent.rotationPointX == 0 && parent.rotationPointY == 0 && parent.rotationPointZ == 0) {
-
                 super.render(scale);
             } else {
                 GlStateManager.translate(parent.rotationPointX * scale, parent.rotationPointY * scale, parent.rotationPointZ * scale);
-
                 super.render(scale);
-
                 GlStateManager.translate(-parent.rotationPointX * scale, -parent.rotationPointY * scale, -parent.rotationPointZ * scale);
             }
         } else {
             GlStateManager.pushMatrix();
             GlStateManager.translate(parent.rotationPointX * scale, parent.rotationPointY * scale, parent.rotationPointZ * scale);
-
-            if (parent.rotateAngleZ != 0) {
+            if (parent.rotateAngleZ != 0)
                 GlStateManager.rotate(parent.rotateAngleZ * (180f / (float) Math.PI), 0, 0, 1);
-            }
-
-            if (parent.rotateAngleY != 0) {
+            if (parent.rotateAngleY != 0)
                 GlStateManager.rotate(parent.rotateAngleY * (180f / (float) Math.PI), 0, 1, 0);
-            }
-
-            if (parent.rotateAngleX != 0) {
+            if (parent.rotateAngleX != 0)
                 GlStateManager.rotate(parent.rotateAngleX * (180f / (float) Math.PI), 1, 0, 0);
-            }
-
             super.render(scale);
-
             GlStateManager.popMatrix();
         }
 
         GlStateManager.translate(-parent.offsetX, -parent.offsetY, -parent.offsetZ);
     }
-
 }

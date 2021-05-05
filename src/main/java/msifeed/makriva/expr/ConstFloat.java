@@ -1,0 +1,19 @@
+package msifeed.makriva.expr;
+
+public class ConstFloat implements IExpr {
+    public final float value;
+
+    public ConstFloat(float value) {
+        this.value = value;
+    }
+
+    @Override
+    public boolean asBool(EvalContext ctx) {
+        return value > 0;
+    }
+
+    @Override
+    public float asFloat(EvalContext ctx) {
+        return value;
+    }
+}
