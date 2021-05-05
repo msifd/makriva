@@ -11,6 +11,16 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertLinesMatch;
 
 public class TokenizerTests {
+    private static List<String> listify(String... strings) {
+        return Lists.newArrayList(strings);
+    }
+
+    private static List<String> tokenize(String input) throws IOException {
+        return Tokenizer.tokenize(input).stream()
+                .map(token -> token.str)
+                .collect(Collectors.toList());
+    }
+
     @Test
     void tokenize() throws IOException {
         assertLinesMatch(listify("1"), tokenize("1"));
@@ -29,15 +39,5 @@ public class TokenizerTests {
                 listify("if", "(", "true", ",", "min", "(", "a", ",", "b", ")", ",", "-", "1", ")"),
                 tokenize("if(true,min(a,b),-1)")
         );
-    }
-
-    private static List<String> listify(String... strings) {
-        return Lists.newArrayList(strings);
-    }
-
-    private static List<String> tokenize(String input) throws IOException {
-        return Tokenizer.tokenize(input).stream()
-                .map(token -> token.str)
-                .collect(Collectors.toList());
     }
 }

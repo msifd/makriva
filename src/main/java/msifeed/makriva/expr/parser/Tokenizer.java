@@ -3,7 +3,8 @@ package msifeed.makriva.expr.parser;
 import java.io.IOException;
 import java.io.PushbackReader;
 import java.io.StringReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Tokenizer {
     public static List<Token> tokenize(String input) throws IOException {

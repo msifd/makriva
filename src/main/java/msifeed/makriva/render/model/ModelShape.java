@@ -3,7 +3,7 @@ package msifeed.makriva.render.model;
 import msifeed.makriva.Makriva;
 import msifeed.makriva.data.Bone;
 import msifeed.makriva.data.Shape;
-import msifeed.makriva.expr.EvalContext;
+import msifeed.makriva.expr.context.EvalContext;
 import msifeed.makriva.mixins.skin.MinecraftAssetsMixin;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;

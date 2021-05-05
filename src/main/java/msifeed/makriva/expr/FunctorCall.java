@@ -1,5 +1,7 @@
 package msifeed.makriva.expr;
 
+import msifeed.makriva.expr.context.EvalContext;
+
 public class FunctorCall implements IExpr {
     public final ExprFunction func;
     public final IExpr[] args;

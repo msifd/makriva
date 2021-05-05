@@ -1,5 +1,6 @@
 package msifeed.makriva.expr;
 
+import msifeed.makriva.expr.context.EvalContext;
 import msifeed.makriva.expr.parser.ExprParser;
 import msifeed.makriva.expr.parser.ParsingException;
 import org.junit.jupiter.api.Test;
@@ -77,7 +78,7 @@ public class ExprParserTests {
     }
 
     @Test
-    void functors() throws ParsingException {
+    void functions() throws ParsingException {
         assertNotEquals(evalFloat("random()"), evalFloat("random()"));
         assertEquals(2, evalFloat("sqrt(4)"));
         assertEquals(2, evalFloat("min(2, 4)"));
@@ -90,5 +91,11 @@ public class ExprParserTests {
         assertEquals(20, evalFloat("if(false || true, 20, 30)"));
 
         assertThrows(ParsingException.class, () -> evalFloat("foobar(1234)"));
+    }
+
+    @Test
+    void staticVariables() throws ParsingException {
+        assertDoesNotThrow(() -> evalFloat("1 + limbSwing"));
+        assertDoesNotThrow(() -> evalFloat("1 + limbSwingAmount"));
     }
 }

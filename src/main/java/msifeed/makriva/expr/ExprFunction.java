@@ -1,5 +1,6 @@
 package msifeed.makriva.expr;
 
+import msifeed.makriva.expr.context.EvalContext;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.util.math.MathHelper;
@@ -48,6 +49,15 @@ public enum ExprFunction {
     }),
     ;
 
+    private static final HashMap<String, ExprFunction> TABLE = new HashMap<>();
+
+    static {
+        for (ExprFunction f : values()) {
+            if (f.name != null)
+                TABLE.put(f.name, f);
+        }
+    }
+
     public final int precedence;
     public final String name;
     public final int args;
@@ -67,24 +77,15 @@ public enum ExprFunction {
         this.func = func;
     }
 
+    public static ExprFunction find(String name) {
+        return TABLE.get(name);
+    }
+
     public boolean precedes(ExprFunction func) {
         return this.precedence < func.precedence;
     }
 
     public Object eval(EvalContext ctx, IExpr[] args) {
         return func.apply(ctx, args);
-    }
-
-    private static final HashMap<String, ExprFunction> TABLE = new HashMap<>();
-
-    public static ExprFunction find(String name) {
-        return TABLE.get(name);
-    }
-
-    static {
-        for (ExprFunction f : values()) {
-            if (f.name != null)
-                TABLE.put(f.name, f);
-        }
     }
 }

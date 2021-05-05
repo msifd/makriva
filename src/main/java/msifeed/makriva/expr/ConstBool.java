@@ -1,5 +1,7 @@
 package msifeed.makriva.expr;
 
+import msifeed.makriva.expr.context.EvalContext;
+
 public class ConstBool implements IExpr {
     public final boolean value;
 

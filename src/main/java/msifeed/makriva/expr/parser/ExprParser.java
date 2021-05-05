@@ -63,7 +63,7 @@ public class ExprParser {
         return output.pop();
     }
 
-    private void handleIdentifier(String name) {
+    private void handleIdentifier(String name) throws ParsingException {
         if (name.equals("true")) {
             output.push(new ConstBool(true));
             return;
@@ -75,10 +75,17 @@ public class ExprParser {
         final ExprFunction func = ExprFunction.find(name);
         if (func != null) {
             operators.push(func);
-        } else {
-            // TODO: variables
-            output.push(new ConstBool(false));
+            return;
         }
+
+        final ExprVariable var = ExprVariable.find(name);
+        if (var != null) {
+            output.push(var);
+            return;
+        }
+
+        // TODO: custom variables
+        throw new ParsingException("Unknown variable");
     }
 
     private IExpr parseNumber(Token token) throws ParsingException {

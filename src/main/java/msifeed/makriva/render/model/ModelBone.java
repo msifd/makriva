@@ -2,7 +2,7 @@ package msifeed.makriva.render.model;
 
 import msifeed.makriva.data.Bone;
 import msifeed.makriva.data.Box;
-import msifeed.makriva.expr.EvalContext;
+import msifeed.makriva.expr.context.EvalContext;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
