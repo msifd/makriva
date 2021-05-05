@@ -6,10 +6,18 @@ import java.util.HashMap;
 import java.util.function.Function;
 
 public enum ExprVariable implements IExpr {
-    limbSwing("limbSwing", ctx -> ctx.renderParams.limbSwing),
-    limbSwingAmount("limbSwingAmount", ctx -> ctx.renderParams.limbSwingAmount),
+    pi(ctx -> ExprVariable.PI),
+
+    limbSwing(ctx -> ctx.renderParams.limbSwing),
+    limbSwingAmount(ctx -> ctx.renderParams.limbSwingAmount),
+    partialTicks(ctx -> ctx.renderParams.partialTicks),
+    age(ctx -> ctx.renderParams.ageInTicks),
+    netHeadYaw(ctx -> ctx.renderParams.netHeadYaw),
+    headPitch(ctx -> ctx.renderParams.headPitch),
+    modelScale(ctx -> ctx.renderParams.scale),
     ;
 
+    private static final float PI = (float) Math.PI;
     private static final HashMap<String, ExprVariable> TABLE = new HashMap<>();
 
     static {
@@ -21,6 +29,11 @@ public enum ExprVariable implements IExpr {
 
     public final String name;
     private final Function<EvalContext, Object> func;
+
+    ExprVariable(Function<EvalContext, Object> func) {
+        this.name = name();
+        this.func = func;
+    }
 
     ExprVariable(String name, Function<EvalContext, Object> func) {
         this.name = name;

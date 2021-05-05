@@ -21,6 +21,8 @@ public class LayerMakrivaBones implements LayerRenderer<AbstractClientPlayer> {
 
         final UUID uuid = player.getGameProfile().getId();
         final ModelShape model = Makriva.MODELS.getOrCreate(renderer, uuid);
+        model.context.renderParams.update(limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
+
         if (model.bones.isEmpty()) return;
 
         renderer.bindTexture(player.getLocationSkin());

@@ -15,7 +15,6 @@ public class MessageUpload implements IMessage {
 
     public MessageUpload(Shape shape) {
         this.shapeBytes = shape.source;
-        Makriva.LOG.info("MessageUpload {}", ShapeCodec.checksum(shapeBytes));
     }
 
     @Override
