@@ -19,6 +19,7 @@ public class Bone {
     public float[] rotationPoint = new float[3];
     public IExpr[] rotation = new IExpr[3];
 
-    public List<Box> boxes = new ArrayList<>();
+    public List<Cube> cubes = new ArrayList<>();
+    public List<Quad> quads = new ArrayList<>();
     public List<Bone> bones = new ArrayList<>();
 }

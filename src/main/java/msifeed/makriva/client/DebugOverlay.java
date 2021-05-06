@@ -1,6 +1,7 @@
 package msifeed.makriva.client;
 
 import msifeed.makriva.Makriva;
+import msifeed.makriva.render.model.ModelBone;
 import msifeed.makriva.render.model.ModelShape;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -26,7 +27,10 @@ public class DebugOverlay {
         }
 
         model.shape.textures.forEach((key, url) -> p.print(key + ": " + url));
-        p.print("Bones: " + model.bones.stream().map(b -> b.spec.id).collect(Collectors.joining(", ")));
+        p.print("Bones: " + model.boxList.stream()
+                .filter(b -> b instanceof ModelBone)
+                .map(b -> ((ModelBone) b).spec.id)
+                .collect(Collectors.joining(", ")));
     }
 
     private static class Printer {

@@ -1,57 +1,71 @@
 package msifeed.makriva.render.model;
 
 import msifeed.makriva.data.Bone;
-import msifeed.makriva.data.Box;
+import msifeed.makriva.data.Cube;
+import msifeed.makriva.data.Quad;
 import msifeed.makriva.expr.context.EvalContext;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 public class ModelBone extends ModelRenderer {
     public final ModelShape base;
     public final Bone spec;
     public final ModelRenderer parent;
 
+    private final List<ModelCube> cubes = new ArrayList<>();
+    private final List<ModelQuad> quads = new ArrayList<>();
+
+    private boolean compiled = false;
+    private int displayList = 0;
+
     public ModelBone(ModelShape base, Bone spec, ModelRenderer parent) {
         super(base, spec.id);
+        setTextureSize(64, 64);
+
         this.base = base;
         this.spec = spec;
         this.parent = parent;
 
         setRotationPoint(spec.rotationPoint[0], spec.rotationPoint[1], spec.rotationPoint[2]);
 
-        for (Box box : spec.boxes) {
-            cubeList.add(new ModelBox(this,
-                    box.uv[0], box.uv[1],
-                    box.pos[0], box.pos[1], box.pos[2],
-                    box.size[0], box.size[1], box.size[2],
-                    box.delta, box.mirrored));
-        }
-
-        for (Bone b : spec.bones) {
-            addChild(new ModelBone(base, b, null));
-        }
+        for (Cube cube : spec.cubes) cubes.add(new ModelCube(this, cube));
+        for (Quad quad : spec.quads) quads.add(new ModelQuad(this, quad));
+        for (Bone bone : spec.bones) addChild(new ModelBone(base, bone, null));
     }
 
     @Override
     public void render(float scale) {
+        if (isHidden || !showModel) return;
+        if (!compiled) compileDisplayList(scale);
+
         final EvalContext ctx = base.context;
 
         this.offsetX = spec.offset[0] * scale;
         this.offsetY = spec.offset[1] * scale;
         this.offsetZ = spec.offset[2] * scale;
 
+        final float D2R = (float) Math.PI / 180;
         this.rotationPointX += spec.rotationPoint[0];
         this.rotationPointY += spec.rotationPoint[1];
         this.rotationPointZ += spec.rotationPoint[2];
-        this.rotateAngleX += ctx.num(spec.rotation[0]);
-        this.rotateAngleY += ctx.num(spec.rotation[1]);
-        this.rotateAngleZ += ctx.num(spec.rotation[2]);
+        this.rotateAngleX += ctx.num(spec.rotation[0]) * D2R;
+        this.rotateAngleY += ctx.num(spec.rotation[1]) * D2R;
+        this.rotateAngleZ += ctx.num(spec.rotation[2]) * D2R;
 
         if (parent != null) {
-            renderWithParentTransform(scale);
+            withModelTransform(parent, scale, sc -> {
+                withModelTransform(this, scale, this::renderSelf);
+            });
         } else {
-            super.render(scale);
+            withModelTransform(this, scale, this::renderSelf);
         }
 
         setRotationPoint(0, 0, 0);
@@ -60,30 +74,48 @@ public class ModelBone extends ModelRenderer {
         this.rotateAngleZ = 0;
     }
 
-    private void renderWithParentTransform(float scale) {
-        GlStateManager.translate(parent.offsetX, parent.offsetY, parent.offsetZ);
+    private void renderSelf(float scale) {
+        GlStateManager.callList(displayList);
 
-        if (parent.rotateAngleX == 0 && parent.rotateAngleY == 0 && parent.rotateAngleZ == 0) {
-            if (parent.rotationPointX == 0 && parent.rotationPointY == 0 && parent.rotationPointZ == 0) {
-                super.render(scale);
+        if (childModels != null) {
+            for (ModelRenderer child : childModels)
+                child.render(scale);
+        }
+    }
+
+    private static void withModelTransform(ModelRenderer model, float scale, Consumer<Float> render) {
+        GlStateManager.translate(model.offsetX, model.offsetY, model.offsetZ);
+
+        if (model.rotateAngleX == 0 && model.rotateAngleY == 0 && model.rotateAngleZ == 0) {
+            if (model.rotationPointX == 0 && model.rotationPointY == 0 && model.rotationPointZ == 0) {
+                render.accept(scale);
             } else {
-                GlStateManager.translate(parent.rotationPointX * scale, parent.rotationPointY * scale, parent.rotationPointZ * scale);
-                super.render(scale);
-                GlStateManager.translate(-parent.rotationPointX * scale, -parent.rotationPointY * scale, -parent.rotationPointZ * scale);
+                GlStateManager.translate(model.rotationPointX * scale, model.rotationPointY * scale, model.rotationPointZ * scale);
+                render.accept(scale);
+                GlStateManager.translate(-model.rotationPointX * scale, -model.rotationPointY * scale, -model.rotationPointZ * scale);
             }
         } else {
             GlStateManager.pushMatrix();
-            GlStateManager.translate(parent.rotationPointX * scale, parent.rotationPointY * scale, parent.rotationPointZ * scale);
-            if (parent.rotateAngleZ != 0)
-                GlStateManager.rotate(parent.rotateAngleZ * (180f / (float) Math.PI), 0, 0, 1);
-            if (parent.rotateAngleY != 0)
-                GlStateManager.rotate(parent.rotateAngleY * (180f / (float) Math.PI), 0, 1, 0);
-            if (parent.rotateAngleX != 0)
-                GlStateManager.rotate(parent.rotateAngleX * (180f / (float) Math.PI), 1, 0, 0);
-            super.render(scale);
+            GlStateManager.translate(model.rotationPointX * scale, model.rotationPointY * scale, model.rotationPointZ * scale);
+            if (model.rotateAngleZ != 0) GlStateManager.rotate(model.rotateAngleZ * (180f / (float) Math.PI), 0, 0, 1);
+            if (model.rotateAngleY != 0) GlStateManager.rotate(model.rotateAngleY * (180f / (float) Math.PI), 0, 1, 0);
+            if (model.rotateAngleX != 0) GlStateManager.rotate(model.rotateAngleX * (180f / (float) Math.PI), 1, 0, 0);
+            render.accept(scale);
             GlStateManager.popMatrix();
         }
 
-        GlStateManager.translate(-parent.offsetX, -parent.offsetY, -parent.offsetZ);
+        GlStateManager.translate(-model.offsetX, -model.offsetY, -model.offsetZ);
+    }
+
+    private void compileDisplayList(float scale) {
+        displayList = GLAllocation.generateDisplayLists(1);
+        GlStateManager.glNewList(displayList, 4864);
+        BufferBuilder buf = Tessellator.getInstance().getBuffer();
+
+        for (ModelCube cube : cubes) cube.render(buf, scale);
+        for (ModelQuad quad : quads) quad.render(buf, scale);
+
+        GlStateManager.glEndList();
+        compiled = true;
     }
 }

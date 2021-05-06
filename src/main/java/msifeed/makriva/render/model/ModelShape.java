@@ -13,6 +13,9 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -20,10 +23,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@SideOnly(Side.CLIENT)
 public class ModelShape extends ModelBase {
     public final RenderPlayer render;
     public final Shape shape;
-    public final List<ModelBone> bones = new ArrayList<>();
     public final Map<String, ResourceLocation> textures = new HashMap<>();
 
     public final EvalContext context = new EvalContext();
@@ -36,24 +39,29 @@ public class ModelShape extends ModelBase {
 
         final ModelPlayer modelPlayer = render.getMainModel();
         // TODO: two-phase base model init
-        for (Bone bone : shape.bones) {
-            final ModelRenderer parent = bone.parent != null
-                    ? bone.parent.findPart(modelPlayer)
+        for (Bone spec : shape.bones) {
+            final ModelRenderer parent = spec.parent != null
+                    ? spec.parent.findPart(modelPlayer)
                     : null;
-            final ModelBone model = new ModelBone(this, bone, parent);
-            bones.add(model);
+            boxList.add(new ModelBone(this, spec, parent));
         }
     }
 
     @Override
     public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         if (entity.isSneaking()) {
+            GL11.glPushMatrix();
             GlStateManager.translate(0.0F, 0.2F, 0.0F);
         }
 
-        for (ModelBone bone : bones) {
-            bindTexture((AbstractClientPlayer) entity, bone);
-            bone.render(scale);
+        for (ModelRenderer box : boxList) {
+            if (box instanceof ModelBone)
+                bindTexture((AbstractClientPlayer) entity, (ModelBone) box);
+            box.render(scale);
+        }
+
+        if (entity.isSneaking()) {
+            GL11.glPopMatrix();
         }
     }
 
