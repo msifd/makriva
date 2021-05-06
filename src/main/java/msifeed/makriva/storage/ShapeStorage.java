@@ -52,9 +52,21 @@ public class ShapeStorage {
         }
     }
 
+    public Map<String, Shape> getShapes() {
+        return shapes;
+    }
+
     @Nonnull
     public Shape getCurrentShape() {
         return shapes.getOrDefault(currentShape, Shape.DEFAULT);
+    }
+
+    public void setCurrentShape(String name) {
+        if (shapes.containsKey(name)) {
+            Makriva.LOG.info("Select current shape: " + name);
+            currentShape = name;
+            SyncRelay.upload(getCurrentShape());
+        }
     }
 
     public boolean isKnownShape(String name, Shape shape) {
@@ -101,7 +113,11 @@ public class ShapeStorage {
         }
 
         try {
-            addShape(filename, ShapeCodec.fromBytes(bytes));
+            final String name = filename.replace(".json", "");
+            final long checksum = ShapeCodec.checksum(bytes);
+            if (shapes.getOrDefault(name, Shape.DEFAULT).checksum == checksum) return;
+
+            addShape(name, ShapeCodec.fromBytes(bytes));
         } catch (JsonParseException e) {
             Makriva.LOG.warn("Failed to parse shape {}. Error: {}", filePath.getFileName(), e);
             tryLogToPlayer("Failed to parse shape " + filePath.getFileName() + ". Error: " + e.getMessage());
@@ -109,9 +125,9 @@ public class ShapeStorage {
     }
 
     private void findCurrentShape() {
-        currentShape = shapes.keySet().stream()
+        setCurrentShape(shapes.keySet().stream()
                 .findFirst()
-                .orElse("");
+                .orElse(""));
     }
 
     private void tryLogToPlayer(String msg) {

@@ -1,6 +1,7 @@
 package msifeed.makriva;
 
-import msifeed.makriva.gui.DebugOverlay;
+import msifeed.makriva.client.DebugOverlay;
+import msifeed.makriva.client.MakrivaKeybinds;
 import msifeed.makriva.render.ShapeModels;
 import msifeed.makriva.storage.ShapeStorage;
 import msifeed.makriva.sync.SyncClient;
@@ -38,6 +39,7 @@ public class Makriva {
 
         if (FMLCommonHandler.instance().getSide().isClient()) {
             MinecraftForge.EVENT_BUS.register(new DebugOverlay());
+            MakrivaKeybinds.init();
             STORAGE.init();
         }
     }

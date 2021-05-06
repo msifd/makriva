@@ -5,9 +5,12 @@ import msifeed.makriva.render.model.ModelShape;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.UUID;
 
+@SideOnly(Side.CLIENT)
 public class LayerMakrivaBones implements LayerRenderer<AbstractClientPlayer> {
     private final RenderPlayer renderer;
 

@@ -1,4 +1,4 @@
-package msifeed.makriva.gui;
+package msifeed.makriva.client;
 
 import msifeed.makriva.Makriva;
 import msifeed.makriva.render.model.ModelShape;

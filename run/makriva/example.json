@@ -4,56 +4,17 @@
     "model": "default"
   },
   "textures": {
-    "skin": "https://skins.ariadna.su/Korry.png",
-    "tail": "file://F:/dev/makriva/scales.png"
+    "skin": "https://skins.ariadna.su/Marduk.png"
   },
   "bones": [
     {
-      "id": "feathers",
-      "parent": "head"
-    },
-    {
-      "id": "tail",
-      "parent": "body",
-      "texture": "tail",
-      "offset": [-1.5, 10, 0.5],
-      "rotation": ["0.4+limbSwingAmount", "limbSwingAmount*(sin(age/3)/pi)", 0],
+      "id": "amputee",
+      "parent": "left_arm",
+      "offset": [-1, 6.5, -2],
       "boxes": [
         {
-          "uv": [0, 0],
-          "pos": [0, -1, 0],
-          "size": [3, 3, 3],
-          "delta": -0.1
-        },
-        {
-          "uv": [0, 0],
-          "size": [3, 6, 3]
-        }
-      ],
-      "bones": [
-        {
-          "offset": [0.5, 6, 0.5],
-          "rotation": ["0.2*(1-limbSwingAmount)", 0, 0],
-          "boxes": [
-            {
-              "uv": [0, 0],
-              "size": [2, 4, 2],
-              "delta": 0.1
-            }
-          ],
-          "bones": [
-            {
-              "offset": [0.5, 4, 0.5],
-              "rotation": [0.2, 0, 0],
-              "boxes": [
-                {
-                  "uv": [0, 0],
-                  "size": [1, 2, 1],
-                  "delta": 0.2
-                }
-              ]
-            }
-          ]
+          "uv": [32, 58],
+          "size": [4, 0, 4]
         }
       ]
     }

@@ -1,16 +1,18 @@
 [
-{
-  "modid": "makriva",
-  "name": "Makriva",
-  "description": "",
-  "version": "${version}",
-  "mcversion": "${mcversion}",
-  "url": "",
-  "updateUrl": "",
-  "authorList": ["msifeed"],
-  "credits": "The Forge and FML guys",
-  "logoFile": "",
-  "screenshots": [],
-  "dependencies": []
-}
+  {
+    "modid": "makriva",
+    "name": "Makriva",
+    "description": "",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": [
+      "msifeed"
+    ],
+    "credits": "The Forge and FML guys. Noppes for MPM and Gamepiaynmo for CPM",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
 ]
