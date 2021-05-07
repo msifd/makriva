@@ -18,6 +18,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.net.URL;
@@ -26,23 +27,34 @@ import java.util.Map;
 import java.util.UUID;
 
 @SideOnly(Side.CLIENT)
-public class ShapeModels {
-    protected final Map<UUID, ModelShape> models = new HashMap<>();
+public class ModelManager {
+    private final Map<UUID, Shape> shapes = new HashMap<>();
+    private final Map<UUID, ModelShape> models = new HashMap<>();
 
-    private static ModelShape build(RenderPlayer render, UUID uuid) {
-        final Shape shape = Makriva.SYNC.get(uuid);
-        Makriva.LOG.info("Build shape model uuid: {}, checksum: {}", uuid, shape.checksum);
-
-        return new ModelShape(render, shape);
+    @Nonnull
+    public Shape getShape(UUID uuid) {
+        return shapes.getOrDefault(uuid, Shape.DEFAULT);
     }
 
-    public ModelShape getOrCreate(RenderPlayer render, UUID uuid) {
+    @Nonnull
+    public ModelShape getModel(RenderPlayer render, UUID uuid) {
         return models.computeIfAbsent(uuid, id -> build(render, uuid));
     }
 
     @Nullable
-    public ModelShape getNullable(UUID uuid) {
+    public ModelShape getModelWithoutBuild(UUID uuid) {
         return models.get(uuid);
+    }
+
+    private ModelShape build(RenderPlayer render, UUID uuid) {
+        final Shape shape = getShape(uuid);
+        Makriva.LOG.info("Build shape model uuid: {}, checksum: {}", uuid, shape.checksum);
+        return new ModelShape(render, shape);
+    }
+
+    public void updateShape(UUID uuid, Shape shape) {
+        shapes.put(uuid, shape);
+        invalidate(uuid);
     }
 
     public void invalidate(UUID uuid) {

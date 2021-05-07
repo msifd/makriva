@@ -4,7 +4,7 @@ import msifeed.makriva.Makriva;
 import msifeed.makriva.data.Bone;
 import msifeed.makriva.data.Shape;
 import msifeed.makriva.expr.context.EvalContext;
-import msifeed.makriva.render.ShapeModels;
+import msifeed.makriva.render.ModelManager;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelPlayer;
@@ -18,9 +18,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @SideOnly(Side.CLIENT)
@@ -87,6 +85,6 @@ public class ModelShape extends ModelBase {
         final ResourceLocation resource = new ResourceLocation(Makriva.MOD_ID, path);
         textures.put(name, resource);
 
-        ShapeModels.loadTexture(resource, path, url);
+        ModelManager.loadTexture(resource, path, url);
     }
 }

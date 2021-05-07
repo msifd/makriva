@@ -23,7 +23,7 @@ public class LayerMakrivaBones implements LayerRenderer<AbstractClientPlayer> {
         if (!player.hasPlayerInfo() || player.isInvisible()) return;
 
         final UUID uuid = player.getGameProfile().getId();
-        final ModelShape model = Makriva.MODELS.getOrCreate(renderer, uuid);
+        final ModelShape model = Makriva.MODELS.getModel(renderer, uuid);
         model.context.renderParams.update(limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
 
         if (model.boxList.isEmpty()) return;

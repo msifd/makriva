@@ -8,6 +8,17 @@
   },
   "bones": [
     {
+      "id": "beard",
+      "parent": "head",
+      "offset": [-4, 0, -4],
+      "quads": [
+        {
+          "uv": [56, 36],
+          "size": [8, 8]
+        }
+      ]
+    },
+    {
       "id": "amputee",
       "parent": "left_arm",
       "offset": [-1, 6.5, -2],

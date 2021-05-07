@@ -52,13 +52,12 @@ public class ModelBone extends ModelRenderer {
         this.offsetY = spec.offset[1] * scale;
         this.offsetZ = spec.offset[2] * scale;
 
-        final float D2R = (float) Math.PI / 180;
         this.rotationPointX += spec.rotationPoint[0];
         this.rotationPointY += spec.rotationPoint[1];
         this.rotationPointZ += spec.rotationPoint[2];
-        this.rotateAngleX += ctx.num(spec.rotation[0]) * D2R;
-        this.rotateAngleY += ctx.num(spec.rotation[1]) * D2R;
-        this.rotateAngleZ += ctx.num(spec.rotation[2]) * D2R;
+        this.rotateAngleX += ctx.num(spec.rotation[0]);
+        this.rotateAngleY += ctx.num(spec.rotation[1]);
+        this.rotateAngleZ += ctx.num(spec.rotation[2]);
 
         if (parent != null) {
             withModelTransform(parent, scale, sc -> {

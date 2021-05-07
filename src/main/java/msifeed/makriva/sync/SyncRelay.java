@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.UUID;
 
 public class SyncRelay implements IMessageHandler<MessageUpload, IMessage> {
-
     private final SimpleNetworkWrapper network = new SimpleNetworkWrapper(Makriva.MOD_ID);
     private final Map<UUID, CheckedBytes> encodedShapes = new HashMap<>();
 
@@ -34,11 +33,7 @@ public class SyncRelay implements IMessageHandler<MessageUpload, IMessage> {
     public void init() {
         MinecraftForge.EVENT_BUS.register(this);
 
-        if (FMLCommonHandler.instance().getSide().isClient()) {
-            network.registerMessage(Makriva.SYNC, MessageDistribute.class, 0, Side.CLIENT);
-        } else {
-            network.registerMessage((message, ctx) -> null, MessageDistribute.class, 0, Side.CLIENT);
-        }
+        network.registerMessage(MessageDistribute.class, MessageDistribute.class, 0, Side.CLIENT);
         network.registerMessage(Makriva.RELAY, MessageUpload.class, 1, Side.SERVER);
     }
 

@@ -2,9 +2,8 @@ package msifeed.makriva;
 
 import msifeed.makriva.client.DebugOverlay;
 import msifeed.makriva.client.MakrivaKeybinds;
-import msifeed.makriva.render.ShapeModels;
+import msifeed.makriva.render.ModelManager;
 import msifeed.makriva.storage.ShapeStorage;
-import msifeed.makriva.sync.SyncClient;
 import msifeed.makriva.sync.SyncRelay;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -22,14 +21,12 @@ public class Makriva {
     public static final SyncRelay RELAY = new SyncRelay();
 
     public static ShapeStorage STORAGE;
-    public static SyncClient SYNC;
-    public static ShapeModels MODELS;
+    public static ModelManager MODELS;
 
     public Makriva() {
         if (FMLCommonHandler.instance().getSide().isClient()) {
             STORAGE = new ShapeStorage();
-            SYNC = new SyncClient();
-            MODELS = new ShapeModels();
+            MODELS = new ModelManager();
         }
     }
 
