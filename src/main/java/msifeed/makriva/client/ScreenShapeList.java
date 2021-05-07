@@ -4,14 +4,17 @@ import msifeed.makriva.Makriva;
 import msifeed.makriva.data.Shape;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.*;
-import net.minecraft.client.gui.inventory.GuiInventory;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 
+import java.awt.*;
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.util.Map;
 
 public class ScreenShapeList extends GuiScreen implements GuiPageButtonList.GuiResponder {
@@ -23,32 +26,48 @@ public class ScreenShapeList extends GuiScreen implements GuiPageButtonList.GuiR
     private int menuY = 0;
 
     private float modelRotation = 0;
+    private String selectedShape = Makriva.STORAGE.getCurrentShape().name;
 
     private GuiTextField skinField;
-
-    public ScreenShapeList() {
-    }
+    private GuiButton selectBtn;
 
     @Override
     public void initGui() {
+        buttonList.clear();
+
         menuX = (width - menuWidth) / 2;
         menuY = (height - menuHeight) / 2;
 
-        skinField = new GuiTextField(0xf02, fontRenderer, menuX + 76, menuY + 8, 96, 14);
-        skinField.setGuiResponder(this);
+        // Navigation
 
-        buttonList.clear();
+        int btnY = menuY + 8;
+        for (Map.Entry<String, Shape> e : Makriva.STORAGE.getShapes().entrySet()) {
+            final GuiButton btn = new GuiButton(0xa01, menuX + 8, btnY, 49, 20, e.getKey());
+            btn.enabled = !e.getKey().equals(selectedShape);
+            buttonList.add(btn);
+            btnY += 21;
+        }
 
-        final GuiSlider rotation = new GuiSlider(this, 0xf01, menuX + 175, menuY + 137, "", -180, 180, modelRotation, (id, name, value) -> String.format("%.0f", value));
+        buttonList.add(new GuiButton(0xa02, menuX + 7, menuY + 139, 51, 20, "Open dir"));
+
+        // Model view
+
+        final GuiSlider rotation = new GuiSlider(this, 0xc02, menuX + 175, menuY + 139, "", -180, 180, modelRotation, (id, name, value) -> String.format("%.0f", value));
         rotation.setWidth(74);
         buttonList.add(rotation);
 
-        int btnIdx = 0xa02;
-        int btnY = menuY + 8;
-        for (Map.Entry<String, Shape> e : Makriva.STORAGE.getShapes().entrySet()) {
-            buttonList.add(new GuiButton(btnIdx, menuX + 8, btnY, 49, 20, e.getKey()));
-            btnY += 21;
-        }
+        // Shape controls
+
+        buttonList.add(new GuiButton(0xb01, menuX + 75, menuY + 139, 46, 20, "Edit"));
+
+        selectBtn = new GuiButton(0xb02, menuX + 123, menuY + 139, 50, 20, "Select");
+        selectBtn.enabled = false;
+        buttonList.add(selectBtn);
+
+        skinField = new GuiTextField(0xb03, fontRenderer, menuX + 76, menuY + 8, 96, 14);
+        skinField.setMaxStringLength(256);
+        skinField.setText(getSelectedSkinTexture());
+        skinField.setGuiResponder(this);
     }
 
     @Override
@@ -128,10 +147,43 @@ public class ScreenShapeList extends GuiScreen implements GuiPageButtonList.GuiR
     }
 
     @Override
+    public void onGuiClosed() {
+        Makriva.MODELS.clearPreview();
+    }
+
+    @Override
     protected void actionPerformed(GuiButton button) throws IOException {
-        if (button.id >= 0xa00 && button.id < 0xf00) {
-            Makriva.STORAGE.setCurrentShape(button.displayString);
+        switch (button.id) {
+            case 0xa01: {
+                for (GuiButton b : buttonList) {
+                    if (b.id == 0xa01)
+                        b.enabled = true;
+                }
+                button.enabled = false;
+
+                selectedShape = button.displayString;
+                Makriva.MODELS.selectPreview(selectedShape);
+
+                skinField.setText(getSelectedSkinTexture());
+                selectBtn.enabled = !Makriva.STORAGE.getCurrentShape().name.equals(selectedShape);
+            }
+            break;
+            case 0xa02:
+                Desktop.getDesktop().open(Paths.get(Makriva.MOD_ID).toFile());
+                break;
+            case 0xb01:
+                Desktop.getDesktop().open(Makriva.STORAGE.getShapeFile(selectedShape).toFile());
+                break;
+            case 0xb02:
+                selectBtn.enabled = false;
+                Makriva.STORAGE.setCurrentShape(selectedShape);
+                break;
         }
+    }
+
+    private String getSelectedSkinTexture() {
+        final URL url = Makriva.STORAGE.getShapes().get(selectedShape).textures.get("skin");
+        return url != null ? url.toString() : "";
     }
 
     @Override
@@ -155,14 +207,18 @@ public class ScreenShapeList extends GuiScreen implements GuiPageButtonList.GuiR
     @Override
     public void setEntryValue(int id, float value) {
         switch (id) {
-            case 0xf01:
-                this.modelRotation = value;
+            case 0xc02:
+                modelRotation = value;
                 break;
         }
     }
 
     @Override
     public void setEntryValue(int id, String value) {
-
+        switch (id) {
+            case 0xb03:
+                // Skin
+                break;
+        }
     }
 }

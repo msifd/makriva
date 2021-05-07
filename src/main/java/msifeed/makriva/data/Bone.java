@@ -10,7 +10,7 @@ public class Bone {
     public BipedPart parent;
     public String texture;
 
-//    public int[] textureSize = new int[]{64, 64};
+    public int[] textureSize = new int[]{64, 64};
 //    public boolean mirrored = false;
 
     public float[] offset = new float[3];

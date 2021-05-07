@@ -14,6 +14,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -52,6 +53,10 @@ public class ShapeStorage {
         }
     }
 
+    public Path getShapeFile(String name) {
+        return Paths.get(Makriva.MOD_ID).resolve(name + ".json");
+    }
+
     public Map<String, Shape> getShapes() {
         return shapes;
     }
@@ -62,7 +67,7 @@ public class ShapeStorage {
     }
 
     public void setCurrentShape(String name) {
-        if (shapes.containsKey(name)) {
+        if (shapes.containsKey(name) && !currentShape.equals(name)) {
             Makriva.LOG.info("Select current shape: " + name);
             currentShape = name;
             SyncRelay.upload(getCurrentShape());

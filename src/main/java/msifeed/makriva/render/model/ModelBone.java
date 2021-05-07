@@ -28,7 +28,7 @@ public class ModelBone extends ModelRenderer {
 
     public ModelBone(ModelShape base, Bone spec, ModelRenderer parent) {
         super(base, spec.id);
-        setTextureSize(64, 64);
+        setTextureSize(spec.textureSize[0], spec.textureSize[1]);
 
         this.base = base;
         this.spec = spec;
@@ -82,7 +82,7 @@ public class ModelBone extends ModelRenderer {
         }
     }
 
-    private static void withModelTransform(ModelRenderer model, float scale, Consumer<Float> render) {
+    private void withModelTransform(ModelRenderer model, float scale, Consumer<Float> render) {
         GlStateManager.translate(model.offsetX, model.offsetY, model.offsetZ);
 
         if (model.rotateAngleX == 0 && model.rotateAngleY == 0 && model.rotateAngleZ == 0) {

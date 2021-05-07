@@ -41,7 +41,7 @@ public class ModelShape extends ModelBase {
             final ModelRenderer parent = spec.parent != null
                     ? spec.parent.findPart(modelPlayer)
                     : null;
-            boxList.add(new ModelBone(this, spec, parent));
+            new ModelBone(this, spec, parent);
         }
     }
 

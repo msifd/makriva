@@ -2,18 +2,24 @@ package msifeed.makriva.render;
 
 import msifeed.makriva.Makriva;
 import msifeed.makriva.data.Shape;
+import msifeed.makriva.mixins.render.RenderManagerMixin;
+import msifeed.makriva.mixins.render.RenderPlayerMixin;
 import msifeed.makriva.mixins.skin.MinecraftAssetsMixin;
 import msifeed.makriva.mixins.skin.NetworkPlayerInfoMixin;
 import msifeed.makriva.render.model.ModelShape;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.ImageBufferDownload;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.DefaultPlayerSkin;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -31,25 +37,27 @@ public class ModelManager {
     private final Map<UUID, Shape> shapes = new HashMap<>();
     private final Map<UUID, ModelShape> models = new HashMap<>();
 
+    private ModelShape previewModel = null;
+
     @Nonnull
     public Shape getShape(UUID uuid) {
-        return shapes.getOrDefault(uuid, Shape.DEFAULT);
+        return previewModel != null
+                ? previewModel.shape
+                : shapes.getOrDefault(uuid, Shape.DEFAULT);
     }
 
     @Nonnull
     public ModelShape getModel(RenderPlayer render, UUID uuid) {
-        return models.computeIfAbsent(uuid, id -> build(render, uuid));
+        return previewModel != null
+                ? previewModel
+                : models.computeIfAbsent(uuid, id -> buildModel(render, uuid));
     }
 
     @Nullable
     public ModelShape getModelWithoutBuild(UUID uuid) {
-        return models.get(uuid);
-    }
-
-    private ModelShape build(RenderPlayer render, UUID uuid) {
-        final Shape shape = getShape(uuid);
-        Makriva.LOG.info("Build shape model uuid: {}, checksum: {}", uuid, shape.checksum);
-        return new ModelShape(render, shape);
+        return previewModel != null
+                ? previewModel
+                : models.get(uuid);
     }
 
     public void updateShape(UUID uuid, Shape shape) {
@@ -59,7 +67,28 @@ public class ModelManager {
 
     public void invalidate(UUID uuid) {
         models.remove(uuid);
+        invalidateSkin(uuid);
+    }
 
+    public void selectPreview(String name) {
+        final Shape shape = Makriva.STORAGE.getShapes().get(name);
+        if (shape == null) {
+            Makriva.LOG.warn("Can't preview unknown shape: {}", name);
+            return;
+        }
+
+        final Minecraft mc = Minecraft.getMinecraft();
+        final RenderPlayer renderManager = ((RenderManagerMixin) mc.getRenderManager()).getPlayerRenderer();
+        previewModel = new ModelShape(renderManager, shape);
+        invalidateSkin(mc.player.getUniqueID());
+    }
+
+    public void clearPreview() {
+        previewModel = null;
+        invalidateSkin(Minecraft.getMinecraft().player.getUniqueID());
+    }
+
+    private void invalidateSkin(UUID uuid) {
         final NetHandlerPlayClient conn = Minecraft.getMinecraft().getConnection();
         if (conn == null) return;
 
@@ -68,6 +97,12 @@ public class ModelManager {
             final NetworkPlayerInfoMixin mixin = (NetworkPlayerInfoMixin) net;
             mixin.setPlayerTexturesLoaded(false);
         }
+    }
+
+    private ModelShape buildModel(RenderPlayer render, UUID uuid) {
+        final Shape shape = getShape(uuid);
+        Makriva.LOG.info("Build shape model uuid: {}, checksum: {}", uuid, shape.checksum);
+        return new ModelShape(render, shape);
     }
 
     public static void loadTexture(ResourceLocation resource, String cacheName, URL url) {

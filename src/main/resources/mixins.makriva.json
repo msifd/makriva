@@ -8,6 +8,7 @@
   ],
   "client": [
     "NetHandlerPlayClientMixin",
+    "render.RenderManagerMixin",
     "render.RenderPlayerMixin",
     "skin.ImageBufferDownloadMixin",
     "skin.MinecraftAssetsMixin",

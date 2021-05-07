@@ -13,7 +13,7 @@
       "parent": "head"
     },
     {
-      "id": "tail",
+      "id": "tail-base",
       "parent": "body",
       "texture": "tail",
       "offset": [-1.5, 12, 0.5],
@@ -32,6 +32,7 @@
       ],
       "bones": [
         {
+          "id": "tail-mid",
           "offset": [0.5, 6, 0.5],
           "rotation": ["0.2*(1-limbSwingAmount)", 0, 0],
           "cubes": [
@@ -43,6 +44,7 @@
           ],
           "bones": [
             {
+              "id": "tail-tip",
               "offset": [0.5, 4, 0.5],
               "rotation": [0.2, 0, 0],
               "cubes": [
