@@ -28,7 +28,7 @@ public enum ExprFunction {
     multiply("*", 3, 2, (ctx, args) -> ctx.num(args[0]) * ctx.num(args[1])),
     divide("/", 3, 2, (ctx, args) -> ctx.num(args[0]) / ctx.num(args[1])),
     modulus("%", 3, 2, (ctx, args) -> ctx.num(args[0]) % ctx.num(args[1])),
-    negate("negate", 2, 1, (ctx, args) -> -ctx.num(args[0])),
+    negate(null, 2, 1, (ctx, args) -> -ctx.num(args[0])),
 
     sin(1, (ctx, args) -> MathHelper.sin(ctx.num(args[0]))),
     cos(1, (ctx, args) -> MathHelper.cos(ctx.num(args[0]))),
@@ -75,6 +75,10 @@ public enum ExprFunction {
         this.name = name;
         this.args = args;
         this.func = func;
+    }
+
+    public boolean isOperator() {
+        return precedence > 1;
     }
 
     public static ExprFunction find(String name) {

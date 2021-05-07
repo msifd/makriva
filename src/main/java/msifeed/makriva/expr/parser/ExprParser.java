@@ -124,6 +124,8 @@ public class ExprParser {
     }
 
     private void wrapArgument() throws ParsingException {
+        if (prevToken == TokenType.comma) throw new ParsingException("Empty argument");
+
         while (!operators.isEmpty() && operators.peek() != ExprFunction.brackets) {
             output.push(wrapFunction(operators.pop()));
         }

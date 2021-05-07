@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertLinesMatch;
 
-public class TokenizerTests {
+public class ExprTokenizerTests {
     private static List<String> listify(String... strings) {
         return Lists.newArrayList(strings);
     }

@@ -7,7 +7,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import msifeed.makriva.data.Shape;
 import msifeed.makriva.expr.IExpr;
-import msifeed.makriva.expr.json.JsonAdapterExpr;
+import msifeed.makriva.expr.json.JsonDeserializerExpr;
 
 import javax.annotation.Nullable;
 import java.nio.charset.StandardCharsets;
@@ -15,7 +15,7 @@ import java.util.zip.CRC32;
 
 public final class ShapeCodec {
     private static final Gson GSON = new GsonBuilder()
-            .registerTypeAdapter(IExpr.class, new JsonAdapterExpr())
+            .registerTypeAdapter(IExpr.class, new JsonDeserializerExpr())
             .create();
 
     public static long checksum(byte[] bytes) {

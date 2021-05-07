@@ -67,6 +67,7 @@ public class ExprParserTests {
         assertEquals(-10, evalFloat("---10"));
 
         assertEquals(11, evalFloat("1+2*3+4"));
+        assertEquals(17, evalFloat("2*2+3*4+1"));
     }
 
     @Test
@@ -75,6 +76,7 @@ public class ExprParserTests {
         assertEquals(9, evalFloat("5+(2*2)"));
         assertEquals(10, evalFloat("(2*3)+4"));
         assertEquals(10, evalFloat("5+(2*2)+1"));
+        assertEquals(30, evalFloat("2*(1+2)*5"));
 
         assertThrows(ParsingException.class, () -> evalFloat("(123))"));
     }
@@ -87,6 +89,7 @@ public class ExprParserTests {
         assertEquals(30, evalFloat("if(false, 20, 30)"));
 
         assertEquals(5, evalFloat("1+max(2, 4)"));
+        assertEquals(5, evalFloat("1+max(2,4,)"));
         assertEquals(6, evalFloat("1+max(2, 4)+1"));
 
         assertEquals(3, evalFloat("sqrt((5+4))"));
