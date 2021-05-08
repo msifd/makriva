@@ -35,7 +35,8 @@ public class Makriva {
         RELAY.init();
 
         if (FMLCommonHandler.instance().getSide().isClient()) {
-            MinecraftForge.EVENT_BUS.register(new DebugOverlay());
+            MinecraftForge.EVENT_BUS.register(DebugOverlay.class);
+            MinecraftForge.EVENT_BUS.register(MODELS);
             MakrivaKeybinds.init();
             STORAGE.init();
         }

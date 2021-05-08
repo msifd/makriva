@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Mixin(ThreadDownloadImageData.class)
@@ -31,10 +32,10 @@ public class ThreadDownloadImageDataMixin {
 
     @Inject(method = "loadTextureFromServer", at = @At("HEAD"), cancellable = true)
     protected void loadTextureFromServer(CallbackInfo ci) {
-        if (!imageUrl.startsWith("file://")) return;
+        if (!imageUrl.startsWith("file:")) return;
 
         final ThreadDownloadImageData self = (ThreadDownloadImageData) (Object) this;
-        final File file = new File(imageUrl.replace("file://", ""));
+        final File file = Paths.get(imageUrl.replace("file:", "")).toFile();
 
         imageThread = new Thread(
                 new FilesystemTextureLoader(self, file, imageBuffer),

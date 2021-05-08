@@ -1,6 +1,6 @@
 package msifeed.makriva.data;
 
-import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -12,20 +12,41 @@ public enum BipedPart {
 
     @SideOnly(Side.CLIENT)
     @Nullable
-    public ModelRenderer findPart(ModelBiped biped) {
+    public ModelRenderer findPart(ModelPlayer model) {
         switch (this) {
             case head:
-                return biped.bipedHead;
+                return model.bipedHead;
             case body:
-                return biped.bipedBody;
+                return model.bipedBody;
             case right_arm:
-                return biped.bipedRightArm;
+                return model.bipedRightArm;
             case left_arm:
-                return biped.bipedLeftArm;
+                return model.bipedLeftArm;
             case right_leg:
-                return biped.bipedRightLeg;
+                return model.bipedRightLeg;
             case left_leg:
-                return biped.bipedLeftLeg;
+                return model.bipedLeftLeg;
+            default:
+                return null;
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Nullable
+    public ModelRenderer[] findParts(ModelPlayer model) {
+        switch (this) {
+            case head:
+                return new ModelRenderer[]{model.bipedHead, model.bipedHeadwear};
+            case body:
+                return new ModelRenderer[]{model.bipedBody, model.bipedBodyWear};
+            case right_arm:
+                return new ModelRenderer[]{model.bipedRightArm, model.bipedRightArmwear};
+            case left_arm:
+                return new ModelRenderer[]{model.bipedLeftArm, model.bipedLeftArmwear};
+            case right_leg:
+                return new ModelRenderer[]{model.bipedRightLeg, model.bipedRightLegwear};
+            case left_leg:
+                return new ModelRenderer[]{model.bipedLeftLeg, model.bipedLeftLegwear};
             default:
                 return null;
         }

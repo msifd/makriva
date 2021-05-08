@@ -18,7 +18,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @SideOnly(Side.CLIENT)
@@ -37,19 +39,25 @@ public class ModelShape extends ModelBase {
 
         final ModelPlayer modelPlayer = render.getMainModel();
         // TODO: two-phase base model init
+
+        final List<ModelRenderer> firstLevelBones = new ArrayList<>();
         for (Bone spec : shape.bones) {
             final ModelRenderer parent = spec.parent != null
                     ? spec.parent.findPart(modelPlayer)
                     : null;
-            new ModelBone(this, spec, parent);
+            firstLevelBones.add(new ModelBone(this, spec, parent));
         }
+
+        // Removes sub-child bones
+        boxList.clear();
+        boxList.addAll(firstLevelBones);
     }
 
     @Override
     public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         if (entity.isSneaking()) {
             GL11.glPushMatrix();
-            GlStateManager.translate(0.0F, 0.2F, 0.0F);
+            GlStateManager.translate(0, 0.2, 0);
         }
 
         for (ModelRenderer box : boxList) {

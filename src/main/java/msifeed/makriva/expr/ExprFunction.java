@@ -77,12 +77,12 @@ public enum ExprFunction {
         this.func = func;
     }
 
-    public boolean isOperator() {
-        return precedence > 1;
-    }
-
     public static ExprFunction find(String name) {
         return TABLE.get(name);
+    }
+
+    public boolean isOperator() {
+        return precedence > 1;
     }
 
     public boolean precedes(ExprFunction func) {

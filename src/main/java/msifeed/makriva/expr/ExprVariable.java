@@ -8,13 +8,15 @@ import java.util.function.Function;
 public enum ExprVariable implements IExpr {
     pi(ctx -> ExprVariable.PI),
 
+    limbSwingTick(ctx -> ctx.renderParams.limbSwingTick),
     limbSwing(ctx -> ctx.renderParams.limbSwing),
-    limbSwingAmount(ctx -> ctx.renderParams.limbSwingAmount),
     partialTicks(ctx -> ctx.renderParams.partialTicks),
     age(ctx -> ctx.renderParams.ageInTicks),
     netHeadYaw(ctx -> ctx.renderParams.netHeadYaw),
     headPitch(ctx -> ctx.renderParams.headPitch),
     modelScale(ctx -> ctx.renderParams.scale),
+
+    is_sneaking(ctx -> ctx.player.isSneaking()),
     ;
 
     private static final float PI = (float) Math.PI;

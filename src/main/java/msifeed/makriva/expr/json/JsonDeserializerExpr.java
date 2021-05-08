@@ -1,7 +1,9 @@
 package msifeed.makriva.expr.json;
 
 import com.google.gson.*;
-import msifeed.makriva.expr.*;
+import msifeed.makriva.expr.ConstBool;
+import msifeed.makriva.expr.ConstFloat;
+import msifeed.makriva.expr.IExpr;
 import msifeed.makriva.expr.parser.ExprParser;
 import msifeed.makriva.expr.parser.ParsingException;
 

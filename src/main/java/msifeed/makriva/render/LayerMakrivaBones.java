@@ -21,10 +21,12 @@ public class LayerMakrivaBones implements LayerRenderer<AbstractClientPlayer> {
     @Override
     public void doRenderLayer(AbstractClientPlayer player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         if (!player.hasPlayerInfo() || player.isInvisible()) return;
+        if (player.ticksExisted < 11) return; // Somehow fixes issue with biped parts rotation (e.g. sneak)
 
         final UUID uuid = player.getGameProfile().getId();
         final ModelShape model = Makriva.MODELS.getModel(renderer, uuid);
         model.context.renderParams.update(limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
+        model.context.player = player;
 
         if (model.boxList.isEmpty()) return;
 

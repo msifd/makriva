@@ -3,24 +3,21 @@ package msifeed.makriva.render;
 import msifeed.makriva.Makriva;
 import msifeed.makriva.data.Shape;
 import msifeed.makriva.mixins.render.RenderManagerMixin;
-import msifeed.makriva.mixins.render.RenderPlayerMixin;
 import msifeed.makriva.mixins.skin.MinecraftAssetsMixin;
 import msifeed.makriva.mixins.skin.NetworkPlayerInfoMixin;
 import msifeed.makriva.render.model.ModelShape;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.ImageBufferDownload;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.DefaultPlayerSkin;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -38,6 +35,19 @@ public class ModelManager {
     private final Map<UUID, ModelShape> models = new HashMap<>();
 
     private ModelShape previewModel = null;
+
+    public static void loadTexture(ResourceLocation resource, String cacheName, URL url) {
+        final TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
+        final ITextureObject textureObject = textureManager.getTexture(resource);
+        if (textureObject == null) {
+            final MinecraftAssetsMixin assetsMixin = (MinecraftAssetsMixin) Minecraft.getMinecraft();
+            final File makrivaDir = new File(assetsMixin.getFileAssets(), Makriva.MOD_ID);
+            final File cacheFile = new File(makrivaDir, cacheName);
+
+            final ThreadDownloadImageData loader = new ThreadDownloadImageData(cacheFile, url.toString(), DefaultPlayerSkin.getDefaultSkinLegacy(), new ImageBufferDownload());
+            textureManager.loadTexture(resource, loader);
+        }
+    }
 
     @Nonnull
     public Shape getShape(UUID uuid) {
@@ -80,6 +90,8 @@ public class ModelManager {
         final Minecraft mc = Minecraft.getMinecraft();
         final RenderPlayer renderManager = ((RenderManagerMixin) mc.getRenderManager()).getPlayerRenderer();
         previewModel = new ModelShape(renderManager, shape);
+        previewModel.context.player = mc.player;
+
         invalidateSkin(mc.player.getUniqueID());
     }
 
@@ -105,16 +117,12 @@ public class ModelManager {
         return new ModelShape(render, shape);
     }
 
-    public static void loadTexture(ResourceLocation resource, String cacheName, URL url) {
-        final TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
-        final ITextureObject textureObject = textureManager.getTexture(resource);
-        if (textureObject == null) {
-            final MinecraftAssetsMixin assetsMixin = (MinecraftAssetsMixin) Minecraft.getMinecraft();
-            final File makrivaDir = new File(assetsMixin.getFileAssets(), Makriva.MOD_ID);
-            final File cacheFile = new File(makrivaDir, cacheName);
-
-            final ThreadDownloadImageData loader = new ThreadDownloadImageData(cacheFile, url.toString(), DefaultPlayerSkin.getDefaultSkinLegacy(), new ImageBufferDownload());
-            textureManager.loadTexture(resource, loader);
+    @SubscribeEvent
+    public void onClientJoin(WorldEvent.Load event) {
+        if (event.getWorld().isRemote && Minecraft.getMinecraft().world == null) {
+            Makriva.LOG.info("Discard all shape models");
+            models.clear();
+            previewModel = null;
         }
     }
 }

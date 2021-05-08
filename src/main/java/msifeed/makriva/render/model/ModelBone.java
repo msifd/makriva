@@ -4,7 +4,6 @@ import msifeed.makriva.data.Bone;
 import msifeed.makriva.data.Cube;
 import msifeed.makriva.data.Quad;
 import msifeed.makriva.expr.context.EvalContext;
-import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
@@ -52,16 +51,20 @@ public class ModelBone extends ModelRenderer {
         this.offsetY = spec.offset[1] * scale;
         this.offsetZ = spec.offset[2] * scale;
 
-        this.rotationPointX += spec.rotationPoint[0];
-        this.rotationPointY += spec.rotationPoint[1];
-        this.rotationPointZ += spec.rotationPoint[2];
-        this.rotateAngleX += ctx.num(spec.rotation[0]);
-        this.rotateAngleY += ctx.num(spec.rotation[1]);
-        this.rotateAngleZ += ctx.num(spec.rotation[2]);
+        this.rotationPointX = spec.rotationPoint[0];
+        this.rotationPointY = spec.rotationPoint[1];
+        this.rotationPointZ = spec.rotationPoint[2];
+        this.rotateAngleX = ctx.num(spec.rotation[0]);
+        this.rotateAngleY = ctx.num(spec.rotation[1]);
+        this.rotateAngleZ = ctx.num(spec.rotation[2]);
 
         if (parent != null) {
+            if (parent.rotationPointY <= 9) {
+                this.rotateAngleY += 0;
+            }
+
             withModelTransform(parent, scale, sc -> {
-                withModelTransform(this, scale, this::renderSelf);
+                withModelTransform(this, sc, this::renderSelf);
             });
         } else {
             withModelTransform(this, scale, this::renderSelf);

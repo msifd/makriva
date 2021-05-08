@@ -8,6 +8,8 @@
   ],
   "client": [
     "NetHandlerPlayClientMixin",
+    "render.ModelPlayerGetterMixin",
+    "render.ModelPlayerMixin",
     "render.RenderManagerMixin",
     "render.RenderPlayerMixin",
     "skin.ImageBufferDownloadMixin",

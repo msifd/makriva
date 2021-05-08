@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class DebugOverlay {
     @SubscribeEvent
-    public void onRender(RenderGameOverlayEvent.Post event) {
+    public static void onRender(RenderGameOverlayEvent.Post event) {
         if (event.getType() != RenderGameOverlayEvent.ElementType.TEXT) return;
 
         final UUID uuid = Minecraft.getMinecraft().getSession().getProfile().getId();

@@ -2,9 +2,7 @@ package msifeed.makriva.sync;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
-import msifeed.makriva.Makriva;
 import msifeed.makriva.data.Shape;
-import msifeed.makriva.utils.ShapeCodec;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 public class MessageUpload implements IMessage {
