@@ -54,9 +54,11 @@ public class ModelBone extends ModelRenderer {
         this.rotationPointX = spec.rotationPoint[0];
         this.rotationPointY = spec.rotationPoint[1];
         this.rotationPointZ = spec.rotationPoint[2];
-        this.rotateAngleX = ctx.num(spec.rotation[0]);
-        this.rotateAngleY = ctx.num(spec.rotation[1]);
-        this.rotateAngleZ = ctx.num(spec.rotation[2]);
+
+        final float D2R = (float) (180 / Math.PI);
+        this.rotateAngleX = ctx.num(spec.rotation[0]) / D2R;
+        this.rotateAngleY = ctx.num(spec.rotation[1]) / D2R;
+        this.rotateAngleZ = ctx.num(spec.rotation[2]) / D2R;
 
         if (parent != null) {
             if (parent.rotationPointY <= 9) {
