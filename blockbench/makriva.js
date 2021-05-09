@@ -2,7 +2,7 @@
   const bipedParts = {
     "head": {
       bbPos: [0, 24, 0],
-      mcPos: [-4, -8, -6],
+      mcPos: [-4, -8, -4],
       size: [8, 8, 8],
     },
     "body": {
@@ -12,7 +12,7 @@
     },
     "right_arm": {
       bbPos: [5, 22, 0],
-      mcPos: [-3, -2, -2],
+      mcPos: [-5, 2, 0],
       size: [4, 12, 4],
     },
     "left_arm": {
@@ -48,34 +48,28 @@
         return autoStringify(arr) === "[0, 0, 0]";
       }
 
-      function skeletonOffset(group, name) {
-        const original = bipedParts[name].bbPos;
-        const actual = group.origin;
+      function diff(a, b) {
         return [
-          original[0] - actual[0],
-          original[1] - actual[1],
-          actual[2] - original[2], // invert z coords
+          a[0] - b[0],
+          a[1] - b[1],
+          b[2] - a[2], // invert z coords
         ];
       }
 
-      function convertCube(bb, bone, biped) {
-        const size = [
-          bb.to[0] - bb.from[0],
-          bb.to[1] - bb.from[1],
-          bb.to[2] - bb.from[2],
-        ];
-
+      function compileCube(bb, parent, bone) {
         const cube = {
           uv: bb.uv_offset,
           pos: [
-            bb.parent.origin[0] - bb.from[0] - size[0],
-            bb.parent.origin[1] - bb.from[1] - size[1],
-            bb.parent.origin[2] - bb.from[2] - size[2],
+            parent.origin[0] - bb.to[0] - bone.offset[0],
+            parent.origin[1] - bb.to[1] - bone.offset[1],
+            bb.from[2] - parent.origin[2] - bone.offset[2],
           ],
-          size: size,
+          size: [
+            bb.to[0] - bb.from[0],
+            bb.to[1] - bb.from[1],
+            bb.to[2] - bb.from[2],
+          ],
         };
-
-        console.log(bb.parent.name, cube.pos, bb.parent.origin, bb.from, size);
 
         if (bb.inflate != 0)
           cube.delta = bb.inflate;
@@ -85,16 +79,20 @@
         return cube;
       }
 
-      function convertBone(bb, bipedGroup, biped, parent) {
+      function compileBone(bb, parent, attachmentPart) {
         const bone = {
           id: bb.name,
-          parent: parent,
+          parent: attachmentPart,
           offset: [
-            bb.parent.origin[0] - bb.origin[0],
-            bb.parent.origin[1] - bb.origin[1],
-            bb.parent.origin[2] - bb.origin[2],
+            parent.origin[0] - bb.origin[0],
+            parent.origin[1] - bb.origin[1],
+            parent.origin[2] - bb.origin[2],
           ],
-          rotation: bb.rotation,
+          rotation: [
+            -bb.rotation[0],
+            -bb.rotation[1],
+            bb.rotation[2],
+          ],
           cubes: [],
           bones: [],
         };
@@ -104,9 +102,9 @@
             if (!child.export) continue;
 
             if (child instanceof Cube) {
-              bone.cubes.push(convertCube(child, bone, biped));
+              bone.cubes.push(compileCube(child, bb, bone));
             } else if (child instanceof Group) {
-              bone.bones.push(convertBone(child, bipedGroup, biped));
+              bone.bones.push(compileBone(child, bb));
             }
           }
         }
@@ -138,10 +136,9 @@
       Outliner.root.forEach(group => {
         if (!(group instanceof Group)) return;
         if (!(group.name in bipedParts)) return;
-        if (!group.export) return;
 
         for (const child of group.children) {
-          if (child instanceof Cube && child.name == "hide") {
+          if (child instanceof Cube && child.name == "hide" && child.export) {
             model.hide.push(group.name);
             return;
           }
@@ -154,11 +151,10 @@
         if (!(group.name in bipedParts)) return;
         if (!group.export) return;
 
-        const offset = skeletonOffset(group, group.name);
+        const offset = diff(bipedParts[group.name].bbPos, group.origin);
         if (!isZeroed(offset))
           model.skeleton[group.name] = offset;
       });
-      if (Object.keys(model.skeleton).length == 0) model.skeleton = undefined;
 
       // Bones
       Outliner.root.forEach(group => {
@@ -166,16 +162,30 @@
         if (!(group.name in bipedParts)) return;
         if (!(group.children instanceof Array)) return;
 
+        // const attachment = {
+        //   origin: [0, 24, 0],
+        // };
+        const attachment = {
+          origin: bipedParts[group.name].bbPos,
+        };
+
         // Bind bones to biped parts
         for (const child of group.children) {
           if (!child.export) continue;
           if (!(child instanceof Group)) continue;
 
-          // const offset = bipedOffset(child, group.name);
-          const bone = convertBone(child, group, bipedParts[group.name], group.name);
-          model.bones.push(bone);
+          // const attachment = {
+          //   origin: [
+          //     group.origin[0] - child.origin[0],
+          //     group.origin[1] - child.origin[1],
+          //     group.origin[2] - child.origin[2],
+          //   ],
+          // };
+          model.bones.push(compileBone(child, attachment, group.name));
         }
       });
+
+      if (Object.keys(model.skeleton).length == 0) model.skeleton = undefined;
       if (Object.keys(model.bones).length == 0) model.bones = undefined;
 
       return autoStringify(model);
@@ -187,7 +197,7 @@
     description: '',
     icon: 'icon-player',
     click: function () {
-      exportOptions.skinUrl = "file:makriva/" + (ModelMeta.name || Project.name) + ".png";
+      exportOptions.skinUrl = "file:makriva/" + Project.name + ".png";
       codec.export();
 
       // new Dialog({
@@ -213,7 +223,9 @@
     description: '',
     icon: 'icon-player',
     click: function () {
-      console.log(Outliner);
+      console.log(Outliner.root);
+      console.log(ModelMeta);
+      console.log(Project);
     }
   });
 
