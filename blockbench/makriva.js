@@ -1,35 +1,11 @@
 (function () {
   const bipedParts = {
-    "head": {
-      bbPos: [0, 24, 0],
-      mcPos: [-4, -8, -4],
-      size: [8, 8, 8],
-    },
-    "body": {
-      bbPos: [0, 24, 0],
-      mcPos: [-4, 0, -2],
-      size: [8, 12, 4],
-    },
-    "right_arm": {
-      bbPos: [5, 22, 0],
-      mcPos: [-5, 2, 0],
-      size: [4, 12, 4],
-    },
-    "left_arm": {
-      bbPos: [-5, 22, 0],
-      mcPos: [-1, -2, -2],
-      size: [4, 12, 4],
-    },
-    "right_leg": {
-      bbPos: [1.9, 12, 0],
-      mcPos: [-2, 0, -2],
-      size: [4, 12, 4],
-    },
-    "left_leg": {
-      bbPos: [-1.9, 12, 0],
-      mcPos: [-2, 0, -2],
-      size: [4, 12, 4],
-    },
+    "head": [0, 24, 0],
+    "body": [0, 24, 0],
+    "right_arm": [5, 22, 0],
+    "left_arm": [-5, 22, 0],
+    "right_leg": [1.9, 12, 0],
+    "left_leg": [-1.9, 12, 0],
   };
 
   let exportOptions = {
@@ -42,18 +18,8 @@
     extension: "json",
     remember: false,
     compile() {
-      console.log("compile");
-
       function isZeroed(arr) {
         return autoStringify(arr) === "[0, 0, 0]";
-      }
-
-      function diff(a, b) {
-        return [
-          a[0] - b[0],
-          a[1] - b[1],
-          b[2] - a[2], // invert z coords
-        ];
       }
 
       function compileCube(bb, parent, bone) {
@@ -62,7 +28,7 @@
           pos: [
             parent.origin[0] - bb.to[0],
             parent.origin[1] - bb.to[1],
-            bb.from[2] - parent.origin[2], // Z inverted
+            bb.from[2] - parent.origin[2], // Invert Z
           ],
           size: [
             bb.to[0] - bb.from[0],
@@ -86,12 +52,12 @@
           offset: [
             parent.origin[0] - bb.origin[0],
             parent.origin[1] - bb.origin[1],
-            bb.origin[2] - parent.origin[2], // Z inverted
+            bb.origin[2] - parent.origin[2], // Invert Z
           ],
           rotation: [
             -bb.rotation[0],
             -bb.rotation[1],
-            bb.rotation[2],
+            bb.rotation[2], // Invert Z
           ],
           cubes: [],
           bones: [],
@@ -138,7 +104,8 @@
         if (!(group.name in bipedParts)) return;
 
         for (const child of group.children) {
-          if (child instanceof Cube && child.name == "hide" && child.export) {
+          if (!child.export || !(child instanceof Cube)) continue;
+          if (child.name == "_hide") {
             model.hide.push(group.name);
             return;
           }
@@ -151,7 +118,12 @@
         if (!(group.name in bipedParts)) return;
         if (!group.export) return;
 
-        const offset = diff(bipedParts[group.name].bbPos, group.origin);
+        const part = bipedParts[group.name];
+        const offset = [
+          part[0] - group.origin[0],
+          part[1] - group.origin[1],
+          group.origin[2] - part[2], // Invert Z
+        ];
         if (!isZeroed(offset))
           model.skeleton[group.name] = offset;
       });
@@ -166,7 +138,7 @@
           origin: [
             group.origin[0],
             group.origin[1],
-            -group.origin[2], // Z inverted
+            group.origin[2],
           ],
         };
 
