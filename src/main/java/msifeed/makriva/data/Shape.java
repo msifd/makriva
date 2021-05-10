@@ -21,6 +21,8 @@ public class Shape {
     public final Map<String, Float> eyeHeight = new HashMap<>();
     public final List<Bone> bones = new ArrayList<>();
 
+    public final Map<String, IExpr> debug = null;
+
     public transient String name = "";
     public transient byte[] source;
     public transient long checksum;
