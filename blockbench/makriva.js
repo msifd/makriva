@@ -60,9 +60,9 @@
         const cube = {
           uv: bb.uv_offset,
           pos: [
-            parent.origin[0] - bb.to[0] - bone.offset[0],
-            parent.origin[1] - bb.to[1] - bone.offset[1],
-            bb.from[2] - parent.origin[2] - bone.offset[2],
+            parent.origin[0] - bb.to[0],
+            parent.origin[1] - bb.to[1],
+            bb.from[2] - parent.origin[2], // Z inverted
           ],
           size: [
             bb.to[0] - bb.from[0],
@@ -86,7 +86,7 @@
           offset: [
             parent.origin[0] - bb.origin[0],
             parent.origin[1] - bb.origin[1],
-            parent.origin[2] - bb.origin[2],
+            bb.origin[2] - parent.origin[2], // Z inverted
           ],
           rotation: [
             -bb.rotation[0],
@@ -162,26 +162,19 @@
         if (!(group.name in bipedParts)) return;
         if (!(group.children instanceof Array)) return;
 
-        // const attachment = {
-        //   origin: [0, 24, 0],
-        // };
-        const attachment = {
-          origin: bipedParts[group.name].bbPos,
+        const attachmentPart = {
+          origin: [
+            group.origin[0],
+            group.origin[1],
+            -group.origin[2], // Z inverted
+          ],
         };
 
         // Bind bones to biped parts
         for (const child of group.children) {
           if (!child.export) continue;
           if (!(child instanceof Group)) continue;
-
-          // const attachment = {
-          //   origin: [
-          //     group.origin[0] - child.origin[0],
-          //     group.origin[1] - child.origin[1],
-          //     group.origin[2] - child.origin[2],
-          //   ],
-          // };
-          model.bones.push(compileBone(child, attachment, group.name));
+          model.bones.push(compileBone(child, attachmentPart, group.name));
         }
       });
 
