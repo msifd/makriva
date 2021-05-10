@@ -16,22 +16,54 @@ public class ModelQuad {
     private PositionTextureVertex[] vertices = new PositionTextureVertex[4];
 
     public ModelQuad(ModelRenderer renderer, Quad spec) {
-        final float x1 = spec.pos[0] - spec.delta;
-        final float y1 = spec.pos[1] - spec.delta;
-        final float z = spec.pos[2];
-        final float x2 = spec.pos[0] + spec.size[0] + spec.delta;
-        final float y2 = spec.pos[1] + spec.size[1] + spec.delta;
         final float u1 = spec.uv[0];
         final float v1 = spec.uv[1];
-        final float u2 = u1 + spec.size[0];
-        final float v2 = v1 + spec.size[1];
         final float tw = renderer.textureWidth;
         final float th = renderer.textureHeight;
 
-        this.vertices[0] = new PositionTextureVertex(x2, y1, z, u2 / tw, v1 / th);
-        this.vertices[1] = new PositionTextureVertex(x1, y1, z, u1 / tw, v1 / th);
-        this.vertices[2] = new PositionTextureVertex(x1, y2, z, u1 / tw, v2 / th);
-        this.vertices[3] = new PositionTextureVertex(x2, y2, z, u2 / tw, v2 / th);
+        if (spec.size[0] == 0) {
+            final float u2 = u1 + spec.size[2];
+            final float v2 = v1 + spec.size[1];
+
+            final float y1 = spec.pos[1] - spec.delta;
+            final float z1 = spec.pos[2] - spec.delta;
+            final float y2 = spec.pos[1] + spec.size[1] + spec.delta;
+            final float z2 = spec.pos[2] + spec.size[2] + spec.delta;
+            final float x = spec.pos[0];
+
+            this.vertices[0] = new PositionTextureVertex(x, y1, z1, u2 / tw, v1 / th);
+            this.vertices[1] = new PositionTextureVertex(x, y1, z2, u1 / tw, v1 / th);
+            this.vertices[2] = new PositionTextureVertex(x, y2, z2, u1 / tw, v2 / th);
+            this.vertices[3] = new PositionTextureVertex(x, y2, z1, u2 / tw, v2 / th);
+        } else if (spec.size[1] == 0) {
+            final float u2 = u1 + spec.size[0];
+            final float v2 = v1 + spec.size[2];
+
+            final float x1 = spec.pos[0] - spec.delta;
+            final float z1 = spec.pos[2] - spec.delta;
+            final float x2 = spec.pos[0] + spec.size[0] + spec.delta;
+            final float z2 = spec.pos[2] + spec.size[2] + spec.delta;
+            final float y = spec.pos[1];
+
+            this.vertices[0] = new PositionTextureVertex(x2, y, z2, u2 / tw, v1 / th);
+            this.vertices[1] = new PositionTextureVertex(x1, y, z2, u1 / tw, v1 / th);
+            this.vertices[2] = new PositionTextureVertex(x1, y, z1, u1 / tw, v2 / th);
+            this.vertices[3] = new PositionTextureVertex(x2, y, z1, u2 / tw, v2 / th);
+        } else {
+            final float u2 = u1 + spec.size[0];
+            final float v2 = v1 + spec.size[1];
+
+            final float x1 = spec.pos[0] - spec.delta;
+            final float y1 = spec.pos[1] - spec.delta;
+            final float x2 = spec.pos[0] + spec.size[0] + spec.delta;
+            final float y2 = spec.pos[1] + spec.size[1] + spec.delta;
+            final float z = spec.pos[2];
+
+            this.vertices[0] = new PositionTextureVertex(x2, y1, z, u2 / tw, v1 / th);
+            this.vertices[1] = new PositionTextureVertex(x1, y1, z, u1 / tw, v1 / th);
+            this.vertices[2] = new PositionTextureVertex(x1, y2, z, u1 / tw, v2 / th);
+            this.vertices[3] = new PositionTextureVertex(x2, y2, z, u2 / tw, v2 / th);
+        }
     }
 
     public ModelQuad(PositionTextureVertex[] vertices, float u1, float v1, float u2, float v2, float tw, float th) {
@@ -52,14 +84,15 @@ public class ModelQuad {
     public void render(BufferBuilder buf, float scale) {
         final Vec3d vec1 = vertices[1].vector3D.subtractReverse(vertices[0].vector3D);
         final Vec3d vec2 = vertices[1].vector3D.subtractReverse(vertices[2].vector3D);
-        final Vec3d crossVec = vec2.crossProduct(vec1).normalize();
+        final Vec3d normal = vec2.crossProduct(vec1).normalize();
 
         buf.begin(GL11.GL_QUADS, DefaultVertexFormats.OLDMODEL_POSITION_TEX_NORMAL);
 
         for (PositionTextureVertex p : vertices) {
-            buf.pos(p.vector3D.x * (double) scale, p.vector3D.y * (double) scale, p.vector3D.z * (double) scale)
+            buf.pos(p.vector3D.x * scale, p.vector3D.y * scale, p.vector3D.z * scale)
                     .tex(p.texturePositionX, p.texturePositionY)
-                    .normal((float) crossVec.x, (float) crossVec.y, (float) crossVec.z).endVertex();
+                    .normal((float) normal.x, (float) normal.y, (float) normal.z)
+                    .endVertex();
         }
 
         Tessellator.getInstance().draw();

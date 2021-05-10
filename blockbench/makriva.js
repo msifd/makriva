@@ -22,7 +22,11 @@
         return autoStringify(arr) === "[0, 0, 0]";
       }
 
-      function compileCube(bb, parent, bone) {
+      function isQuad(bb) {
+        return bb.to[0] == bb.from[0] || bb.to[1] == bb.from[1] || bb.to[2] == bb.from[2];
+      }
+
+      function compileCube(bb, parent) {
         const cube = {
           uv: bb.uv_offset,
           pos: [
@@ -45,6 +49,47 @@
         return cube;
       }
 
+      function compileQuad(bb, parent) {
+        let uv;
+        if (bb.to[0] == bb.from[0]) {
+          uv = [
+            bb.uv_offset[0],
+            bb.uv_offset[1] + bb.to[2] - bb.from[2],
+          ];
+        } else if (bb.to[1] == bb.from[1]) {
+          uv = [
+            bb.uv_offset[0] + bb.to[2] - bb.from[2],
+            bb.uv_offset[1],
+          ];
+        } else {
+          uv = [
+            bb.uv_offset[0],
+            bb.uv_offset[1],
+          ];
+        }
+
+        const quad = {
+          uv: uv,
+          pos: [
+            parent.origin[0] - bb.to[0],
+            parent.origin[1] - bb.to[1],
+            bb.from[2] - parent.origin[2], // Invert Z
+          ],
+          size: [
+            bb.to[0] - bb.from[0],
+            bb.to[1] - bb.from[1],
+            bb.to[2] - bb.from[2],
+          ],
+        };
+
+        if (bb.inflate != 0)
+          quad.delta = bb.inflate;
+        if (bb.mirror_uv)
+          quad.mirror = true;
+
+        return quad;
+      }
+
       function compileBone(bb, parent, attachmentPart) {
         const bone = {
           id: bb.name,
@@ -60,6 +105,7 @@
             bb.rotation[2], // Invert Z
           ],
           cubes: [],
+          quads: [],
           bones: [],
         };
 
@@ -68,7 +114,10 @@
             if (!child.export) continue;
 
             if (child instanceof Cube) {
-              bone.cubes.push(compileCube(child, bb, bone));
+              if (isQuad(child))
+                bone.quads.push(compileQuad(child, bb));
+              else
+                bone.cubes.push(compileCube(child, bb));
             } else if (child instanceof Group) {
               bone.bones.push(compileBone(child, bb));
             }
@@ -78,6 +127,7 @@
         if (isZeroed(bone.offset)) bone.offset = undefined;
         if (isZeroed(bone.rotation)) bone.rotation = undefined;
         if (bone.cubes.length == 0) bone.cubes = undefined;
+        if (bone.quads.length == 0) bone.quads = undefined;
         if (bone.bones.length == 0) bone.bones = undefined;
 
         return bone;
