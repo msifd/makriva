@@ -2,6 +2,7 @@ package msifeed.makriva.storage;
 
 import com.google.gson.JsonParseException;
 import msifeed.makriva.Makriva;
+import msifeed.makriva.MakrivaConfig;
 import msifeed.makriva.data.Shape;
 import msifeed.makriva.sync.SyncRelay;
 import msifeed.makriva.utils.ShapeCodec;
@@ -25,7 +26,6 @@ import java.util.Map;
 public class ShapeStorage {
 
     private final Map<String, Shape> shapes = new HashMap<>();
-    private String currentShape = "";
 
     public void init() {
         final Path dir = Paths.get(Makriva.MOD_ID);
@@ -62,14 +62,16 @@ public class ShapeStorage {
 
     @Nonnull
     public Shape getCurrentShape() {
-        return shapes.getOrDefault(currentShape, Shape.DEFAULT);
+        return shapes.getOrDefault(MakrivaConfig.shape, Shape.DEFAULT);
     }
 
     public void setCurrentShape(String name) {
-        if (shapes.containsKey(name) && !currentShape.equals(name)) {
+        if (shapes.containsKey(name) && !MakrivaConfig.shape.equals(name)) {
             Makriva.LOG.info("Select current shape: " + name);
-            currentShape = name;
+            MakrivaConfig.shape = name;
             SyncRelay.upload(getCurrentShape());
+
+            MakrivaConfig.sync();
         }
     }
 
@@ -87,10 +89,10 @@ public class ShapeStorage {
         Makriva.LOG.info("Update shape: " + shape.name + ":" + shape.checksum);
         shapes.put(filename, shape);
 
-        if (currentShape.isEmpty()) {
+        if (MakrivaConfig.shape.isEmpty()) {
             findCurrentShape();
         }
-        if (currentShape.equals(filename)) {
+        if (MakrivaConfig.shape.equals(filename)) {
             SyncRelay.upload(getCurrentShape());
         }
     }
@@ -99,7 +101,7 @@ public class ShapeStorage {
         Makriva.LOG.info("Remove shape: " + filename);
         shapes.remove(filename);
 
-        if (currentShape.equals(filename)) {
+        if (MakrivaConfig.shape.equals(filename)) {
             findCurrentShape();
         }
     }

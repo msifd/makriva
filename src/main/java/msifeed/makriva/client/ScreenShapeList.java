@@ -181,7 +181,10 @@ public class ScreenShapeList extends GuiScreen implements GuiPageButtonList.GuiR
     }
 
     private String getSelectedSkinTexture() {
-        final URL url = Makriva.STORAGE.getShapes().get(selectedShape).textures.get("skin");
+        final Shape shape = Makriva.STORAGE.getShapes().get(selectedShape);
+        if (shape == null) return "";
+
+        final URL url = shape.textures.get("skin");
         return url != null ? url.toString() : "";
     }
 

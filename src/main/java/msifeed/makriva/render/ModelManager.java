@@ -71,13 +71,13 @@ public class ModelManager {
     }
 
     public void updateShape(UUID uuid, Shape shape) {
-        shapes.put(uuid, shape);
         invalidate(uuid);
+        shapes.put(uuid, shape);
     }
 
     public void invalidate(UUID uuid) {
-        models.remove(uuid);
         invalidateSkin(uuid);
+        models.remove(uuid);
     }
 
     public void selectPreview(String name) {
