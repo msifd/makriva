@@ -50,26 +50,11 @@
       }
 
       function compileQuad(bb, parent) {
-        let uv;
-        if (bb.to[0] == bb.from[0]) {
-          uv = [
-            bb.uv_offset[0],
-            bb.uv_offset[1] + bb.to[2] - bb.from[2],
-          ];
-        } else if (bb.to[1] == bb.from[1]) {
-          uv = [
-            bb.uv_offset[0] + bb.to[2] - bb.from[2],
-            bb.uv_offset[1],
-          ];
-        } else {
-          uv = [
-            bb.uv_offset[0],
-            bb.uv_offset[1],
-          ];
-        }
-
         const quad = {
-          uv: uv,
+          uv: [
+            bb.uv_offset[0] + (bb.to[1] == bb.from[1] ? bb.to[2] - bb.from[2] : 0),
+            bb.uv_offset[1] + (bb.to[0] == bb.from[0] ? bb.to[2] - bb.from[2] : 0),
+          ],
           pos: [
             parent.origin[0] - bb.to[0],
             parent.origin[1] - bb.to[1],
