@@ -48,7 +48,7 @@ public class Makriva {
     }
 
     @SubscribeEvent
-    public void onConfigChangedEvent(ConfigChangedEvent.OnConfigChangedEvent event) {
+    public void onConfigChangedEvent(ConfigChangedEvent.PostConfigChangedEvent event) {
         MakrivaConfig.sync();
     }
 }

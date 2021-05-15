@@ -62,13 +62,13 @@ public class ShapeStorage {
 
     @Nonnull
     public Shape getCurrentShape() {
-        return shapes.getOrDefault(MakrivaConfig.shape, Shape.DEFAULT);
+        return shapes.getOrDefault(MakrivaConfig.client.shape, Shape.DEFAULT);
     }
 
     public void setCurrentShape(String name) {
-        if (shapes.containsKey(name) && !MakrivaConfig.shape.equals(name)) {
+        if (shapes.containsKey(name) && !MakrivaConfig.client.shape.equals(name)) {
             Makriva.LOG.info("Select current shape: " + name);
-            MakrivaConfig.shape = name;
+            MakrivaConfig.client.shape = name;
             SyncRelay.upload(getCurrentShape());
 
             MakrivaConfig.sync();
@@ -89,10 +89,10 @@ public class ShapeStorage {
         Makriva.LOG.info("Update shape: " + shape.name + ":" + shape.checksum);
         shapes.put(filename, shape);
 
-        if (MakrivaConfig.shape.isEmpty()) {
+        if (MakrivaConfig.client.shape.isEmpty()) {
             findCurrentShape();
         }
-        if (MakrivaConfig.shape.equals(filename)) {
+        if (MakrivaConfig.client.shape.equals(filename)) {
             SyncRelay.upload(getCurrentShape());
         }
     }
@@ -101,7 +101,7 @@ public class ShapeStorage {
         Makriva.LOG.info("Remove shape: " + filename);
         shapes.remove(filename);
 
-        if (MakrivaConfig.shape.equals(filename)) {
+        if (MakrivaConfig.client.shape.equals(filename)) {
             findCurrentShape();
         }
     }
