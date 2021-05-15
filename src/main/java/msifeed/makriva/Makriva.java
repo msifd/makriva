@@ -4,10 +4,9 @@ import msifeed.makriva.client.DebugOverlay;
 import msifeed.makriva.client.MakrivaKeybinds;
 import msifeed.makriva.render.ModelManager;
 import msifeed.makriva.storage.ShapeStorage;
+import msifeed.makriva.sync.ServerShapes;
 import msifeed.makriva.sync.SyncRelay;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Config;
-import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -24,6 +23,7 @@ public class Makriva {
 
     public static final Logger LOG = LogManager.getLogger(MOD_ID);
     public static final SyncRelay RELAY = new SyncRelay();
+    public static final ServerShapes SHARED_SHAPES = new ServerShapes();
 
     public static ShapeStorage STORAGE;
     public static ModelManager MODELS;

@@ -76,3 +76,14 @@ processResources {
         exclude 'mcmod.info'
     }
 }
+
+jar {
+    from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
+
+    manifest.attributes(
+            'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
+            'TweakOrder': 0,
+            'MixinConfigs': 'mixins.makriva.json',
+            'ForceLoadAsMod': 'true',
+    )
+}

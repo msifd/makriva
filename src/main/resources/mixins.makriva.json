@@ -5,6 +5,8 @@
   "package": "msifeed.makriva.mixins",
   "refmap": "makriva.refmap.json",
   "mixins": [
+    "EntityMixin",
+    "EntityPlayerMixin"
   ],
   "client": [
     "NetHandlerPlayClientMixin",

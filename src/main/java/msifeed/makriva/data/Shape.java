@@ -11,14 +11,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Shape {
+public class Shape extends SharedShape {
     public static Shape DEFAULT = ShapeCodec.fromBytes("{}".getBytes(StandardCharsets.UTF_8));
 
     public final Map<String, String> metadata = new HashMap<>();
     public final Map<String, URL> textures = new HashMap<>();
     public final List<BipedPart> hide = new ArrayList<>();
     public final Map<BipedPart, IExpr[]> skeleton = new HashMap<>();
-    public final Map<String, Float> eyeHeight = new HashMap<>();
     public final List<Bone> bones = new ArrayList<>();
 
     public final Map<String, IExpr> debug = null;

@@ -1,7 +1,9 @@
 package msifeed.makriva.sync;
 
+import com.google.gson.Gson;
 import msifeed.makriva.Makriva;
 import msifeed.makriva.data.Shape;
+import msifeed.makriva.data.SharedShape;
 import msifeed.makriva.utils.ShapeCodec;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
@@ -14,6 +16,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +25,7 @@ import java.util.UUID;
 public class SyncRelay implements IMessageHandler<MessageUpload, IMessage> {
     private final SimpleNetworkWrapper network = new SimpleNetworkWrapper(Makriva.MOD_ID);
     private final Map<UUID, CheckedBytes> encodedShapes = new HashMap<>();
+    private final Gson gson = new Gson();
 
     public static void upload(Shape shape) {
         if (shape != null) {
@@ -43,6 +47,7 @@ public class SyncRelay implements IMessageHandler<MessageUpload, IMessage> {
             final CheckedBytes checked = new CheckedBytes(shapeBytes, checksum);
             encodedShapes.put(uuid, checked);
             network.sendToAll(new MessageDistribute(Collections.singletonMap(uuid, checked)));
+            updateSharedShape(uuid, shapeBytes);
         }
     }
 
@@ -50,6 +55,15 @@ public class SyncRelay implements IMessageHandler<MessageUpload, IMessage> {
         final CheckedBytes local = encodedShapes.get(uuid);
         if (local == null) return false;
         return local.checksum == checksum;
+    }
+
+    private void updateSharedShape(UUID uuid, byte[] shapeBytes) {
+        final String str = new String(shapeBytes, StandardCharsets.UTF_8);
+        try {
+            final SharedShape shape = gson.fromJson(str, SharedShape.class);
+            Makriva.SHARED_SHAPES.updateShape(uuid, shape);
+        } catch (Exception ignored) {
+        }
     }
 
     @SubscribeEvent

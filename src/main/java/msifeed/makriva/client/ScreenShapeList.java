@@ -96,7 +96,7 @@ public class ScreenShapeList extends GuiScreen implements GuiPageButtonList.GuiR
         final int modelX = menuX + 176 + viewWidth / 2;
         final int modelY = menuY + 7 + viewHeight;
         final float modelMouseX = modelX - mouseX;
-        final float modelMouseY = modelY - mouseY - mc.player.eyeHeight * modelScale;
+        final float modelMouseY = modelY - mouseY - mc.player.getEyeHeight() * modelScale;
 
         RenderHelper.enableGUIStandardItemLighting();
         GlStateManager.enableColorMaterial();

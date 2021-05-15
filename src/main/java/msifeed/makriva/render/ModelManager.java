@@ -42,7 +42,9 @@ public class ModelManager {
         if (textureObject == null) {
             final MinecraftAssetsMixin assetsMixin = (MinecraftAssetsMixin) Minecraft.getMinecraft();
             final File makrivaDir = new File(assetsMixin.getFileAssets(), Makriva.MOD_ID);
-            final File cacheFile = new File(makrivaDir, cacheName);
+            final File cacheFile = url.getProtocol().equals("file")
+                    ? new File(url.getPath())
+                    : new File(makrivaDir, cacheName);
 
             final ThreadDownloadImageData loader = new ThreadDownloadImageData(cacheFile, url.toString(), DefaultPlayerSkin.getDefaultSkinLegacy(), new ImageBufferDownload());
             textureManager.loadTexture(resource, loader);
