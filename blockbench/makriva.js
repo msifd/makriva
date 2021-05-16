@@ -198,34 +198,20 @@
     icon: 'icon-player',
     click: function () {
       exportOptions.skinUrl = "file:makriva/" + Project.name + ".png";
-      codec.export();
 
-      // new Dialog({
-      //     id: "makriva_export",
-      //     title: "Makriva Export",
-      //     form: {
-      //         // ignore: { label: 'Ignore prefix', type: 'input', value: "_" },
-      //         skinUrl: { label: 'Skin URL', type: 'input', value: exportOptions.skinUrl },
-      //         slimModel: { label: 'Slim model', type: 'checkbox', value: exportOptions.slimModel },
-      //         // hide: { label: 'hide', type: 'select', options: {a: "a", b: "b"} },
-      //     },
-      //     onConfirm: function (formData) {
-      //         exportOptions = formData;
-      //         codec.export();
-      //         this.hide()
-      //     }
-      // }).show();
-    }
-  });
-
-  const print_outliner = new Action('makriva_print', {
-    name: 'Print outliner',
-    description: '',
-    icon: 'icon-player',
-    click: function () {
-      console.log(Outliner.root);
-      console.log(ModelMeta);
-      console.log(Project);
+      new Dialog({
+          id: "makriva_export",
+          title: "Makriva Export",
+          form: {
+              skinUrl: { label: 'Skin URL', type: 'input', value: exportOptions.skinUrl },
+              slimModel: { label: 'Slim model', type: 'checkbox', value: exportOptions.slimModel },
+          },
+          onConfirm: function (formData) {
+              exportOptions = formData;
+              codec.export();
+              this.hide()
+          }
+      }).show();
     }
   });
 
@@ -238,12 +224,9 @@
     variant: 'both',
     onload() {
       MenuBar.addAction(export_action, 'file.export');
-      MenuBar.addAction(export_action, 'filter');
-      MenuBar.addAction(print_outliner, 'filter');
     },
     onunload() {
       export_action.delete();
-      print_outliner.delete();
     }
   });
 
