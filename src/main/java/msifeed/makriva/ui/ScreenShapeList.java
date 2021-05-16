@@ -32,6 +32,7 @@ public class ScreenShapeList extends GuiScreen implements GuiPageButtonList.GuiR
     private String selectedShape = Makriva.STORAGE.getCurrentShape().name;
 
     private ShapeSelectionList shapesList;
+    private GuiButton editBtn;
     private GuiButton selectBtn;
 
     @Override
@@ -56,7 +57,8 @@ public class ScreenShapeList extends GuiScreen implements GuiPageButtonList.GuiR
 
         // Shape controls
 
-        buttonList.add(new GuiButton(0xb01, menuX + 75, menuY + 139, 46, 20, "Edit"));
+        editBtn = new GuiButton(0xb01, menuX + 75, menuY + 139, 46, 20, "Edit");
+        buttonList.add(editBtn);
 
         selectBtn = new GuiButton(0xb02, menuX + 123, menuY + 139, 50, 20, "Select");
         selectBtn.enabled = false;
@@ -76,6 +78,7 @@ public class ScreenShapeList extends GuiScreen implements GuiPageButtonList.GuiR
     public void updateScreen() {
         final String curr = Makriva.STORAGE.getCurrentShape().name;
         selectBtn.enabled = !curr.equals(selectedShape);
+        editBtn.enabled = !curr.isEmpty();
     }
 
     private void drawBackground() {
@@ -101,7 +104,7 @@ public class ScreenShapeList extends GuiScreen implements GuiPageButtonList.GuiR
             modelRealHeight = (float) (aabb.maxY - aabb.minY);
         }
 
-        final float heightDifference = 1.8f / modelRealHeight;
+        final float heightDifference = Math.min(2, 1.8f / modelRealHeight);
         final int modelScale = (int) (viewHeight * 0.95 / (2 / heightDifference));
         final int modelWidth = (int) (modelRealWidth * modelScale);
 

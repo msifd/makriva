@@ -34,9 +34,8 @@ public class ShapeListEntry implements GuiListExtended.IGuiListEntry {
 
     @Override
     public boolean mousePressed(int slotIndex, int mouseX, int mouseY, int mouseEvent, int relativeX, int relativeY) {
-//        Makriva.MODELS.selectPreview(shape.name);
         screen.selectShape(shape);
-        return true;
+        return false;
     }
 
     @Override
