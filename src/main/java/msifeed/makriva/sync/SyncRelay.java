@@ -61,7 +61,7 @@ public class SyncRelay implements IMessageHandler<MessageUpload, IMessage> {
         final String str = new String(shapeBytes, StandardCharsets.UTF_8);
         try {
             final SharedShape shape = gson.fromJson(str, SharedShape.class);
-            Makriva.SHARED_SHAPES.updateShape(uuid, shape);
+            Makriva.SHARED.update(uuid, shape);
         } catch (Exception ignored) {
         }
     }

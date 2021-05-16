@@ -56,6 +56,7 @@ public class MessageDistribute implements IMessage, IMessageHandler<MessageDistr
 
         FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> {
             message.shapes.forEach(Makriva.MODELS::updateShape);
+            message.shapes.forEach(Makriva.SHARED::update);
         });
 
         return null;

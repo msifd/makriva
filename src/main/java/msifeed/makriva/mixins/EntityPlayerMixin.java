@@ -22,7 +22,7 @@ public abstract class EntityPlayerMixin {
 
         final UUID uuid = self.getGameProfile().getId();
         final PlayerPose pose = PlayerPose.get(self);
-        return Makriva.SHARED_SHAPES.getShape(uuid).getEyeHeight(pose);
+        return Makriva.SHARED.get(uuid).getEyeHeight(pose);
     }
 
     /**
@@ -34,7 +34,7 @@ public abstract class EntityPlayerMixin {
 
         final UUID uuid = self.getGameProfile().getId();
         final PlayerPose pose = PlayerPose.get(self);
-        final Float[] sizes = Makriva.SHARED_SHAPES.getShape(uuid).getBox(pose);
+        final Float[] sizes = Makriva.SHARED.get(uuid).getBox(pose);
 
         if (sizes[0] != self.width || sizes[1] != self.height) {
             AxisAlignedBB bb = self.getEntityBoundingBox();

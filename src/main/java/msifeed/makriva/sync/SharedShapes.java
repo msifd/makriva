@@ -9,15 +9,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class ServerShapes {
+public class SharedShapes {
     private final Map<UUID, SharedShape> shapes = new HashMap<>();
 
     @Nonnull
-    public SharedShape getShape(UUID uuid) {
+    public SharedShape get(UUID uuid) {
         return shapes.getOrDefault(uuid, SharedShape.DEFAULT_SHARED);
     }
 
-    public void updateShape(UUID uuid, SharedShape shape) {
+    public void update(UUID uuid, SharedShape shape) {
         Makriva.LOG.info("Update shared shape {}", uuid);
 
         shape.eyeHeight.replaceAll((p, h) -> Math.min(h, MakrivaConfig.server.maxEyeHeight));

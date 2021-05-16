@@ -18,6 +18,7 @@
     "skin.MinecraftAssetsMixin",
     "skin.NetworkPlayerInfoMixin",
     "skin.SkinManagerMixin",
-    "skin.ThreadDownloadImageDataMixin"
+    "skin.ThreadDownloadImageDataMixin",
+    "ux.EntityPlayerSPMixin"
   ]
 }
