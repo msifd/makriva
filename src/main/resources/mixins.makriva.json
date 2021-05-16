@@ -6,12 +6,13 @@
   "refmap": "makriva.refmap.json",
   "mixins": [
     "EntityMixin",
-    "EntityPlayerMixin"
+    "EntityPlayerMixin",
+    "render.LayerHeldItemMixin"
   ],
   "client": [
     "NetHandlerPlayClientMixin",
-    "render.ModelPlayerGetterMixin",
     "render.ModelBipedMixin",
+    "render.ModelPlayerGetterMixin",
     "render.RenderManagerMixin",
     "render.RenderPlayerMixin",
     "skin.ImageBufferDownloadMixin",

@@ -4,6 +4,7 @@ import msifeed.makriva.data.Bone;
 import msifeed.makriva.data.Cube;
 import msifeed.makriva.data.Quad;
 import msifeed.makriva.expr.context.EvalContext;
+import msifeed.makriva.render.RenderUtils;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
@@ -12,7 +13,6 @@ import net.minecraft.client.renderer.Tessellator;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class ModelBone extends ModelRenderer {
     public final ModelShape base;
@@ -65,11 +65,11 @@ public class ModelBone extends ModelRenderer {
                 this.rotateAngleY += 0;
             }
 
-            withModelTransform(parent, scale, sc -> {
-                withModelTransform(this, sc, this::renderSelf);
+            RenderUtils.renderWithExternalTransform(parent, scale, sc -> {
+                RenderUtils.renderWithExternalTransform(this, sc, this::renderSelf);
             });
         } else {
-            withModelTransform(this, scale, this::renderSelf);
+            RenderUtils.renderWithExternalTransform(this, scale, this::renderSelf);
         }
 
         setRotationPoint(0, 0, 0);
@@ -85,30 +85,6 @@ public class ModelBone extends ModelRenderer {
             for (ModelRenderer child : childModels)
                 child.render(scale);
         }
-    }
-
-    private void withModelTransform(ModelRenderer model, float scale, Consumer<Float> render) {
-        GlStateManager.translate(model.offsetX, model.offsetY, model.offsetZ);
-
-        if (model.rotateAngleX == 0 && model.rotateAngleY == 0 && model.rotateAngleZ == 0) {
-            if (model.rotationPointX == 0 && model.rotationPointY == 0 && model.rotationPointZ == 0) {
-                render.accept(scale);
-            } else {
-                GlStateManager.translate(model.rotationPointX * scale, model.rotationPointY * scale, model.rotationPointZ * scale);
-                render.accept(scale);
-                GlStateManager.translate(-model.rotationPointX * scale, -model.rotationPointY * scale, -model.rotationPointZ * scale);
-            }
-        } else {
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(model.rotationPointX * scale, model.rotationPointY * scale, model.rotationPointZ * scale);
-            if (model.rotateAngleZ != 0) GlStateManager.rotate(model.rotateAngleZ * (180f / (float) Math.PI), 0, 0, 1);
-            if (model.rotateAngleY != 0) GlStateManager.rotate(model.rotateAngleY * (180f / (float) Math.PI), 0, 1, 0);
-            if (model.rotateAngleX != 0) GlStateManager.rotate(model.rotateAngleX * (180f / (float) Math.PI), 1, 0, 0);
-            render.accept(scale);
-            GlStateManager.popMatrix();
-        }
-
-        GlStateManager.translate(-model.offsetX, -model.offsetY, -model.offsetZ);
     }
 
     private void compileDisplayList(float scale) {

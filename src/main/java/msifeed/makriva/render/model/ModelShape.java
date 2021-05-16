@@ -1,6 +1,7 @@
 package msifeed.makriva.render.model;
 
 import msifeed.makriva.Makriva;
+import msifeed.makriva.data.BipedPart;
 import msifeed.makriva.data.Bone;
 import msifeed.makriva.data.Shape;
 import msifeed.makriva.expr.context.EvalContext;
@@ -13,22 +14,21 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @SideOnly(Side.CLIENT)
 public class ModelShape extends ModelBase {
     public final RenderPlayer render;
     public final Shape shape;
     public final Map<String, ResourceLocation> textures = new HashMap<>();
+    public final Map<EnumHandSide, List<ModelBone>> handBones = new EnumMap<>(EnumHandSide.class);
 
     public final EvalContext context = new EvalContext();
 
@@ -46,7 +46,14 @@ public class ModelShape extends ModelBase {
             final ModelRenderer parent = spec.parent != null
                     ? PartSelector.findPart(modelPlayer, spec.parent)
                     : null;
-            firstLevelBones.add(new ModelBone(this, spec, parent));
+            final ModelBone bone = new ModelBone(this, spec, parent);
+            firstLevelBones.add(bone);
+
+            // Hand bones to render in first-person
+            if (spec.parent == BipedPart.right_arm)
+                handBones.computeIfAbsent(EnumHandSide.RIGHT, (h) -> new ArrayList<>()).add(bone);
+            else if (spec.parent == BipedPart.left_arm)
+                handBones.computeIfAbsent(EnumHandSide.LEFT, (h) -> new ArrayList<>()).add(bone);
         }
 
         // Removes sub-child bones
