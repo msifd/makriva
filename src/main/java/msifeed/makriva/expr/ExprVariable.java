@@ -1,5 +1,6 @@
 package msifeed.makriva.expr;
 
+import msifeed.makriva.data.PlayerPose;
 import msifeed.makriva.expr.context.EvalContext;
 
 import java.util.HashMap;
@@ -16,7 +17,10 @@ public enum ExprVariable implements IExpr {
     headPitch(ctx -> ctx.renderParams.headPitch),
     modelScale(ctx -> ctx.renderParams.scale),
 
-    sneaking(ctx -> ctx.player.isSneaking()),
+    sneaking(ctx -> ctx.pose == PlayerPose.sneak),
+    sitting(ctx -> ctx.pose == PlayerPose.sit),
+    sleeping(ctx -> ctx.pose == PlayerPose.sleep),
+    crawling(ctx -> ctx.pose == PlayerPose.crawl),
     ;
 
     private static final float PI = (float) Math.PI;

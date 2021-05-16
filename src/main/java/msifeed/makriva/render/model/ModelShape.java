@@ -3,7 +3,9 @@ package msifeed.makriva.render.model;
 import msifeed.makriva.Makriva;
 import msifeed.makriva.data.BipedPart;
 import msifeed.makriva.data.Bone;
+import msifeed.makriva.data.PlayerPose;
 import msifeed.makriva.data.Shape;
+import msifeed.makriva.expr.IExpr;
 import msifeed.makriva.expr.context.EvalContext;
 import msifeed.makriva.render.ModelManager;
 import msifeed.makriva.render.PartSelector;
@@ -14,6 +16,7 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -63,9 +66,19 @@ public class ModelShape extends ModelBase {
 
     @Override
     public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        if (entity.isSneaking()) {
-            GL11.glPushMatrix();
+        GL11.glPushMatrix();
+
+        final PlayerPose pose = PlayerPose.get((EntityPlayer) entity);
+        if (entity.isSneaking())
             GlStateManager.translate(0, 0.2, 0);
+        if (pose == PlayerPose.sit) {
+            final IExpr[] leftExpr = shape.skeleton.get(BipedPart.left_leg);
+            final float left = context.num(leftExpr[1]);
+            final IExpr[] rightExpr = shape.skeleton.get(BipedPart.right_leg);
+            final float right = context.num(rightExpr[1]);
+            final float avg = (left + right) / 2f;
+            if (avg != 0)
+                GlStateManager.translate(0, -avg * scale, 0);
         }
 
         for (ModelRenderer box : boxList) {
@@ -74,9 +87,7 @@ public class ModelShape extends ModelBase {
             box.render(scale);
         }
 
-        if (entity.isSneaking()) {
-            GL11.glPopMatrix();
-        }
+        GL11.glPopMatrix();
     }
 
     private void bindTexture(AbstractClientPlayer player, ModelBone bone) {

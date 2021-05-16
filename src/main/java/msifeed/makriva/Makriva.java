@@ -1,5 +1,6 @@
 package msifeed.makriva;
 
+import msifeed.makriva.compat.MakrivaCompat;
 import msifeed.makriva.render.ModelManager;
 import msifeed.makriva.storage.ShapeStorage;
 import msifeed.makriva.sync.SharedShapes;
@@ -9,8 +10,11 @@ import msifeed.makriva.ui.MakrivaKeybinds;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.FMLModContainer;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.logging.log4j.LogManager;
@@ -45,6 +49,11 @@ public class Makriva {
             MakrivaKeybinds.init();
             STORAGE.init();
         }
+    }
+
+    @EventHandler
+    public void postInit(FMLPostInitializationEvent event) {
+        MakrivaCompat.mpm = Loader.isModLoaded("moreplayermodels");
     }
 
     @SubscribeEvent

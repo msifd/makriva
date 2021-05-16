@@ -12,6 +12,9 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.spongepowered.mixin'
 
+repositories {
+    maven { url 'https://www.cursemaven.com' }
+}
 
 version = "0.1.0"
 group = "msifeed.makriva"
@@ -55,6 +58,8 @@ configurations {
 
 dependencies {
     embed 'org.spongepowered:mixin:0.8.2'
+    compile "curse.maven:more-player-models-221939:2837187"
+
     testCompile 'org.junit.jupiter:junit-jupiter:5.7.0'
 }
 
