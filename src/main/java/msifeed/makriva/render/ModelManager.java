@@ -82,6 +82,11 @@ public class ModelManager {
         models.remove(uuid);
     }
 
+    @Nullable
+    public ModelShape getPreviewModel() {
+        return previewModel;
+    }
+
     public void selectPreview(String name) {
         final Shape shape = Makriva.STORAGE.getShapes().get(name);
         if (shape == null) {

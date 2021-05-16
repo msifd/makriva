@@ -1,4 +1,4 @@
-package msifeed.makriva.client;
+package msifeed.makriva.ui;
 
 import msifeed.makriva.Makriva;
 import msifeed.makriva.expr.context.EvalContext;

@@ -98,10 +98,12 @@ public class ShapeStorage {
     }
 
     public void removeShape(String filename) {
-        Makriva.LOG.info("Remove shape: " + filename);
-        shapes.remove(filename);
+        final String name = filename.replace(".json", "");
 
-        if (MakrivaConfig.client.shape.equals(filename)) {
+        Makriva.LOG.info("Remove shape: " + name);
+        shapes.remove(name);
+
+        if (MakrivaConfig.client.shape.equals(name)) {
             findCurrentShape();
         }
     }

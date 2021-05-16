@@ -16,7 +16,7 @@ public enum ExprVariable implements IExpr {
     headPitch(ctx -> ctx.renderParams.headPitch),
     modelScale(ctx -> ctx.renderParams.scale),
 
-    is_sneaking(ctx -> ctx.player.isSneaking()),
+    sneaking(ctx -> ctx.player.isSneaking()),
     ;
 
     private static final float PI = (float) Math.PI;

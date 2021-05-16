@@ -1,11 +1,11 @@
 package msifeed.makriva;
 
-import msifeed.makriva.client.DebugOverlay;
-import msifeed.makriva.client.MakrivaKeybinds;
 import msifeed.makriva.render.ModelManager;
 import msifeed.makriva.storage.ShapeStorage;
 import msifeed.makriva.sync.SharedShapes;
 import msifeed.makriva.sync.SyncRelay;
+import msifeed.makriva.ui.DebugOverlay;
+import msifeed.makriva.ui.MakrivaKeybinds;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;

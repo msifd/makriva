@@ -1,4 +1,4 @@
-package msifeed.makriva.client;
+package msifeed.makriva.ui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -12,18 +12,16 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 @SideOnly(Side.CLIENT)
-public enum MakrivaKeybinds {
-    INSTANCE;
-
-    private final KeyBinding SHAPES_MENU = new KeyBinding("key.makriva.shapes_menu", KeyConflictContext.IN_GAME, Keyboard.KEY_HOME, "key.categories.makriva");
+public class MakrivaKeybinds {
+    private static final KeyBinding SHAPES_MENU = new KeyBinding("key.makriva.shapes_menu", KeyConflictContext.IN_GAME, Keyboard.KEY_HOME, "key.categories.makriva");
 
     public static void init() {
-        MinecraftForge.EVENT_BUS.register(INSTANCE);
-        ClientRegistry.registerKeyBinding(INSTANCE.SHAPES_MENU);
+        MinecraftForge.EVENT_BUS.register(MakrivaKeybinds.class);
+        ClientRegistry.registerKeyBinding(SHAPES_MENU);
     }
 
     @SubscribeEvent
-    void onKeyTyped(InputEvent.KeyInputEvent event) {
+    public static void onKeyTyped(InputEvent.KeyInputEvent event) {
         if (SHAPES_MENU.isKeyDown())
             Minecraft.getMinecraft().displayGuiScreen(new ScreenShapeList());
     }
