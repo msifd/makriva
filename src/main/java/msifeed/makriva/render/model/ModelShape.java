@@ -5,6 +5,7 @@ import msifeed.makriva.data.Bone;
 import msifeed.makriva.data.Shape;
 import msifeed.makriva.expr.context.EvalContext;
 import msifeed.makriva.render.ModelManager;
+import msifeed.makriva.render.PartSelector;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelPlayer;
@@ -43,7 +44,7 @@ public class ModelShape extends ModelBase {
         final List<ModelRenderer> firstLevelBones = new ArrayList<>();
         for (Bone spec : shape.bones) {
             final ModelRenderer parent = spec.parent != null
-                    ? spec.parent.findPart(modelPlayer)
+                    ? PartSelector.findPart(modelPlayer, spec.parent)
                     : null;
             firstLevelBones.add(new ModelBone(this, spec, parent));
         }

@@ -11,7 +11,7 @@
   "client": [
     "NetHandlerPlayClientMixin",
     "render.ModelPlayerGetterMixin",
-    "render.ModelPlayerMixin",
+    "render.ModelBipedMixin",
     "render.RenderManagerMixin",
     "render.RenderPlayerMixin",
     "skin.ImageBufferDownloadMixin",

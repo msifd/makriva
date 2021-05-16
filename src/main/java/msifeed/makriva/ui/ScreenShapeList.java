@@ -89,8 +89,6 @@ public class ScreenShapeList extends GuiScreen implements GuiPageButtonList.GuiR
         final int viewWidth = 144;
         final int viewHeight = 128;
 
-//        final float modelRealWidth = (float) Math.max(aabb.maxX - aabb.minX, aabb.maxZ - aabb.minZ);
-//        final float modelRealHeight = (float) (aabb.maxY - aabb.minY);
         final float modelRealWidth;
         final float modelRealHeight;
         final ModelShape preview = Makriva.MODELS.getPreviewModel();
@@ -106,7 +104,6 @@ public class ScreenShapeList extends GuiScreen implements GuiPageButtonList.GuiR
         final float heightDifference = 1.8f / modelRealHeight;
         final int modelScale = (int) (viewHeight * 0.95 / (2 / heightDifference));
         final int modelWidth = (int) (modelRealWidth * modelScale);
-        final int modelHeight = (int) (modelRealHeight * modelScale);
 
         final int modelX = menuX + viewX + (viewWidth + modelWidth) / 2 - modelWidth / 2;
         final int modelY = menuY + viewY + (int) (viewHeight * 0.95);
