@@ -199,7 +199,7 @@
 			"id": "Tail",
 			"parent": "body",
 			"offset": [0, 7, 3],
-			"rotation": ["if(sneaking,-10,-32.5)", 0, 0],
+			"rotation": ["if(sneaking,-10,-32.5)+30*limbSwing", "if(sitting,-20,0)", 0],
 			"cubes": [
 				{
 					"uv": [48, 11],
@@ -211,7 +211,7 @@
 				{
 					"id": "Base",
 					"offset": [0, -1, 1],
-					"rotation": [-110, 0, 0],
+					"rotation": ["if(crawling,-140,-110)", "if(sitting,-60,0)", "if(sitting,0,0)"],
 					"cubes": [
 						{
 							"uv": [50, 17],
@@ -223,7 +223,7 @@
 						{
 							"id": "Mid",
 							"offset": [0, -7, 0],
-							"rotation": [12.5, 0, 0],
+							"rotation": ["if(crawling,-20,if(sitting,-15,12.5))", "if(sitting,45,0)", "if(sitting,-70,0)"],
 							"cubes": [
 								{
 									"uv": [40, 18],
@@ -235,7 +235,7 @@
 								{
 									"id": "Mid2",
 									"offset": [0, -7, 0],
-									"rotation": [10, 0, 0],
+									"rotation": ["if(crawling,-10,if(sitting,-10,10))", 0, "if(sitting,-20,0)"],
 									"cubes": [
 										{
 											"uv": [42, 11],
@@ -247,7 +247,7 @@
 										{
 											"id": "Tip",
 											"offset": [0, -5, 0],
-											"rotation": [27.5, 0, 0],
+											"rotation": ["if(crawling,-10,27.5)", 0, "10*sin(age/6)"],
 											"cubes": [
 												{
 													"uv": [38, 11],
