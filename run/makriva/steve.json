@@ -1,0 +1,75 @@
+{
+	"metadata": {},
+	"textures": {
+		"skin": "file:makriva/steve.png"
+	},
+	"hide": ["head", "body", "right_arm", "left_arm", "right_leg", "left_leg"],
+	"bones": [
+		{
+			"id": "NewHead",
+			"parent": "head",
+			"cubes": [
+				{
+					"uv": [0, 0],
+					"pos": [-4, -8, -4],
+					"size": [8, 8, 8]
+				}
+			]
+		},
+		{
+			"id": "NewBody",
+			"parent": "body",
+			"cubes": [
+				{
+					"uv": [16, 16],
+					"pos": [-4, 0, -2],
+					"size": [8, 12, 4]
+				}
+			]
+		},
+		{
+			"id": "NewArmR",
+			"parent": "right_arm",
+			"cubes": [
+				{
+					"uv": [40, 16],
+					"pos": [-3, -2, -2],
+					"size": [4, 12, 4]
+				}
+			]
+		},
+		{
+			"id": "NewArmL",
+			"parent": "left_arm",
+			"cubes": [
+				{
+					"uv": [32, 48],
+					"pos": [-1, -2, -2],
+					"size": [4, 12, 4]
+				}
+			]
+		},
+		{
+			"id": "NewLegR",
+			"parent": "right_leg",
+			"cubes": [
+				{
+					"uv": [0, 16],
+					"pos": [-2, 0, -2],
+					"size": [4, 12, 4]
+				}
+			]
+		},
+		{
+			"id": "NewLegL",
+			"parent": "left_leg",
+			"cubes": [
+				{
+					"uv": [16, 48],
+					"pos": [-2, 0, -2],
+					"size": [4, 12, 4]
+				}
+			]
+		}
+	]
+}
