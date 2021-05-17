@@ -7,16 +7,13 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nullable;
-
 @SideOnly(Side.CLIENT)
 public class PartSelector {
-
-    @Nullable
     public static ModelRenderer findPart(ModelBiped model, BipedPart part) {
         switch (part) {
             case head:
                 return model.bipedHead;
+            default:
             case body:
                 return model.bipedBody;
             case right_arm:
@@ -27,16 +24,14 @@ public class PartSelector {
                 return model.bipedRightLeg;
             case left_leg:
                 return model.bipedLeftLeg;
-            default:
-                return null;
         }
     }
 
-    @Nullable
     public static ModelRenderer[] findParts(ModelPlayer model, BipedPart part) {
         switch (part) {
             case head:
                 return new ModelRenderer[]{model.bipedHead, model.bipedHeadwear};
+            default:
             case body:
                 return new ModelRenderer[]{model.bipedBody, model.bipedBodyWear};
             case right_arm:
@@ -47,8 +42,6 @@ public class PartSelector {
                 return new ModelRenderer[]{model.bipedRightLeg, model.bipedRightLegwear};
             case left_leg:
                 return new ModelRenderer[]{model.bipedLeftLeg, model.bipedLeftLegwear};
-            default:
-                return null;
         }
     }
 }

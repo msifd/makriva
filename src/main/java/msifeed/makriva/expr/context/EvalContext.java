@@ -9,6 +9,11 @@ public class EvalContext {
     public AbstractClientPlayer player = null;
     public PlayerPose pose = PlayerPose.stand;
 
+    public void update(AbstractClientPlayer player) {
+        this.player = player;
+        this.pose = PlayerPose.get(player);
+    }
+
     public boolean bool(IExpr expr) {
         return expr != null && expr.asBool(this);
     }

@@ -54,6 +54,8 @@ public class Makriva {
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         MakrivaCompat.mpm = Loader.isModLoaded("moreplayermodels");
+
+        Makriva.LOG.info("Compat status. MPM: {}", MakrivaCompat.mpm);
     }
 
     @SubscribeEvent

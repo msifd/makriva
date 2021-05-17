@@ -3,6 +3,8 @@ package msifeed.makriva.mixins.render;
 import msifeed.makriva.Makriva;
 import msifeed.makriva.data.BipedPart;
 import msifeed.makriva.data.Shape;
+import msifeed.makriva.expr.IExpr;
+import msifeed.makriva.expr.context.EvalContext;
 import msifeed.makriva.render.LayerMakrivaBones;
 import msifeed.makriva.render.PartSelector;
 import msifeed.makriva.render.model.ModelBone;
@@ -35,10 +37,7 @@ public class RenderPlayerMixin {
         final ModelPlayer model = self.getMainModel();
         final Shape shape = Makriva.MODELS.getShape(clientPlayer.getGameProfile().getId());
         for (BipedPart bp : shape.hide) {
-            final ModelRenderer[] parts = PartSelector.findParts(model, bp);
-            if (parts == null) continue;
-
-            for (ModelRenderer part : parts) {
+            for (ModelRenderer part : PartSelector.findParts(model, bp)) {
                 part.showModel = false;
             }
         }
@@ -46,8 +45,6 @@ public class RenderPlayerMixin {
 
     @Inject(method = "renderRightArm", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GlStateManager;disableBlend()V"))
     private void renderRightArm(AbstractClientPlayer player, CallbackInfo ci) {
-//        if (player.ticksExisted < 11) return; // Somehow fixes issue with biped parts rotation (e.g. sneak)
-
         final RenderPlayer self = (RenderPlayer) (Object) this;
         final UUID uuid = player.getGameProfile().getId();
         final ModelShape model = Makriva.MODELS.getModel(self, uuid);
@@ -60,7 +57,7 @@ public class RenderPlayerMixin {
         }
     }
 
-    @Inject(method = "renderLeftArm", at = @At("HEAD"))
+    @Inject(method = "renderLeftArm", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GlStateManager;disableBlend()V"))
     private void renderLeftArm(AbstractClientPlayer player, CallbackInfo ci) {
         final RenderPlayer self = (RenderPlayer) (Object) this;
         final UUID uuid = player.getGameProfile().getId();

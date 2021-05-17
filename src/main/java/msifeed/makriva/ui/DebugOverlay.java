@@ -1,6 +1,7 @@
 package msifeed.makriva.ui;
 
 import msifeed.makriva.Makriva;
+import msifeed.makriva.data.PlayerPose;
 import msifeed.makriva.expr.context.EvalContext;
 import msifeed.makriva.render.model.ModelShape;
 import net.minecraft.client.Minecraft;
@@ -22,6 +23,8 @@ public class DebugOverlay {
         final Printer p = new Printer();
         p.print("[Makriva]");
         p.print("Shape: " + model.shape.checksum);
+        p.print("Pose: " + PlayerPose.get(Minecraft.getMinecraft().player));
+        p.print("Model: " + model.render.getMainModel().getClass().getSimpleName());
 
         final EvalContext ctx = model.context;
         model.shape.debug.forEach((s, expr) -> p.print(s + ": " + ctx.num(expr)));

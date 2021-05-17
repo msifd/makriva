@@ -1,9 +1,11 @@
 package msifeed.makriva.render.model;
 
+import msifeed.makriva.data.BipedPart;
 import msifeed.makriva.data.Bone;
 import msifeed.makriva.data.Cube;
 import msifeed.makriva.data.Quad;
 import msifeed.makriva.expr.context.EvalContext;
+import msifeed.makriva.render.PartSelector;
 import msifeed.makriva.render.RenderUtils;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -17,7 +19,6 @@ import java.util.List;
 public class ModelBone extends ModelRenderer {
     public final ModelShape base;
     public final Bone spec;
-    public final ModelRenderer parent;
 
     private final List<ModelCube> cubes = new ArrayList<>();
     private final List<ModelQuad> quads = new ArrayList<>();
@@ -25,19 +26,18 @@ public class ModelBone extends ModelRenderer {
     private boolean compiled = false;
     private int displayList = 0;
 
-    public ModelBone(ModelShape base, Bone spec, ModelRenderer parent) {
+    public ModelBone(ModelShape base, Bone spec) {
         super(base, spec.id);
         setTextureSize(spec.textureSize[0], spec.textureSize[1]);
 
         this.base = base;
         this.spec = spec;
-        this.parent = parent;
 
         setRotationPoint(spec.rotationPoint[0], spec.rotationPoint[1], spec.rotationPoint[2]);
 
         for (Cube cube : spec.cubes) cubes.add(new ModelCube(this, cube));
         for (Quad quad : spec.quads) quads.add(new ModelQuad(this, quad));
-        for (Bone bone : spec.bones) addChild(new ModelBone(base, bone, null));
+        for (Bone bone : spec.bones) addChild(new ModelBone(base, bone));
     }
 
     @Override
@@ -60,7 +60,8 @@ public class ModelBone extends ModelRenderer {
         this.rotateAngleY = ctx.num(spec.rotation[1]) / D2R;
         this.rotateAngleZ = ctx.num(spec.rotation[2]) / D2R;
 
-        if (parent != null) {
+        if (spec.parent != null) {
+            final ModelRenderer parent = PartSelector.findPart(base.render.getMainModel(), spec.parent);
             if (parent.rotationPointY <= 9) {
                 this.rotateAngleY += 0;
             }

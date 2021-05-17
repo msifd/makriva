@@ -20,12 +20,11 @@ public class StatureHandler {
 
         for (BipedPart bp : BipedPart.values()) {
             final ModelRenderer[] parts = PartSelector.findParts(biped, bp);
-            if (parts == null) continue;
-
             final IExpr[] exprs = model.shape.skeleton.get(bp);
+
             if (exprs != null) {
                 final EvalContext ctx = model.context;
-                ctx.player = entity;
+                ctx.update(entity);
 
                 for (ModelRenderer part : parts) {
                     part.offsetX = ctx.num(exprs[0]) * scale;
@@ -48,12 +47,10 @@ public class StatureHandler {
 
         for (BipedPart bp : BipedPart.values()) {
             final ModelRenderer part = PartSelector.findPart(biped, bp);
-            if (part == null) continue;
-
             final IExpr[] exprs = model.shape.skeleton.get(bp);
             if (exprs != null) {
                 final EvalContext ctx = model.context;
-                ctx.player = entity;
+                ctx.update(entity);
 
                 part.offsetX = ctx.num(exprs[0]) * scale;
                 part.offsetY = ctx.num(exprs[1]) * scale;

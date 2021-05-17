@@ -97,7 +97,7 @@ public class ModelManager {
         final Minecraft mc = Minecraft.getMinecraft();
         final RenderPlayer renderManager = ((RenderManagerMixin) mc.getRenderManager()).getPlayerRenderer();
         previewModel = new ModelShape(renderManager, shape);
-        previewModel.context.player = mc.player;
+        previewModel.context.update(mc.player);
 
         invalidateSkin(mc.player.getUniqueID());
     }
@@ -121,6 +121,7 @@ public class ModelManager {
     private ModelShape buildModel(RenderPlayer render, UUID uuid) {
         final Shape shape = getShape(uuid);
         Makriva.LOG.info("Build shape model uuid: {}, checksum: {}", uuid, shape.checksum);
+        invalidate(uuid);
         return new ModelShape(render, shape);
     }
 

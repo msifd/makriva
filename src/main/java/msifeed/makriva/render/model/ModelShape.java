@@ -8,10 +8,8 @@ import msifeed.makriva.data.Shape;
 import msifeed.makriva.expr.IExpr;
 import msifeed.makriva.expr.context.EvalContext;
 import msifeed.makriva.render.ModelManager;
-import msifeed.makriva.render.PartSelector;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
@@ -41,15 +39,9 @@ public class ModelShape extends ModelBase {
 
         shape.textures.forEach(this::loadTexture);
 
-        final ModelPlayer modelPlayer = render.getMainModel();
-        // TODO: two-phase base model init
-
         final List<ModelRenderer> firstLevelBones = new ArrayList<>();
         for (Bone spec : shape.bones) {
-            final ModelRenderer parent = spec.parent != null
-                    ? PartSelector.findPart(modelPlayer, spec.parent)
-                    : null;
-            final ModelBone bone = new ModelBone(this, spec, parent);
+            final ModelBone bone = new ModelBone(this, spec);
             firstLevelBones.add(bone);
 
             // Hand bones to render in first-person

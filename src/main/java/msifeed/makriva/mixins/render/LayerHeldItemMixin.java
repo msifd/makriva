@@ -45,10 +45,10 @@ public class LayerHeldItemMixin {
 
         final BipedPart handPart = hand == EnumHandSide.RIGHT ? BipedPart.right_arm : BipedPart.left_arm;
         final ModelRenderer part = PartSelector.findPart(render.getMainModel(), handPart);
-        if (part == null) return;
 
         final EvalContext ctx = model.context;
-        ctx.player = (AbstractClientPlayer) entity;
+        ctx.update((AbstractClientPlayer) entity);
+
         final float scale = ctx.renderParams.scale;
 
         final IExpr[] exprs = model.shape.skeleton.get(handPart);
