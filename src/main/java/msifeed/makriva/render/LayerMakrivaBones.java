@@ -27,6 +27,7 @@ public class LayerMakrivaBones implements LayerRenderer<AbstractClientPlayer> {
         final ModelShape model = Makriva.MODELS.getModel(renderer, uuid);
         model.context.renderParams.update(limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
         model.context.update(player);
+        model.render = renderer;
 
         if (model.boxList.isEmpty()) return;
 

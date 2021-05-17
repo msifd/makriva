@@ -26,12 +26,12 @@ import java.util.*;
 
 @SideOnly(Side.CLIENT)
 public class ModelShape extends ModelBase {
-    public final RenderPlayer render;
     public final Shape shape;
     public final Map<String, ResourceLocation> textures = new HashMap<>();
     public final Map<EnumHandSide, List<ModelBone>> handBones = new EnumMap<>(EnumHandSide.class);
 
     public final EvalContext context = new EvalContext();
+    public RenderPlayer render;
 
     public ModelShape(RenderPlayer render, Shape shape) {
         this.render = render;

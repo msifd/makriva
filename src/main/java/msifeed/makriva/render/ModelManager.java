@@ -95,8 +95,8 @@ public class ModelManager {
         }
 
         final Minecraft mc = Minecraft.getMinecraft();
-        final RenderPlayer renderManager = ((RenderManagerMixin) mc.getRenderManager()).getPlayerRenderer();
-        previewModel = new ModelShape(renderManager, shape);
+        final RenderPlayer renderer = ((RenderManagerMixin) mc.getRenderManager()).getPlayerRenderer();
+        previewModel = new ModelShape(renderer, shape);
         previewModel.context.update(mc.player);
 
         invalidateSkin(mc.player.getUniqueID());
