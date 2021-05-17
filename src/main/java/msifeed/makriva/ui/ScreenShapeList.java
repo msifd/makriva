@@ -68,6 +68,8 @@ public class ScreenShapeList extends GuiScreen implements GuiPageButtonList.GuiR
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         shapesList.drawScreen(mouseX, mouseY, partialTicks);
+        GlStateManager.color(1, 1, 1, 1);
+
         drawBackground();
         drawModel(mouseX, mouseY);
 
