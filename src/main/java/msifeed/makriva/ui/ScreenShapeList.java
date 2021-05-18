@@ -58,6 +58,7 @@ public class ScreenShapeList extends GuiScreen implements GuiPageButtonList.GuiR
         // Shape controls
 
         editBtn = new GuiButton(0xb01, menuX + 75, menuY + 139, 46, 20, "Edit");
+        editBtn.enabled = false;
         buttonList.add(editBtn);
 
         selectBtn = new GuiButton(0xb02, menuX + 123, menuY + 139, 50, 20, "Select");

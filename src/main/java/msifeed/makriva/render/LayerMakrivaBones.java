@@ -1,7 +1,6 @@
 package msifeed.makriva.render;
 
 import msifeed.makriva.Makriva;
-import msifeed.makriva.data.PlayerPose;
 import msifeed.makriva.render.model.ModelShape;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.RenderPlayer;

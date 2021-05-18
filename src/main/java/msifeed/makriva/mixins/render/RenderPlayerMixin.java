@@ -3,8 +3,6 @@ package msifeed.makriva.mixins.render;
 import msifeed.makriva.Makriva;
 import msifeed.makriva.data.BipedPart;
 import msifeed.makriva.data.Shape;
-import msifeed.makriva.expr.IExpr;
-import msifeed.makriva.expr.context.EvalContext;
 import msifeed.makriva.render.LayerMakrivaBones;
 import msifeed.makriva.render.PartSelector;
 import msifeed.makriva.render.model.ModelBone;

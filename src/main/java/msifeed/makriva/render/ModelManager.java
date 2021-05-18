@@ -4,7 +4,7 @@ import msifeed.makriva.Makriva;
 import msifeed.makriva.data.Shape;
 import msifeed.makriva.mixins.render.RenderManagerMixin;
 import msifeed.makriva.mixins.skin.MinecraftAssetsMixin;
-import msifeed.makriva.mixins.skin.NetworkPlayerInfoMixin;
+import msifeed.makriva.mixins.skin.NetworkPlayerInfoGetter;
 import msifeed.makriva.render.model.ModelShape;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetHandlerPlayClient;
@@ -49,6 +49,10 @@ public class ModelManager {
             final ThreadDownloadImageData loader = new ThreadDownloadImageData(cacheFile, url.toString(), DefaultPlayerSkin.getDefaultSkinLegacy(), new ImageBufferDownload());
             textureManager.loadTexture(resource, loader);
         }
+    }
+
+    public boolean hasShape(UUID uuid) {
+        return shapes.containsKey(uuid);
     }
 
     @Nonnull
@@ -113,7 +117,7 @@ public class ModelManager {
 
         final NetworkPlayerInfo net = conn.getPlayerInfo(uuid);
         if (net != null) {
-            final NetworkPlayerInfoMixin mixin = (NetworkPlayerInfoMixin) net;
+            final NetworkPlayerInfoGetter mixin = (NetworkPlayerInfoGetter) net;
             mixin.setPlayerTexturesLoaded(false);
         }
     }

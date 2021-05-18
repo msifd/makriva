@@ -7,7 +7,8 @@
   "mixins": [
     "EntityMixin",
     "EntityPlayerMixin",
-    "render.LayerHeldItemMixin"
+    "render.LayerHeldItemMixin",
+    "skin.NetworkPlayerInfoMixin"
   ],
   "client": [
     "NetHandlerPlayClientMixin",
@@ -17,7 +18,7 @@
     "render.RenderPlayerMixin",
     "skin.ImageBufferDownloadMixin",
     "skin.MinecraftAssetsMixin",
-    "skin.NetworkPlayerInfoMixin",
+    "skin.NetworkPlayerInfoGetter",
     "skin.SkinManagerMixin",
     "skin.ThreadDownloadImageDataMixin",
     "ux.EntityPlayerSPMixin"

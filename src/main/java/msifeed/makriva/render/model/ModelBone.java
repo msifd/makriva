@@ -1,6 +1,5 @@
 package msifeed.makriva.render.model;
 
-import msifeed.makriva.data.BipedPart;
 import msifeed.makriva.data.Bone;
 import msifeed.makriva.data.Cube;
 import msifeed.makriva.data.Quad;
