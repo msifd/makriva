@@ -16,7 +16,13 @@ repositories {
     maven { url 'https://www.cursemaven.com' }
 }
 
-version = "0.1.0"
+project.ext.config = file('build.properties').withReader {
+    def prop = new Properties()
+    prop.load(it)
+    new ConfigSlurper().parse prop
+}
+
+version = "${config.mod_version}"
 group = "msifeed.makriva"
 archivesBaseName = "makriva"
 

@@ -6,12 +6,11 @@
   "refmap": "makriva.refmap.json",
   "mixins": [
     "EntityMixin",
-    "EntityPlayerMixin",
-    "render.LayerHeldItemMixin",
-    "skin.NetworkPlayerInfoMixin"
+    "EntityPlayerMixin"
   ],
   "client": [
     "NetHandlerPlayClientMixin",
+    "render.LayerHeldItemMixin",
     "render.ModelBipedMixin",
     "render.ModelPlayerGetterMixin",
     "render.RenderManagerMixin",
@@ -19,6 +18,7 @@
     "skin.ImageBufferDownloadMixin",
     "skin.MinecraftAssetsMixin",
     "skin.NetworkPlayerInfoGetter",
+    "skin.NetworkPlayerInfoMixin",
     "skin.SkinManagerMixin",
     "skin.ThreadDownloadImageDataMixin",
     "ux.EntityPlayerSPMixin"
