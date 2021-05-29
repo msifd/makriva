@@ -1,6 +1,7 @@
 package msifeed.makriva.compat;
 
 import msifeed.makriva.Makriva;
+import msifeed.makriva.data.BipedPart;
 import msifeed.makriva.data.PlayerPose;
 import msifeed.makriva.data.Shape;
 import net.minecraft.client.Minecraft;
@@ -11,6 +12,7 @@ import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import noppes.mpm.ModelData;
+import noppes.mpm.MorePlayerModels;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -39,8 +41,14 @@ public class MpmCompat {
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void renderHand(RenderHandEvent event) {
         final AbstractClientPlayer player = Minecraft.getMinecraft().player;
-        prioritizeSkin(player);
+        final UUID uuid = player.getGameProfile().getId();
+        if (!Makriva.MODELS.hasShape(uuid)) return;
+        final Shape shape = Makriva.MODELS.getShape(uuid);
+
+        prioritizeSkin(player, shape);
     }
+
+    private static int headWearType = 0;
 
     @SuppressWarnings("rawtypes")
     @SubscribeEvent(priority = EventPriority.HIGH)
@@ -48,16 +56,31 @@ public class MpmCompat {
         if (!(event.getEntity() instanceof AbstractClientPlayer)) return;
 
         final AbstractClientPlayer player = (AbstractClientPlayer) event.getEntity();
-        prioritizeSkin(player);
-    }
-
-    private static void prioritizeSkin(AbstractClientPlayer player) {
-        if (player.ticksExisted > 200) return;
-
         final UUID uuid = player.getGameProfile().getId();
         if (!Makriva.MODELS.hasShape(uuid)) return;
-
         final Shape shape = Makriva.MODELS.getShape(uuid);
+
+        prioritizeSkin(player, shape);
+
+        // Remember setting and disable headwear
+        headWearType = MorePlayerModels.HeadWearType;
+        if (shape.hide.contains(BipedPart.head)) {
+            MorePlayerModels.HeadWearType = 0;
+        }
+    }
+
+    @SuppressWarnings("rawtypes")
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void postRender(RenderLivingEvent.Post event) {
+        if (!(event.getEntity() instanceof AbstractClientPlayer)) return;
+
+        // Restore headwear setting
+        MorePlayerModels.HeadWearType = headWearType;
+    }
+
+    private static void prioritizeSkin(AbstractClientPlayer player, Shape shape) {
+        if (player.ticksExisted > 200) return;
+
         if (shape.textures.containsKey("skin")) {
             final ModelData data = ModelData.get(player);
             data.resourceInit = true; // Prioritize makriva skin
