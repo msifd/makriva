@@ -11,6 +11,11 @@ public class MakrivaConfig {
     @Config.Name("server")
     public static ServerConfig server = new ServerConfig();
 
+    public static void sync() {
+        Makriva.LOG.info("Sync config");
+        ConfigManager.sync(Makriva.MOD_ID, Config.Type.INSTANCE);
+    }
+
     public static class ClientConfig {
         @Config.Comment("Current selected shape")
         public String shape = Shape.DEFAULT.name;
@@ -24,10 +29,5 @@ public class MakrivaConfig {
         @Config.Comment("Minimal height of player' custom bounding box")
         @Config.RangeDouble(min = 0)
         public float minBBHeight = 0.6f;
-    }
-
-    public static void sync() {
-        Makriva.LOG.info("Sync config");
-        ConfigManager.sync(Makriva.MOD_ID, Config.Type.INSTANCE);
     }
 }

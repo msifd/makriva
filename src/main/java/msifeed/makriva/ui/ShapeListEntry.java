@@ -8,8 +8,8 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiListExtended;
 
 public class ShapeListEntry implements GuiListExtended.IGuiListEntry {
-    private final ScreenShapeList screen;
     public final Shape shape;
+    private final ScreenShapeList screen;
 
     public ShapeListEntry(ScreenShapeList screen, Shape shape) {
         this.screen = screen;

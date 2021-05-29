@@ -26,6 +26,12 @@ public class Shape extends SharedShape {
     public transient byte[] source;
     public transient long checksum;
 
+    private static Shape makeDefaultShape() {
+        final Shape shape = ShapeCodec.fromBytes("{}".getBytes(StandardCharsets.UTF_8));
+        shape.name = "<empty>";
+        return shape;
+    }
+
     public void initBytes(byte[] bytes) {
         this.source = bytes;
         this.checksum = ShapeCodec.checksum(bytes);
@@ -56,11 +62,5 @@ public class Shape extends SharedShape {
     @Override
     public String toString() {
         return "Shape{" + name + ':' + checksum + '}';
-    }
-
-    private static Shape makeDefaultShape() {
-        final Shape shape = ShapeCodec.fromBytes("{}".getBytes(StandardCharsets.UTF_8));
-        shape.name = "<empty>";
-        return shape;
     }
 }

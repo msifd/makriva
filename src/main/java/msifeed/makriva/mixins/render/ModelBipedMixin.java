@@ -18,7 +18,7 @@ public class ModelBipedMixin {
 
         final ModelBiped model = (ModelBiped) (Object) this;
         if (model instanceof ModelPlayer)
-            StatureHandler.setPlayerSkeletonOffsets((ModelPlayer) model, (AbstractClientPlayer)  entity, scale);
+            StatureHandler.setPlayerSkeletonOffsets((ModelPlayer) model, (AbstractClientPlayer) entity, scale);
         else
             StatureHandler.setBipedSkeletonOffsets(model, (AbstractClientPlayer) entity, scale);
     }

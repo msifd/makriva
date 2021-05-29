@@ -11,6 +11,8 @@ import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import noppes.mpm.ModelData;
 import noppes.mpm.MorePlayerModels;
 
@@ -18,6 +20,8 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class MpmCompat {
+    private static int headWearType = 0;
+
     @Nullable
     static PlayerPose getPose(EntityPlayer player) {
         final ModelData data = ModelData.get(player);
@@ -38,6 +42,7 @@ public class MpmCompat {
         }
     }
 
+    @SideOnly(Side.CLIENT)
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void renderHand(RenderHandEvent event) {
         final AbstractClientPlayer player = Minecraft.getMinecraft().player;
@@ -48,9 +53,8 @@ public class MpmCompat {
         prioritizeSkin(player, shape);
     }
 
-    private static int headWearType = 0;
-
     @SuppressWarnings("rawtypes")
+    @SideOnly(Side.CLIENT)
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void preRender(RenderLivingEvent.Pre event) {
         if (!(event.getEntity() instanceof AbstractClientPlayer)) return;
@@ -70,6 +74,7 @@ public class MpmCompat {
     }
 
     @SuppressWarnings("rawtypes")
+    @SideOnly(Side.CLIENT)
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void postRender(RenderLivingEvent.Post event) {
         if (!(event.getEntity() instanceof AbstractClientPlayer)) return;
@@ -78,6 +83,7 @@ public class MpmCompat {
         MorePlayerModels.HeadWearType = headWearType;
     }
 
+    @SideOnly(Side.CLIENT)
     private static void prioritizeSkin(AbstractClientPlayer player, Shape shape) {
         if (player.ticksExisted > 200) return;
 

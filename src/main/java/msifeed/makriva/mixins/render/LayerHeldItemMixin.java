@@ -27,11 +27,11 @@ import java.util.UUID;
 
 @Mixin(LayerHeldItem.class)
 public class LayerHeldItemMixin {
+    private static final String TRANSLATE = "Lnet/minecraft/client/renderer/entity/layers/LayerHeldItem;translateToHand(Lnet/minecraft/util/EnumHandSide;)V";
+
     @Final
     @Shadow
     protected RenderLivingBase<?> livingEntityRenderer;
-
-    private static final String TRANSLATE = "Lnet/minecraft/client/renderer/entity/layers/LayerHeldItem;translateToHand(Lnet/minecraft/util/EnumHandSide;)V";
 
     @Inject(method = "renderHeldItem", at = @At(value = "INVOKE", target = TRANSLATE))
     private void renderHeldItem(EntityLivingBase entity, ItemStack stack, ItemCameraTransforms.TransformType type, EnumHandSide hand, CallbackInfo ci) {

@@ -15,6 +15,7 @@ public abstract class EntityPlayerMixin {
 
     /**
      * @author msifeed
+     * @reason To categorize by poses
      */
     @Overwrite
     public float getEyeHeight() {
@@ -27,6 +28,7 @@ public abstract class EntityPlayerMixin {
 
     /**
      * @author msifeed
+     * @reason To categorize by poses
      */
     @Overwrite
     protected void updateSize() {

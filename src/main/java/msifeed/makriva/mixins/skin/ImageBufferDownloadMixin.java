@@ -23,9 +23,8 @@ public class ImageBufferDownloadMixin {
     private int imageHeight;
 
     /**
-     * Removes skin size, format and transparency restrictions
-     *
      * @author msifeed
+     * @reason Removes skin size, format and transparency restrictions
      */
     @Nullable
     @Overwrite
