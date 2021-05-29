@@ -92,9 +92,11 @@ jar {
     from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
 
     manifest.attributes(
-            'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
             'TweakOrder': 0,
+            'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
             'MixinConfigs': 'mixins.makriva.json',
+
+            'FMLCorePluginContainsFMLMod': 'true',
             'ForceLoadAsMod': 'true',
     )
 }
