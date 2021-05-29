@@ -118,6 +118,7 @@ public class ModelManager {
         final NetworkPlayerInfo net = conn.getPlayerInfo(uuid);
         if (net != null) {
             final NetworkPlayerInfoGetter mixin = (NetworkPlayerInfoGetter) net;
+            mixin.getPlayerTextures().clear();
             mixin.setPlayerTexturesLoaded(false);
         }
     }

@@ -11,12 +11,10 @@ import java.util.Comparator;
 import java.util.List;
 
 public class ShapeSelectionList extends GuiListExtended {
-//    private final ScreenShapeList screen;
     private final List<ShapeListEntry> entries = new ArrayList<>();
 
     public ShapeSelectionList(ScreenShapeList screen, Minecraft mcIn, int widthIn, int heightIn, int topIn, int bottomIn, int slotHeightIn) {
         super(mcIn, widthIn, heightIn, topIn, bottomIn, slotHeightIn);
-//        this.screen = screen;
 
         for (Shape s : Makriva.STORAGE.getShapes().values()) {
             entries.add(new ShapeListEntry(screen, s));
@@ -54,7 +52,6 @@ public class ShapeSelectionList extends GuiListExtended {
 
     @Override
     protected void overlayBackground(int startY, int endY, int startAlpha, int endAlpha) {
-//        super.overlayBackground(startY, endY, startAlpha, endAlpha);
     }
 
     @Override

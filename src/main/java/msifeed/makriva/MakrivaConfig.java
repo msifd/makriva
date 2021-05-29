@@ -1,5 +1,6 @@
 package msifeed.makriva;
 
+import msifeed.makriva.data.Shape;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
 
@@ -12,7 +13,7 @@ public class MakrivaConfig {
 
     public static class ClientConfig {
         @Config.Comment("Current selected shape")
-        public String shape = "";
+        public String shape = Shape.DEFAULT.name;
     }
 
     public static class ServerConfig {

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Shape extends SharedShape {
-    public static Shape DEFAULT = ShapeCodec.fromBytes("{}".getBytes(StandardCharsets.UTF_8));
+    public static Shape DEFAULT = makeDefaultShape();
 
     public final Map<String, String> metadata = new HashMap<>();
     public final Map<String, URL> textures = new HashMap<>();
@@ -56,5 +56,11 @@ public class Shape extends SharedShape {
     @Override
     public String toString() {
         return "Shape{" + name + ':' + checksum + '}';
+    }
+
+    private static Shape makeDefaultShape() {
+        final Shape shape = ShapeCodec.fromBytes("{}".getBytes(StandardCharsets.UTF_8));
+        shape.name = "<empty>";
+        return shape;
     }
 }

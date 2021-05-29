@@ -24,8 +24,11 @@ import java.util.Map;
 
 @SideOnly(Side.CLIENT)
 public class ShapeStorage {
-
     private final Map<String, Shape> shapes = new HashMap<>();
+
+    public ShapeStorage() {
+        shapes.put(Shape.DEFAULT.name, Shape.DEFAULT);
+    }
 
     public void init() {
         final Path dir = Paths.get(Makriva.MOD_ID);
@@ -81,18 +84,18 @@ public class ShapeStorage {
         return local.equals(shape);
     }
 
-    public void addShape(String filename, Shape shape) {
-        if (shape == null || isKnownShape(filename, shape)) return;
+    public void addShape(String name, Shape shape) {
+        if (shape == null || isKnownShape(name, shape)) return;
 
-        shape.name = filename;
+        shape.name = name;
 
         Makriva.LOG.info("Update shape: " + shape.name + ":" + shape.checksum);
-        shapes.put(filename, shape);
+        shapes.put(name, shape);
 
         if (MakrivaConfig.client.shape.isEmpty()) {
             findCurrentShape();
         }
-        if (MakrivaConfig.client.shape.equals(filename)) {
+        if (MakrivaConfig.client.shape.equals(name)) {
             SyncRelay.upload(getCurrentShape());
         }
     }
@@ -122,6 +125,8 @@ public class ShapeStorage {
 
         try {
             final String name = filename.replace(".json", "");
+            if (!isValidName(name)) return;
+
             final long checksum = ShapeCodec.checksum(bytes);
             if (shapes.getOrDefault(name, Shape.DEFAULT).checksum == checksum) return;
 
@@ -132,10 +137,14 @@ public class ShapeStorage {
         }
     }
 
+    public boolean isValidName(String name) {
+        return !name.startsWith("<");
+    }
+
     private void findCurrentShape() {
         setCurrentShape(shapes.keySet().stream()
                 .findFirst()
-                .orElse(""));
+                .orElse(Shape.DEFAULT.name));
     }
 
     private void tryLogToPlayer(String msg) {
