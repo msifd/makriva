@@ -55,10 +55,6 @@ public class ShapeStorage {
         }
     }
 
-    public Path getShapeFile(String name) {
-        return Paths.get(Makriva.MOD_ID).resolve(name + ".json");
-    }
-
     public Map<String, Shape> getShapes() {
         return shapes;
     }

@@ -1,11 +1,15 @@
 package msifeed.makriva.data;
 
 import com.google.common.base.Preconditions;
+import msifeed.makriva.Makriva;
 import msifeed.makriva.expr.IExpr;
 import msifeed.makriva.utils.ShapeCodec;
 
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,10 +29,12 @@ public class Shape extends SharedShape {
     public transient String name = "";
     public transient byte[] source;
     public transient long checksum;
+    public transient boolean internal = false;
 
     private static Shape makeDefaultShape() {
         final Shape shape = ShapeCodec.fromBytes("{}".getBytes(StandardCharsets.UTF_8));
         shape.name = "<empty>";
+        shape.internal = true;
         return shape;
     }
 
@@ -62,5 +68,9 @@ public class Shape extends SharedShape {
     @Override
     public String toString() {
         return "Shape{" + name + ':' + checksum + '}';
+    }
+
+    public Path getShapeFile() throws InvalidPathException {
+        return Paths.get(Makriva.MOD_ID).resolve(name + ".json");
     }
 }

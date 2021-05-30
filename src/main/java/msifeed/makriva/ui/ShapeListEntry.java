@@ -25,11 +25,18 @@ public class ShapeListEntry implements GuiListExtended.IGuiListEntry {
     public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float partialTicks) {
         final FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
 
-        final ModelShape model = Makriva.MODELS.getPreviewModel();
-        final int color = model != null && model.shape == shape
-                ? 0xffaaaaaa
-                : 0xffffffff;
+        final int color = isSelected || isShapeSelected() ? 0xffaaaaaa : 0xffffffff;
         fr.drawString(shape.name, x, y, color);
+    }
+
+    private boolean isShapeSelected() {
+        final ModelShape preview = Makriva.MODELS.getPreviewModel();
+        if (preview != null) {
+            return preview.shape.name.equals(shape.name);
+        }
+
+        final Shape current = Makriva.STORAGE.getCurrentShape();
+        return current.name.equals(shape.name);
     }
 
     @Override

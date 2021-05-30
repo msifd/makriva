@@ -29,7 +29,7 @@ public class ScreenShapeList extends GuiScreen implements GuiPageButtonList.GuiR
     private int menuY = 0;
 
     private float modelRotation = 0;
-    private String selectedShape = Makriva.STORAGE.getCurrentShape().name;
+    private Shape selectedShape = Makriva.STORAGE.getCurrentShape();
 
     private ShapeSelectionList shapesList;
     private GuiButton editBtn;
@@ -79,9 +79,17 @@ public class ScreenShapeList extends GuiScreen implements GuiPageButtonList.GuiR
 
     @Override
     public void updateScreen() {
-        final String curr = Makriva.STORAGE.getCurrentShape().name;
-        selectBtn.enabled = !curr.equals(selectedShape);
-        editBtn.enabled = !curr.isEmpty();
+        updateButtons();
+    }
+
+    private void updateButtons() {
+        final ModelShape preview = Makriva.MODELS.getPreviewModel();
+        final Shape curr = preview != null
+                ? preview.shape
+                : Makriva.STORAGE.getCurrentShape();
+
+        selectBtn.enabled = Makriva.STORAGE.getCurrentShape() != selectedShape;
+        editBtn.enabled = !curr.internal;
     }
 
     private void drawBackground() {
@@ -170,26 +178,34 @@ public class ScreenShapeList extends GuiScreen implements GuiPageButtonList.GuiR
     }
 
     @Override
-    protected void actionPerformed(GuiButton button) throws IOException {
+    protected void actionPerformed(GuiButton button) {
         switch (button.id) {
             case 0xa02:
-                Desktop.getDesktop().open(Paths.get(Makriva.MOD_ID).toFile());
+                try {
+                    Desktop.getDesktop().open(Paths.get(Makriva.MOD_ID).toFile());
+                } catch (Throwable e) {
+                    Makriva.LOG.error("Can't open makriva dir", e);
+                }
                 break;
             case 0xb01:
-                Desktop.getDesktop().open(Makriva.STORAGE.getShapeFile(selectedShape).toFile());
+                try {
+                    Desktop.getDesktop().open(selectedShape.getShapeFile().toFile());
+                } catch (Throwable e) {
+                    Makriva.LOG.error("Can't open shape file: " + selectedShape, e);
+                }
                 break;
             case 0xb02:
                 selectBtn.enabled = false;
-                Makriva.STORAGE.setCurrentShape(selectedShape);
+                Makriva.STORAGE.setCurrentShape(selectedShape.name);
                 break;
         }
     }
 
     public void selectShape(Shape shape) {
-        selectedShape = shape.name;
-        Makriva.MODELS.selectPreview(selectedShape);
+        selectedShape = shape;
+        Makriva.MODELS.selectPreview(selectedShape.name);
 
-        selectBtn.enabled = !Makriva.STORAGE.getCurrentShape().name.equals(selectedShape);
+        updateButtons();
     }
 
     @Override
