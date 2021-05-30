@@ -68,6 +68,9 @@ public class MpmCompat {
     public static void preRender(RenderLivingEvent.Pre event) {
         if (!(event.getEntity() instanceof AbstractClientPlayer)) return;
 
+        // Remember head wear setting ...
+        headWearType = MorePlayerModels.HeadWearType;
+
         final AbstractClientPlayer player = (AbstractClientPlayer) event.getEntity();
         final UUID uuid = player.getGameProfile().getId();
         if (!Makriva.MODELS.hasShape(uuid)) return;
@@ -75,8 +78,7 @@ public class MpmCompat {
 
         prioritizeSkin(player, shape);
 
-        // Remember setting and disable headwear
-        headWearType = MorePlayerModels.HeadWearType;
+        // ... and disable head wear
         if (shape.hide.contains(BipedPart.head)) {
             MorePlayerModels.HeadWearType = 0;
         }
@@ -96,9 +98,12 @@ public class MpmCompat {
     private static void prioritizeSkin(AbstractClientPlayer player, Shape shape) {
         if (player.ticksExisted > 200) return;
 
+        final ModelData data = ModelData.get(player);
+
         if (shape.textures.containsKey("skin")) {
-            final ModelData data = ModelData.get(player);
             data.resourceInit = true; // Prioritize makriva skin
+        } else if (player.ticksExisted == 100) {
+            data.resourceInit = false; // Fix too-fast skin load by loading the skin again
         }
     }
 }
