@@ -42,6 +42,15 @@ public class MpmCompat {
         }
     }
 
+    static float getEyeHeightOffset(EntityPlayer player, PlayerPose pose) {
+        if (pose == PlayerPose.sleep || pose == PlayerPose.crawl) return 0;
+
+        final ModelData data = ModelData.get(player);
+        if (data == null) return 0;
+
+        return -data.getOffsetCamera(player);
+    }
+
     @SideOnly(Side.CLIENT)
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void renderHand(RenderHandEvent event) {

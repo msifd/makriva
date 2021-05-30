@@ -13,7 +13,8 @@
 	},
 	"eyeHeight": {
 		"stand": 2.1,
-		"sneak": 1.75
+		"sneak": 1.75,
+		"sit": 1.5
 	},
 	"boundingBox": {
 		"stand": [0.6, 2.2],
@@ -21,7 +22,7 @@
 	},
 	"bones": [
 		{
-			"id": "Feathers2s",
+			"id": "Feathers",
 			"parent": "head",
 			"bones": [
 				{

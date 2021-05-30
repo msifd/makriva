@@ -1,6 +1,7 @@
 package msifeed.makriva.data;
 
-import java.util.HashMap;
+import javax.annotation.Nonnull;
+import java.util.EnumMap;
 import java.util.Map;
 
 public class SharedShape {
@@ -22,16 +23,21 @@ public class SharedShape {
         DEFAULT_SHARED.boundingBox.put(PlayerPose.crawl, new Float[]{0.6f, 0.6f});
     }
 
-    public final Map<PlayerPose, Float> eyeHeight = new HashMap<>();
-    public final Map<PlayerPose, Float[]> boundingBox = new HashMap<>();
+    public final Map<PlayerPose, Float> eyeHeight = new EnumMap<>(PlayerPose.class);
+    public final Map<PlayerPose, Float[]> boundingBox = new EnumMap<>(PlayerPose.class);
 
     public float getEyeHeight(PlayerPose pose) {
-        if (pose == PlayerPose.sit) return 1.1f;
-
-        return eyeHeight.computeIfAbsent(pose, (p) -> DEFAULT_SHARED.getEyeHeight(p));
+        if (eyeHeight.containsKey(pose))
+            return eyeHeight.get(pose);
+        else
+            return DEFAULT_SHARED.eyeHeight.get(pose);
     }
 
+    @Nonnull
     public Float[] getBox(PlayerPose pose) {
-        return boundingBox.computeIfAbsent(pose, (p) -> DEFAULT_SHARED.getBox(p));
+        if (boundingBox.containsKey(pose))
+            return boundingBox.get(pose);
+        else
+            return DEFAULT_SHARED.boundingBox.get(pose);
     }
 }

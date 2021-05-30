@@ -1,7 +1,9 @@
 package msifeed.makriva.mixins;
 
 import msifeed.makriva.Makriva;
+import msifeed.makriva.compat.MakrivaCompat;
 import msifeed.makriva.data.PlayerPose;
+import msifeed.makriva.data.SharedShape;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -22,8 +24,16 @@ public abstract class EntityPlayerMixin {
         final EntityPlayer self = (EntityPlayer) (Object) this;
 
         final UUID uuid = self.getGameProfile().getId();
+        final SharedShape shape = Makriva.SHARED.get(uuid);
+
         final PlayerPose pose = PlayerPose.get(self);
-        return Makriva.SHARED.get(uuid).getEyeHeight(pose);
+        float height = shape.getEyeHeight(pose);
+
+        if (shape.eyeHeight.isEmpty()) {
+            height += MakrivaCompat.getEyeHeightOffset(self, pose);
+        }
+
+        return height;
     }
 
     /**
@@ -35,15 +45,18 @@ public abstract class EntityPlayerMixin {
         final EntityPlayer self = (EntityPlayer) (Object) this;
 
         final UUID uuid = self.getGameProfile().getId();
-        final PlayerPose pose = PlayerPose.get(self);
-        final Float[] sizes = Makriva.SHARED.get(uuid).getBox(pose);
+        final SharedShape shape = Makriva.SHARED.get(uuid);
 
-        if (sizes[0] != self.width || sizes[1] != self.height) {
+        final Float[] sizes = shape.getBox(PlayerPose.get(self));
+        final float width = sizes[0];
+        final float height = sizes[1];
+
+        if (width != self.width || height != self.height) {
             AxisAlignedBB bb = self.getEntityBoundingBox();
-            bb = new AxisAlignedBB(bb.minX, bb.minY, bb.minZ, bb.minX + sizes[0], bb.minY + sizes[1], bb.minZ + sizes[0]);
+            bb = new AxisAlignedBB(bb.minX, bb.minY, bb.minZ, bb.minX + width, bb.minY + height, bb.minZ + width);
 
             if (!self.world.collidesWithAnyBlock(bb)) {
-                ((EntityMixin) self).callSetSize(sizes[0], sizes[1]);
+                ((EntityMixin) self).callSetSize(width, height);
             }
         }
 
