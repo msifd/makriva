@@ -48,15 +48,17 @@ public abstract class EntityPlayerMixin {
         final SharedShape shape = Makriva.SHARED.get(uuid);
 
         final Float[] sizes = shape.getBox(PlayerPose.get(self));
-        final float width = sizes[0];
-        final float height = sizes[1];
+        if (sizes.length == 2) {
+            final float width = sizes[0];
+            final float height = sizes[1];
 
-        if (width != self.width || height != self.height) {
-            AxisAlignedBB bb = self.getEntityBoundingBox();
-            bb = new AxisAlignedBB(bb.minX, bb.minY, bb.minZ, bb.minX + width, bb.minY + height, bb.minZ + width);
+            if (width != self.width || height != self.height) {
+                AxisAlignedBB bb = self.getEntityBoundingBox();
+                bb = new AxisAlignedBB(bb.minX, bb.minY, bb.minZ, bb.minX + width, bb.minY + height, bb.minZ + width);
 
-            if (!self.world.collidesWithAnyBlock(bb)) {
-                ((EntityMixin) self).callSetSize(width, height);
+                if (!self.world.collidesWithAnyBlock(bb)) {
+                    ((EntityMixin) self).callSetSize(width, height);
+                }
             }
         }
 

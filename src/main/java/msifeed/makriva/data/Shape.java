@@ -10,17 +10,14 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Shape extends SharedShape {
     public static Shape DEFAULT = makeDefaultShape();
 
     public final Map<String, String> metadata = new HashMap<>();
     public final Map<String, URL> textures = new HashMap<>();
-    public final List<BipedPart> hide = new ArrayList<>();
+    public final EnumSet<BipedPart> hide = EnumSet.noneOf(BipedPart.class);
     public final Map<BipedPart, IExpr[]> skeleton = new HashMap<>();
     public final List<Bone> bones = new ArrayList<>();
 
