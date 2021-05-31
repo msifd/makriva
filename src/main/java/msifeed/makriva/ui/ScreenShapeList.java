@@ -44,7 +44,9 @@ public class ScreenShapeList extends GuiScreen implements GuiPageButtonList.GuiR
 
         // Navigation
 
-        shapesList = new ShapeSelectionList(this, mc, 90, 128, menuY + 8, menuY + 136, 12);
+        if (shapesList == null)
+            shapesList = new ShapeSelectionList(this, mc, 90, 128, menuY + 8, menuY + 136, 12);
+        shapesList.setDimensions(90, 128, menuY + 8, menuY + 136);
         shapesList.setSlotXBoundsFromLeft(menuX + 8);
 
         buttonList.add(new GuiButton(0xa02, menuX + 7, menuY + 139, 51, 20, "Open dir"));

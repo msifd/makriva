@@ -15,6 +15,7 @@ public class ShapeSelectionList extends GuiListExtended {
 
     public ShapeSelectionList(ScreenShapeList screen, Minecraft mcIn, int widthIn, int heightIn, int topIn, int bottomIn, int slotHeightIn) {
         super(mcIn, widthIn, heightIn, topIn, bottomIn, slotHeightIn);
+        showSelectionBox = false;
 
         for (Shape s : Makriva.STORAGE.getShapes().values()) {
             entries.add(new ShapeListEntry(screen, s));
@@ -35,12 +36,12 @@ public class ShapeSelectionList extends GuiListExtended {
 
     @Override
     public int getListWidth() {
-        return 90;
+        return width;
     }
 
     @Override
     protected int getScrollBarX() {
-        return width + 87;
+        return left + width - 6;
     }
 
     @Override
@@ -52,10 +53,5 @@ public class ShapeSelectionList extends GuiListExtended {
 
     @Override
     protected void overlayBackground(int startY, int endY, int startAlpha, int endAlpha) {
-    }
-
-    @Override
-    protected void drawContainerBackground(Tessellator tessellator) {
-        super.drawContainerBackground(tessellator);
     }
 }
