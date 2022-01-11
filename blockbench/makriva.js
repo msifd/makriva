@@ -19,7 +19,7 @@
     remember: false,
     compile() {
       function isZeroed(arr) {
-        return autoStringify(arr) === "[0, 0, 0]";
+        return arr[0] == 0 && arr[1] == 0 && arr[2] == 0;
       }
 
       function isQuad(bb) {
@@ -75,11 +75,45 @@
         return quad;
       }
 
+      function compileWrap(bb, parent) {
+        const bone = {
+          id: bb.name + "_wrap",
+          rotationPoint: [
+            parent.origin[0] - bb.origin[0],
+            parent.origin[1] - bb.origin[1],
+            bb.origin[2] - parent.origin[2], // Invert Z
+          ],
+          rotation: [
+            -bb.rotation[0],
+            -bb.rotation[1],
+            bb.rotation[2], // Invert Z
+          ],
+          cubes: [],
+          quads: [],
+        };
+
+        if (isQuad(bb))
+          bone.quads.push(compileQuad(bb, parent));
+        else
+          bone.cubes.push(compileCube(bb, parent));
+
+        const inner = isQuad(bb) ? bone.quads[0] : bone.cubes[0];
+        inner.pos[0] -= bone.rotationPoint[0];
+        inner.pos[1] -= bone.rotationPoint[1];
+        inner.pos[2] -= bone.rotationPoint[2];
+
+        if (isZeroed(bone.rotationPoint)) bone.rotationPoint = undefined;
+        if (bone.cubes.length == 0) bone.cubes = undefined;
+        if (bone.quads.length == 0) bone.quads = undefined;
+
+        return bone;
+      }
+
       function compileBone(bb, parent, attachmentPart) {
         const bone = {
           id: bb.name,
           parent: attachmentPart,
-          offset: [
+          rotationPoint: [
             parent.origin[0] - bb.origin[0],
             parent.origin[1] - bb.origin[1],
             bb.origin[2] - parent.origin[2], // Invert Z
@@ -98,18 +132,19 @@
           for (const child of bb.children) {
             if (!child.export) continue;
 
-            if (child instanceof Cube) {
-              if (isQuad(child))
-                bone.quads.push(compileQuad(child, bb));
-              else
-                bone.cubes.push(compileCube(child, bb));
-            } else if (child instanceof Group) {
+            if (child instanceof Group) {
               bone.bones.push(compileBone(child, bb));
+            } else if (!isZeroed(child.rotation)) {
+              bone.bones.push(compileWrap(child, bb));
+            } else if (isQuad(child)) {
+              bone.quads.push(compileQuad(child, bb));
+            } else {
+              bone.cubes.push(compileCube(child, bb));
             }
           }
         }
 
-        if (isZeroed(bone.offset)) bone.offset = undefined;
+        if (isZeroed(bone.rotationPoint)) bone.rotationPoint = undefined;
         if (isZeroed(bone.rotation)) bone.rotation = undefined;
         if (bone.cubes.length == 0) bone.cubes = undefined;
         if (bone.quads.length == 0) bone.quads = undefined;
@@ -220,7 +255,7 @@
     author: 'msifeed',
     description: 'Export model to Makriva shape',
     icon: 'icon-player',
-    version: '0.1.0',
+    version: '0.2.0',
     variant: 'both',
     onload() {
       MenuBar.addAction(export_action, 'file.export');
