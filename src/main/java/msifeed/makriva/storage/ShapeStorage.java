@@ -119,18 +119,22 @@ public class ShapeStorage {
             return;
         }
 
+        final String name = filename.replace(".json", "");
+        if (!isValidName(name)) return;
+
+        final long checksum = ShapeCodec.checksum(bytes);
+        if (shapes.getOrDefault(name, Shape.DEFAULT).checksum == checksum) return;
+
+        final Shape shape;
         try {
-            final String name = filename.replace(".json", "");
-            if (!isValidName(name)) return;
-
-            final long checksum = ShapeCodec.checksum(bytes);
-            if (shapes.getOrDefault(name, Shape.DEFAULT).checksum == checksum) return;
-
-            addShape(name, ShapeCodec.fromBytes(bytes));
-        } catch (JsonParseException e) {
+            shape = ShapeCodec.fromBytes(bytes);
+        } catch (Exception e) {
             Makriva.LOG.warn("Failed to parse shape {}. Error: {}", filePath.getFileName(), e);
             tryLogToPlayer("Failed to parse shape " + filePath.getFileName() + ". Error: " + e.getMessage());
+            return;
         }
+
+        addShape(name, shape);
     }
 
     public boolean isValidName(String name) {
