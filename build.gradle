@@ -9,8 +9,10 @@ buildscript {
         classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
     }
 }
+
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.spongepowered.mixin'
+apply from: 'defines.gradle'
 
 repositories {
     maven { url 'https://www.cursemaven.com' }
@@ -22,7 +24,7 @@ project.ext.config = file('build.properties').withReader {
     new ConfigSlurper().parse prop
 }
 
-version = "${config.mod_version}"
+version = project.versions.makriva
 group = "msifeed.makriva"
 archivesBaseName = "makriva"
 
@@ -30,7 +32,7 @@ sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = co
 compileJava.options.encoding = compileTestJava.options.encoding = 'UTF-8'
 
 minecraft {
-    version = '1.12.2-14.23.5.2847'
+    version = project.versions.minecraft
     mappings = 'stable_39'
     makeObfSourceJar = false
 

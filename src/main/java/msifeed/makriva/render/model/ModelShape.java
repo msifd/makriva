@@ -63,14 +63,12 @@ public class ModelShape extends ModelBase {
         final PlayerPose pose = PlayerPose.get((EntityPlayer) entity);
         if (entity.isSneaking())
             GlStateManager.translate(0, 0.2, 0);
+
+        // Fixes "levitation"
         if (pose == PlayerPose.sit) {
-            final IExpr[] leftExpr = shape.skeleton.get(BipedPart.left_leg);
-            final float left = context.num(leftExpr[1]);
-            final IExpr[] rightExpr = shape.skeleton.get(BipedPart.right_leg);
-            final float right = context.num(rightExpr[1]);
-            final float avg = (left + right) / 2f;
-            if (avg != 0)
-                GlStateManager.translate(0, -avg * scale, 0);
+            final IExpr[] legExpr = shape.skeleton.get(BipedPart.left_leg);
+            if (legExpr != null && legExpr[1] != null)
+                GlStateManager.translate(0, -context.num(legExpr[1]) * scale, 0);
         }
 
         for (ModelRenderer box : boxList) {
