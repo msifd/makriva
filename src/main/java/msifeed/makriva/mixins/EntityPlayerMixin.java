@@ -47,7 +47,7 @@ public abstract class EntityPlayerMixin {
         final UUID uuid = self.getGameProfile().getId();
         final SharedShape shape = Makriva.SHARED.get(uuid);
 
-        final Float[] sizes = shape.getBox(PlayerPose.get(self));
+        final float[] sizes = shape.getBox(PlayerPose.get(self));
         if (sizes.length == 2) {
             final float width = sizes[0];
             final float height = sizes[1];

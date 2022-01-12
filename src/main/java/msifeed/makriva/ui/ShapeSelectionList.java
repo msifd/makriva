@@ -4,7 +4,6 @@ import msifeed.makriva.Makriva;
 import msifeed.makriva.data.Shape;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiListExtended;
-import net.minecraft.client.renderer.Tessellator;
 
 import java.util.ArrayList;
 import java.util.Comparator;

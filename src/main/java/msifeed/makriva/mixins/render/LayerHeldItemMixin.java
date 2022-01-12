@@ -2,7 +2,6 @@ package msifeed.makriva.mixins.render;
 
 import msifeed.makriva.Makriva;
 import msifeed.makriva.data.BipedPart;
-import msifeed.makriva.expr.IExpr;
 import msifeed.makriva.expr.context.EvalContext;
 import msifeed.makriva.render.PartSelector;
 import msifeed.makriva.render.RenderUtils;
@@ -48,19 +47,14 @@ public class LayerHeldItemMixin {
 
         final EvalContext ctx = model.context;
         ctx.update((AbstractClientPlayer) entity);
+        model.animationState.update();
 
         final float scale = ctx.renderParams.scale;
 
-        final IExpr[] exprs = model.shape.skeleton.get(handPart);
-        if (exprs != null) {
-            part.offsetX = ctx.num(exprs[0]) * scale;
-            part.offsetY = ctx.num(exprs[1]) * scale;
-            part.offsetZ = ctx.num(exprs[2]) * scale;
-        } else {
-            part.offsetX = 0;
-            part.offsetY = 0;
-            part.offsetZ = 0;
-        }
+        final float[] offset = model.getSkeletonOffset(handPart);
+        part.offsetX = offset[0] * scale;
+        part.offsetY = offset[1] * scale;
+        part.offsetZ = offset[2] * scale;
 
         if (part.isHidden || !part.showModel) {
             RenderUtils.externalTransform(part, scale);

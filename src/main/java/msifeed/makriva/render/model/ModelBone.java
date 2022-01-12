@@ -55,9 +55,10 @@ public class ModelBone extends ModelRenderer {
         this.rotationPointZ = spec.rotationPoint[2];
 
         final float D2R = (float) (180 / Math.PI);
-        this.rotateAngleX = ctx.num(spec.rotation[0]) / D2R;
-        this.rotateAngleY = ctx.num(spec.rotation[1]) / D2R;
-        this.rotateAngleZ = ctx.num(spec.rotation[2]) / D2R;
+        final float[] animRotations = base.animationState.getRotations(boxName);
+        this.rotateAngleX = (spec.rotation[0] + animRotations[0]) / D2R;
+        this.rotateAngleY = (spec.rotation[1] + animRotations[1]) / D2R;
+        this.rotateAngleZ = (spec.rotation[2] + animRotations[2]) / D2R;
 
         if (spec.parent != null) {
             final ModelRenderer parent = PartSelector.findPart(base.render.getMainModel(), spec.parent);

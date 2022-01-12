@@ -5,8 +5,8 @@ import msifeed.makriva.data.BipedPart;
 import msifeed.makriva.data.Bone;
 import msifeed.makriva.data.PlayerPose;
 import msifeed.makriva.data.Shape;
-import msifeed.makriva.expr.IExpr;
 import msifeed.makriva.expr.context.EvalContext;
+import msifeed.makriva.render.AnimationState;
 import msifeed.makriva.render.ModelManager;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
@@ -31,11 +31,13 @@ public class ModelShape extends ModelBase {
     public final Map<EnumHandSide, List<ModelBone>> handBones = new EnumMap<>(EnumHandSide.class);
 
     public final EvalContext context = new EvalContext();
+    public final AnimationState animationState;
     public RenderPlayer render;
 
     public ModelShape(RenderPlayer render, Shape shape) {
         this.render = render;
         this.shape = shape;
+        this.animationState = new AnimationState(shape.animation, context);
 
         shape.textures.forEach(this::loadTexture);
 
@@ -56,6 +58,19 @@ public class ModelShape extends ModelBase {
         boxList.addAll(firstLevelBones);
     }
 
+    public float[] getSkeletonOffset(BipedPart part) {
+        final float[] specOffset = shape.skeleton.get(part);
+        final float[] ani = animationState.getSkeletonOffset(part);
+        if (specOffset == null)
+            return ani;
+
+        final float[] offset = specOffset.clone();
+        offset[0] += ani[0];
+        offset[1] += ani[1];
+        offset[2] += ani[2];
+        return offset;
+    }
+
     @Override
     public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         GL11.glPushMatrix();
@@ -64,11 +79,11 @@ public class ModelShape extends ModelBase {
         if (entity.isSneaking())
             GlStateManager.translate(0, 0.2, 0);
 
-        // Fixes "levitation"
+        // Fixes "levitation" when sitting
         if (pose == PlayerPose.sit) {
-            final IExpr[] legExpr = shape.skeleton.get(BipedPart.left_leg);
-            if (legExpr != null && legExpr[1] != null)
-                GlStateManager.translate(0, -context.num(legExpr[1]) * scale, 0);
+            final float[] legOffset = getSkeletonOffset(BipedPart.left_leg);
+            if (legOffset[1] != 0)
+                GlStateManager.translate(0, -legOffset[1] * scale, 0);
         }
 
         for (ModelRenderer box : boxList) {

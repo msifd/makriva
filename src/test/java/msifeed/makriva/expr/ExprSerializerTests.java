@@ -2,7 +2,7 @@ package msifeed.makriva.expr;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import msifeed.makriva.expr.json.JsonSerializerExpr;
+import msifeed.makriva.json.JsonSerializerExpr;
 import msifeed.makriva.expr.parser.ExprParser;
 import msifeed.makriva.expr.parser.ParsingException;
 import org.junit.jupiter.api.Test;

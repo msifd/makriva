@@ -16,6 +16,7 @@ apply from: 'defines.gradle'
 
 repositories {
     maven { url 'https://www.cursemaven.com' }
+    mavenCentral()
 }
 
 version = project.versions.makriva
@@ -62,7 +63,7 @@ dependencies {
     embed 'org.spongepowered:mixin:0.8.2'
     compile "curse.maven:more-player-models-221939:2837187"
 
-    testCompile 'org.junit.jupiter:junit-jupiter:5.7.0'
+    testCompile 'org.junit.jupiter:junit-jupiter:5.8.2'
 }
 
 processResources {

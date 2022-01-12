@@ -5,9 +5,11 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
+import msifeed.makriva.data.AnimationRules;
 import msifeed.makriva.data.Shape;
 import msifeed.makriva.expr.IExpr;
-import msifeed.makriva.expr.json.JsonDeserializerExpr;
+import msifeed.makriva.json.AnimationJsonDeserializer;
+import msifeed.makriva.json.JsonDeserializerExpr;
 
 import javax.annotation.Nullable;
 import java.nio.charset.StandardCharsets;
@@ -16,6 +18,7 @@ import java.util.zip.CRC32;
 public final class ShapeCodec {
     private static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(IExpr.class, new JsonDeserializerExpr())
+            .registerTypeAdapter(AnimationRules.class, new AnimationJsonDeserializer())
             .create();
 
     public static long checksum(byte[] bytes) {

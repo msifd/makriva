@@ -2,8 +2,6 @@ package msifeed.makriva.render;
 
 import msifeed.makriva.Makriva;
 import msifeed.makriva.data.BipedPart;
-import msifeed.makriva.expr.IExpr;
-import msifeed.makriva.expr.context.EvalContext;
 import msifeed.makriva.render.model.ModelShape;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBiped;
@@ -20,23 +18,11 @@ public class StatureHandler {
 
         for (BipedPart bp : BipedPart.values()) {
             final ModelRenderer[] parts = PartSelector.findParts(biped, bp);
-            final IExpr[] exprs = model.shape.skeleton.get(bp);
-
-            if (exprs != null) {
-                final EvalContext ctx = model.context;
-                ctx.update(entity);
-
-                for (ModelRenderer part : parts) {
-                    part.offsetX = ctx.num(exprs[0]) * scale;
-                    part.offsetY = ctx.num(exprs[1]) * scale;
-                    part.offsetZ = ctx.num(exprs[2]) * scale;
-                }
-            } else {
-                for (ModelRenderer part : parts) {
-                    part.offsetX = 0;
-                    part.offsetY = 0;
-                    part.offsetZ = 0;
-                }
+            final float[] offset = model.getSkeletonOffset(bp);
+            for (ModelRenderer part : parts) {
+                part.offsetX = offset[0] * scale;
+                part.offsetY = offset[1] * scale;
+                part.offsetZ = offset[2] * scale;
             }
         }
     }
@@ -47,19 +33,10 @@ public class StatureHandler {
 
         for (BipedPart bp : BipedPart.values()) {
             final ModelRenderer part = PartSelector.findPart(biped, bp);
-            final IExpr[] exprs = model.shape.skeleton.get(bp);
-            if (exprs != null) {
-                final EvalContext ctx = model.context;
-                ctx.update(entity);
-
-                part.offsetX = ctx.num(exprs[0]) * scale;
-                part.offsetY = ctx.num(exprs[1]) * scale;
-                part.offsetZ = ctx.num(exprs[2]) * scale;
-            } else {
-                part.offsetX = 0;
-                part.offsetY = 0;
-                part.offsetZ = 0;
-            }
+            final float[] offset = model.getSkeletonOffset(bp);
+            part.offsetX = offset[0] * scale;
+            part.offsetY = offset[1] * scale;
+            part.offsetZ = offset[2] * scale;
         }
     }
 }

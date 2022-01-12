@@ -18,7 +18,8 @@ public class Shape extends SharedShape {
     public final Map<String, String> metadata = new HashMap<>();
     public final Map<String, URL> textures = new HashMap<>();
     public final EnumSet<BipedPart> hide = EnumSet.noneOf(BipedPart.class);
-    public final Map<BipedPart, IExpr[]> skeleton = new HashMap<>();
+    public final Map<BipedPart, float[]> skeleton = new EnumMap<>(BipedPart.class);
+    public final AnimationRules animation = new AnimationRules();
     public final List<Bone> bones = new ArrayList<>();
 
     public final Map<String, IExpr> debug = null;
@@ -46,6 +47,7 @@ public class Shape extends SharedShape {
         Preconditions.checkNotNull(hide);
         Preconditions.checkNotNull(skeleton);
         Preconditions.checkNotNull(eyeHeight);
+        Preconditions.checkNotNull(animation);
         Preconditions.checkNotNull(bones);
     }
 

@@ -5,7 +5,7 @@
 	},
 	"hide": ["head", "body", "left_arm", "right_arm", "left_leg", "right_leg"],
 	"skeleton": {
-		"head": [0, -10, "if(sneaking,-3,2)"],
+		"head": [0, -10, 2],
 		"left_arm": [0, -4, 0],
 		"right_arm": [0, -4, 0],
 		"left_leg": [0, -3, 0],
@@ -13,12 +13,36 @@
 	},
 	"eyeHeight": {
 		"stand": 2.1,
-		"sneak": 1.75,
+		"sneak": 1.75, 
 		"sit": 1.5
 	},
 	"boundingBox": {
 		"stand": [0.6, 2.2],
 		"sneak": [0.6, 1.9]
+	},
+	"animation": {
+		"Tail.rotation": ["30 * limbSwing", 0, 0],
+		"Tail_tip.rotation": [0, 0, "10 * sin(age / 6)"],
+
+		"if sneaking": {
+			"skeleton.head": [0, 0, -5],
+			"Breasts.rotation": [-20, 0, 0],
+			"Tail.rotation": [22.5, 0, 0],
+			"LegL.rotation": [-20, 0, 0],
+			"LegR.rotation": [-20, 0, 0]
+		},
+		"if sitting": { 
+			"Tail.rotation": [0, -20, 0],
+			"Tail_base.rotation": [0, -60, 0],
+			"Tail_mid.rotation": [-27.5, 45, -70],
+			"Tail_mid2.rotation": [-20, 0, -20]
+		},
+		"if crawling || sleeping": {
+			"Tail_base.rotation": [-30, 0, 0],
+			"Tail_mid.rotation": [-32.5, 0, 0],
+			"Tail_mid2.rotation": [-20, 0, 0],
+			"Tail_tip.rotation": [-37.5, 0, 0]
+		}
 	},
 	"bones": [
 		{
@@ -186,7 +210,7 @@
 			"id": "Breasts",
 			"parent": "body",
 			"offset": [0, -2.5, -2],
-			"rotation": ["if(sneaking,-50,-30)", 0, 0],
+			"rotation": [-30, 0, 0],
 			"cubes": [
 				{
 					"uv": [20, 26],
@@ -200,7 +224,7 @@
 			"id": "Tail",
 			"parent": "body",
 			"offset": [0, 7, 3],
-			"rotation": ["if(sneaking,-10,-32.5)+30*limbSwing", "if(sitting,-20,0)", 0],
+			"rotation": [-32.5, 0, 0],
 			"cubes": [
 				{
 					"uv": [48, 11],
@@ -210,9 +234,9 @@
 			],
 			"bones": [
 				{
-					"id": "Base",
+					"id": "Tail_base",
 					"offset": [0, -1, 1],
-					"rotation": ["if(crawling,-140,-110)", "if(sitting,-60,0)", "if(sitting,0,0)"],
+					"rotation": [-110, 0, 0],
 					"cubes": [
 						{
 							"uv": [50, 17],
@@ -222,9 +246,9 @@
 					],
 					"bones": [
 						{
-							"id": "Mid",
+							"id": "Tail_mid",
 							"offset": [0, -7, 0],
-							"rotation": ["if(crawling,-20,if(sitting,-15,12.5))", "if(sitting,45,0)", "if(sitting,-70,0)"],
+							"rotation": [12.5, 0, 0],
 							"cubes": [
 								{
 									"uv": [40, 18],
@@ -234,9 +258,9 @@
 							],
 							"bones": [
 								{
-									"id": "Mid2",
+									"id": "Tail_mid2",
 									"offset": [0, -7, 0],
-									"rotation": ["if(crawling,-10,if(sitting,-10,10))", 0, "if(sitting,-20,0)"],
+									"rotation": [10, 0, 0],
 									"cubes": [
 										{
 											"uv": [42, 11],
@@ -246,9 +270,9 @@
 									],
 									"bones": [
 										{
-											"id": "Tip",
+											"id": "Tail_tip",
 											"offset": [0, -5, 0],
-											"rotation": ["if(crawling,-10,27.5)", 0, "10*sin(age/6)"],
+											"rotation": [27.5, 0, 0],
 											"cubes": [
 												{
 													"uv": [38, 11],
@@ -292,7 +316,6 @@
 		{
 			"id": "LegL",
 			"parent": "left_leg",
-			"rotation": ["if(sneaking,-20,0)", 0, 0],
 			"cubes": [
 				{
 					"uv": [32, 37],
@@ -356,7 +379,6 @@
 		{
 			"id": "LegR",
 			"parent": "right_leg",
-			"rotation": ["if(sneaking,-20,0)", 0, 0],
 			"cubes": [
 				{
 					"uv": [48, 37],

@@ -1,4 +1,4 @@
-package msifeed.makriva.expr.json;
+package msifeed.makriva.json;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;

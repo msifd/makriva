@@ -1,6 +1,5 @@
 package msifeed.makriva.storage;
 
-import com.google.gson.JsonParseException;
 import msifeed.makriva.Makriva;
 import msifeed.makriva.MakrivaConfig;
 import msifeed.makriva.data.Shape;
@@ -129,6 +128,7 @@ public class ShapeStorage {
         try {
             shape = ShapeCodec.fromBytes(bytes);
         } catch (Exception e) {
+            e.printStackTrace();
             Makriva.LOG.warn("Failed to parse shape {}. Error: {}", filePath.getFileName(), e);
             tryLogToPlayer("Failed to parse shape " + filePath.getFileName() + ". Error: " + e.getMessage());
             return;

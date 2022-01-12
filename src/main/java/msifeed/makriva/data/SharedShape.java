@@ -15,16 +15,16 @@ public class SharedShape {
         DEFAULT_SHARED.eyeHeight.put(PlayerPose.elytraFly, 0.4f);
         DEFAULT_SHARED.eyeHeight.put(PlayerPose.crawl, 0.4f);
 
-        DEFAULT_SHARED.boundingBox.put(PlayerPose.stand, new Float[]{0.6f, 1.8f});
-        DEFAULT_SHARED.boundingBox.put(PlayerPose.sneak, new Float[]{0.6f, 1.65f});
-        DEFAULT_SHARED.boundingBox.put(PlayerPose.sit, new Float[]{0.6f, 1.8f});
-        DEFAULT_SHARED.boundingBox.put(PlayerPose.sleep, new Float[]{0.2f, 0.2f});
-        DEFAULT_SHARED.boundingBox.put(PlayerPose.elytraFly, new Float[]{0.6f, 0.6f});
-        DEFAULT_SHARED.boundingBox.put(PlayerPose.crawl, new Float[]{0.6f, 0.6f});
+        DEFAULT_SHARED.boundingBox.put(PlayerPose.stand, new float[]{0.6f, 1.8f});
+        DEFAULT_SHARED.boundingBox.put(PlayerPose.sneak, new float[]{0.6f, 1.65f});
+        DEFAULT_SHARED.boundingBox.put(PlayerPose.sit, new float[]{0.6f, 1.8f});
+        DEFAULT_SHARED.boundingBox.put(PlayerPose.sleep, new float[]{0.2f, 0.2f});
+        DEFAULT_SHARED.boundingBox.put(PlayerPose.elytraFly, new float[]{0.6f, 0.6f});
+        DEFAULT_SHARED.boundingBox.put(PlayerPose.crawl, new float[]{0.6f, 0.6f});
     }
 
     public final Map<PlayerPose, Float> eyeHeight = new EnumMap<>(PlayerPose.class);
-    public final Map<PlayerPose, Float[]> boundingBox = new EnumMap<>(PlayerPose.class);
+    public final Map<PlayerPose, float[]> boundingBox = new EnumMap<>(PlayerPose.class);
 
     public float getEyeHeight(PlayerPose pose) {
         if (eyeHeight.containsKey(pose))
@@ -34,7 +34,7 @@ public class SharedShape {
     }
 
     @Nonnull
-    public Float[] getBox(PlayerPose pose) {
+    public float[] getBox(PlayerPose pose) {
         if (boundingBox.containsKey(pose))
             return boundingBox.get(pose);
         else
