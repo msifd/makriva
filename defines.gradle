@@ -1,4 +1,4 @@
 ext.versions = [
-        makriva: '1.0.1',
+        makriva: '1.0.2',
         minecraft: '1.12.2-14.23.5.2847'
 ]
