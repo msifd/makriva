@@ -15,10 +15,18 @@ public class EvalContext {
     }
 
     public boolean bool(IExpr expr) {
-        return expr != null && expr.asBool(this);
+        try {
+            return expr.asBool(this);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public float num(IExpr expr) {
-        return expr != null ? expr.asFloat(this) : 0;
+        try {
+            return expr.asFloat(this);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 }

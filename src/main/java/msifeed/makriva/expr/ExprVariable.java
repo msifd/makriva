@@ -2,6 +2,7 @@ package msifeed.makriva.expr;
 
 import msifeed.makriva.data.PlayerPose;
 import msifeed.makriva.expr.context.EvalContext;
+import net.minecraft.inventory.EntityEquipmentSlot;
 
 import java.util.HashMap;
 import java.util.function.Function;
@@ -17,9 +18,25 @@ public enum ExprVariable implements IExpr {
     headPitch(ctx -> ctx.renderParams.headPitch),
     modelScale(ctx -> ctx.renderParams.scale),
 
+    hasMainhandItem(ctx -> !ctx.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).isEmpty()),
+    hasOffhandItem(ctx -> !ctx.player.getItemStackFromSlot(EntityEquipmentSlot.OFFHAND).isEmpty()),
+    hasHelmetItem(ctx -> !ctx.player.getItemStackFromSlot(EntityEquipmentSlot.HEAD).isEmpty()),
+    hasChestItem(ctx -> !ctx.player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isEmpty()),
+    hasLegsItem(ctx -> !ctx.player.getItemStackFromSlot(EntityEquipmentSlot.LEGS).isEmpty()),
+    hasFeetItem(ctx -> !ctx.player.getItemStackFromSlot(EntityEquipmentSlot.FEET).isEmpty()),
+
+    swimming(ctx -> ctx.player.isInWater()),
+    overWater(ctx -> ctx.player.isOverWater()),
+    sprinting(ctx -> ctx.player.isSprinting()),
+    riding(ctx -> ctx.player.isRiding()),
+    burning(ctx -> ctx.player.isBurning()),
+    onGround(ctx -> ctx.player.onGround),
+
+    standing(ctx -> ctx.pose == PlayerPose.stand),
     sneaking(ctx -> ctx.pose == PlayerPose.sneak),
     sitting(ctx -> ctx.pose == PlayerPose.sit),
     sleeping(ctx -> ctx.pose == PlayerPose.sleep),
+    elytraFlying(ctx -> ctx.pose == PlayerPose.elytraFly),
     crawling(ctx -> ctx.pose == PlayerPose.crawl),
     ;
 

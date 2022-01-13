@@ -22,7 +22,7 @@ public class Shape extends SharedShape {
     public final AnimationRules animation = new AnimationRules();
     public final List<Bone> bones = new ArrayList<>();
 
-    public final Map<String, IExpr> debug = null;
+    public final Map<String, IExpr> debug = new HashMap<>();
 
     public transient String name = "";
     public transient byte[] source;
