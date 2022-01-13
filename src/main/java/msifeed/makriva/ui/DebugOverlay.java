@@ -18,7 +18,7 @@ public class DebugOverlay {
 
         final UUID uuid = Minecraft.getMinecraft().getSession().getProfile().getId();
         final ModelShape model = Makriva.MODELS.getModelWithoutBuild(uuid);
-        if (model == null || model.shape.debug == null) return;
+        if (model == null || model.shape.debug.isEmpty()) return;
 
         final Printer p = new Printer();
         p.print("[Makriva]");
