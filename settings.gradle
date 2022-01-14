@@ -1,0 +1,3 @@
+rootProject.name = 'makriva'
+include 'shared'
+include 'forge-1.12'

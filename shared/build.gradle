@@ -1,0 +1,14 @@
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileClasspath 'com.google.guava:guava:31.0.1-jre'
+    compileClasspath 'com.google.code.gson:gson:2.8.9'
+    compileClasspath 'org.apache.logging.log4j:log4j-core:2.17.1'
+    compileClasspath 'io.netty:netty-buffer:4.1.73.Final'
+    testImplementation 'com.google.code.gson:gson:2.8.9'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
+}
