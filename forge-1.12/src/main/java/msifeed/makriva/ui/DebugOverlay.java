@@ -1,7 +1,9 @@
 package msifeed.makriva.ui;
 
 import msifeed.makriva.Makriva;
+import msifeed.makriva.MakrivaCommons;
 import msifeed.makriva.expr.IEvalContext;
+import msifeed.makriva.render.RenderContext;
 import msifeed.makriva.render.model.ModelShape;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -22,10 +24,10 @@ public class DebugOverlay {
         final Printer p = new Printer();
         p.print("[Makriva]");
         p.print("Shape: " + model.shape.checksum);
-//        p.print("Pose: " + PlayerPose.get(Minecraft.getMinecraft().player));
+        p.print("Pose: " + MakrivaCommons.findPose(Minecraft.getMinecraft().player));
         p.print("Model: " + model.render.getMainModel().getClass().getSimpleName());
 
-        final IEvalContext ctx = model.context;
+        final IEvalContext ctx = RenderContext.CTX;
         model.shape.debug.forEach((s, expr) -> p.print(s + ": " + ctx.num(expr)));
     }
 

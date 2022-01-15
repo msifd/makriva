@@ -1,9 +1,8 @@
 package msifeed.makriva.render;
 
 import msifeed.makriva.MakrivaCommons;
-import msifeed.makriva.compat.MakrivaCompat;
-import msifeed.makriva.model.PlayerPose;
 import msifeed.makriva.expr.IEvalContext;
+import msifeed.makriva.model.PlayerPose;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraftforge.fml.relauncher.Side;
@@ -11,6 +10,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderContext implements IEvalContext {
+    public static final RenderContext CTX = new RenderContext();
+
     public AbstractClientPlayer player = null;
     public PlayerPose currentPose = PlayerPose.stand;
 
@@ -120,6 +121,8 @@ public class RenderContext implements IEvalContext {
 
     @Override
     public boolean isInPose(PlayerPose pose) {
+        if (pose == PlayerPose.sneak)
+            return player.isSneaking();
         return currentPose == pose;
     }
 }

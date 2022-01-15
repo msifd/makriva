@@ -6,7 +6,6 @@ import msifeed.makriva.expr.IExpr;
 
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 public class AnimationRules {
     public IExpr condition = new ConstBool(true);
@@ -14,10 +13,6 @@ public class AnimationRules {
 
     public Map<BipedPart, IExpr[]> skeleton = new EnumMap<>(BipedPart.class);
     public Map<String, BoneParams> bones = new HashMap<>();
-
-    public Stream<AnimationRules> streamAll() {
-        return Stream.concat(Stream.of(this), children.stream());
-    }
 
     public void acceptActive(IEvalContext ctx, Consumer<AnimationRules> visitor) {
         if (ctx.bool(condition)) {
@@ -28,6 +23,7 @@ public class AnimationRules {
     }
 
     public static class BoneParams {
-        public IExpr[] rotation = new IExpr[3];
+        public IExpr[] rotation = null;
+        public IExpr visible = null;
     }
 }

@@ -4,9 +4,9 @@ import msifeed.makriva.Makriva;
 import msifeed.makriva.MakrivaShared;
 import msifeed.makriva.model.Shape;
 import msifeed.makriva.model.SharedShape;
-import msifeed.makriva.encoding.ShapeCodec;
 import msifeed.makriva.storage.AbstractShapeRelay;
 import msifeed.makriva.storage.CheckedBytes;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -18,8 +18,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 
@@ -27,10 +25,11 @@ public class SyncRelay extends AbstractShapeRelay implements IMessageHandler<Mes
     private final SimpleNetworkWrapper network = new SimpleNetworkWrapper(MakrivaShared.MOD_ID);
 
     public static void upload(Shape shape) {
-        if (shape != null) {
-            MakrivaShared.LOG.info("Upload shape: {}:{}", shape.name, shape.checksum);
-            Makriva.RELAY.network.sendToServer(new MessageUpload(shape));
-        }
+        if (shape == null) return;
+        if (Minecraft.getMinecraft().getConnection() == null) return;
+
+        MakrivaShared.LOG.info("Upload shape: {}:{}", shape.name, shape.checksum);
+        Makriva.RELAY.network.sendToServer(new MessageUpload(shape));
     }
 
     public void init() {

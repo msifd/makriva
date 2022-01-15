@@ -2,7 +2,7 @@ package msifeed.makriva;
 
 import msifeed.makriva.compat.MakrivaCompat;
 import msifeed.makriva.model.PlayerPose;
-import net.minecraft.client.entity.AbstractClientPlayer;
+import msifeed.makriva.model.SharedShape;
 import net.minecraft.entity.player.EntityPlayer;
 
 public class MakrivaCommons {
@@ -23,5 +23,13 @@ public class MakrivaCommons {
             return PlayerPose.sneak;
 
         return PlayerPose.stand;
+    }
+
+    public static float calculateEyeHeight(EntityPlayer player, SharedShape shape, PlayerPose pose) {
+        float height = shape.getEyeHeight(pose);
+        if (shape.eyeHeight.isEmpty()) {
+            height += MakrivaCompat.getEyeHeightOffset(player, pose);
+        }
+        return height;
     }
 }

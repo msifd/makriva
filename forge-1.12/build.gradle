@@ -61,7 +61,7 @@ configurations {
 dependencies {
     embed project(':shared')
     embed 'org.spongepowered:mixin:0.8.2'
-    compile "curse.maven:more-player-models-221939:2837187"
+    deobfCompile "curse.maven:more-player-models-221939:2837187"
 }
 
 processResources {

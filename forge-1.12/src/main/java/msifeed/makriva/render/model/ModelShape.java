@@ -1,7 +1,6 @@
 package msifeed.makriva.render.model;
 
 import msifeed.makriva.MakrivaCommons;
-import msifeed.makriva.render.RenderContext;
 import msifeed.makriva.MakrivaShared;
 import msifeed.makriva.model.BipedPart;
 import msifeed.makriva.model.Bone;
@@ -31,7 +30,6 @@ public class ModelShape extends ModelBase {
     public final Map<String, ResourceLocation> textures = new HashMap<>();
     public final Map<EnumHandSide, List<ModelBone>> handBones = new EnumMap<>(EnumHandSide.class);
 
-    public final RenderContext context = new RenderContext();
     public final AnimationState animationState;
     public RenderPlayer render;
 

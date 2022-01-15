@@ -3,7 +3,6 @@ package msifeed.makriva;
 import msifeed.makriva.compat.MakrivaCompat;
 import msifeed.makriva.compat.MpmCompat;
 import msifeed.makriva.render.ModelManager;
-import msifeed.makriva.render.RenderContext;
 import msifeed.makriva.storage.ShapeStorage;
 import msifeed.makriva.sync.SharedShapes;
 import msifeed.makriva.sync.StorageBridge;
@@ -26,7 +25,6 @@ public class Makriva {
     public static final SyncRelay RELAY = new SyncRelay();
     public static final SharedShapes SHARED = new SharedShapes();
 
-    public static RenderContext CONTEXT;
     public static ShapeStorage STORAGE;
     public static ModelManager MODELS;
 

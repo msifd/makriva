@@ -40,6 +40,8 @@ public class ModelBone extends ModelRenderer {
 
     @Override
     public void render(float scale) {
+        isHidden = base.animationState.hidden.contains(boxName);
+
         if (isHidden || !showModel) return;
         if (!compiled) compileDisplayList(scale);
 

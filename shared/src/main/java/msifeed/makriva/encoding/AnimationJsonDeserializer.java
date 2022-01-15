@@ -2,11 +2,11 @@ package msifeed.makriva.encoding;
 
 import com.google.common.base.Splitter;
 import com.google.gson.*;
-import msifeed.makriva.model.AnimationRules;
-import msifeed.makriva.model.BipedPart;
 import msifeed.makriva.expr.IExpr;
 import msifeed.makriva.expr.parser.ExprParser;
 import msifeed.makriva.expr.parser.ParsingException;
+import msifeed.makriva.model.AnimationRules;
+import msifeed.makriva.model.BipedPart;
 
 import java.lang.reflect.Type;
 import java.util.Iterator;
@@ -41,7 +41,8 @@ public class AnimationJsonDeserializer implements JsonDeserializer<AnimationRule
             if (target.equals("skeleton")) {
                 anim.skeleton.put(getBipedPart(specifier), parseIExprArray(entry.getValue(), 3, context));
             } else {
-                anim.bones.put(target, parseEntry(specifier, entry.getValue(), context));
+                final AnimationRules.BoneParams params = anim.bones.computeIfAbsent(target, k -> new AnimationRules.BoneParams());
+                fillBoneParams(params, specifier, entry.getValue(), context);
             }
         }
 
@@ -66,16 +67,17 @@ public class AnimationJsonDeserializer implements JsonDeserializer<AnimationRule
         }
     }
 
-    private AnimationRules.BoneParams parseEntry(String field, JsonElement jsonEl, JsonDeserializationContext context) {
-        final AnimationRules.BoneParams entry = new AnimationRules.BoneParams();
+    private void fillBoneParams(AnimationRules.BoneParams params, String field, JsonElement jsonEl, JsonDeserializationContext context) {
         switch (field) {
+            case "visible":
+                params.visible = context.deserialize(jsonEl, IExpr.class);
+                break;
             case "rotation":
-                entry.rotation = parseIExprArray(jsonEl, 3, context);
+                params.rotation = parseIExprArray(jsonEl, 3, context);
                 break;
             default:
                 throw new JsonParseException("Unknown animation entry field: " + field);
         }
-        return entry;
     }
 
     private IExpr[] parseIExprArray(JsonElement json, int len, JsonDeserializationContext context) {

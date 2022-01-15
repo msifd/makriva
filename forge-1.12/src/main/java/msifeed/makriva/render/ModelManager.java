@@ -2,10 +2,10 @@ package msifeed.makriva.render;
 
 import msifeed.makriva.Makriva;
 import msifeed.makriva.MakrivaShared;
-import msifeed.makriva.model.Shape;
 import msifeed.makriva.mixins.render.RenderManagerMixin;
 import msifeed.makriva.mixins.skin.MinecraftAssetsMixin;
 import msifeed.makriva.mixins.skin.NetworkPlayerInfoGetter;
+import msifeed.makriva.model.Shape;
 import msifeed.makriva.render.model.ModelShape;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetHandlerPlayClient;
@@ -102,7 +102,7 @@ public class ModelManager {
         final Minecraft mc = Minecraft.getMinecraft();
         final RenderPlayer renderer = ((RenderManagerMixin) mc.getRenderManager()).getPlayerRenderer();
         previewModel = new ModelShape(renderer, shape);
-        previewModel.context.update(mc.player);
+        RenderContext.CTX.update(mc.player);
 
         invalidateSkin(mc.player.getUniqueID());
     }

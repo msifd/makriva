@@ -5,9 +5,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
+import msifeed.makriva.expr.IExpr;
 import msifeed.makriva.model.AnimationRules;
 import msifeed.makriva.model.Shape;
-import msifeed.makriva.expr.IExpr;
 
 import javax.annotation.Nullable;
 import java.nio.charset.StandardCharsets;
