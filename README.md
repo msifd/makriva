@@ -17,4 +17,4 @@ The custom player models mod.
 
 ## Examples
 - [Blockbench models](/blockbench)
-- [Makriva shapes](/run/makriva)
+- [Shape examples](/examples)
