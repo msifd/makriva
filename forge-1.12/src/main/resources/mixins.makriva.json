@@ -10,9 +10,9 @@
   ],
   "client": [
     "NetHandlerPlayClientMixin",
-    "render.LayerHeldItemMixin",
     "render.ModelBipedMixin",
     "render.ModelPlayerGetterMixin",
+    "render.ModelRendererMixin",
     "render.RenderManagerMixin",
     "render.RenderPlayerMixin",
     "skin.ImageBufferDownloadMixin",

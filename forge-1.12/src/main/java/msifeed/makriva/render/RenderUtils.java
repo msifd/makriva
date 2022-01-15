@@ -31,8 +31,6 @@ public class RenderUtils {
     }
 
     public static void externalTransform(ModelRenderer model, float scale) {
-        GlStateManager.translate(model.offsetX, model.offsetY, model.offsetZ);
-
         if (model.rotateAngleX == 0 && model.rotateAngleY == 0 && model.rotateAngleZ == 0) {
             if (model.rotationPointX != 0 || model.rotationPointY != 0 || model.rotationPointZ != 0) {
                 GlStateManager.translate(model.rotationPointX * scale, model.rotationPointY * scale, model.rotationPointZ * scale);
