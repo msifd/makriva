@@ -35,7 +35,7 @@ public class RenderPlayerMixin {
 
     @ModifyArg(
             method = "doRender(Lnet/minecraft/client/entity/AbstractClientPlayer;DDDFF)V",
-            at = @At(value = "INVOKE", target = "doRender"),
+            at = @At(value = "INVOKE", target = "net/minecraft/client/renderer/entity/RenderLivingBase.doRender (Lnet/minecraft/entity/EntityLivingBase;DDDFF)V"),
             index = 2
     )
     private double adjustYPosOfScaledModel(EntityLivingBase player, double x, double y, double z, float yaw, float ticks) {

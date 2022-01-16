@@ -88,7 +88,7 @@ public class RenderUtils {
             if (player.isSneaking())
                 y += 0.125 - 0.125 * shape.modelScale;
             if (MakrivaCommons.findPose(player) == PlayerPose.sit)
-                y += 0.25;
+                y += 0.5 * (1 - shape.modelScale);
         }
         return y;
     }

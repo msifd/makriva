@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.Overwrite;
 public class ModelRendererMixin {
 
     /**
-     * Allows to postRender for hidden parts
+     * @reason Allows to postRender for hidden parts
      * @author msifeed
      */
     @SideOnly(Side.CLIENT)
