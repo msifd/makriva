@@ -1,6 +1,6 @@
 package msifeed.makriva.mixins.render;
 
-import msifeed.makriva.render.StatureHandler;
+import msifeed.makriva.render.RenderUtils;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelPlayer;
@@ -24,8 +24,8 @@ public abstract class ModelBipedMixin {
 
         final ModelBiped model = (ModelBiped) (Object) this;
         if (model instanceof ModelPlayer)
-            StatureHandler.setPlayerSkeletonOffsets((ModelPlayer) model, (AbstractClientPlayer) entity, scale);
+            RenderUtils.setPlayerSkeletonOffsets((ModelPlayer) model, (AbstractClientPlayer) entity, scale);
         else
-            StatureHandler.setBipedSkeletonOffsets(model, (AbstractClientPlayer) entity, scale);
+            RenderUtils.setBipedSkeletonOffsets(model, (AbstractClientPlayer) entity, scale);
     }
 }

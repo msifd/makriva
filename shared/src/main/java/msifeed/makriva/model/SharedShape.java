@@ -25,6 +25,7 @@ public class SharedShape {
 
     public final Map<PlayerPose, Float> eyeHeight = new EnumMap<>(PlayerPose.class);
     public final Map<PlayerPose, float[]> boundingBox = new EnumMap<>(PlayerPose.class);
+    public float modelScale = 1;
 
     public float getEyeHeight(PlayerPose pose) {
         if (eyeHeight.containsKey(pose))
@@ -35,6 +36,17 @@ public class SharedShape {
 
     @Nonnull
     public float[] getBox(PlayerPose pose) {
+        float[] box = getRawBox(pose);
+        if (modelScale != 1) {
+            box = box.clone();
+            box[0] *= modelScale;
+            box[1] *= modelScale;
+        }
+        return box;
+    }
+
+    @Nonnull
+    private float[] getRawBox(PlayerPose pose) {
         if (boundingBox.containsKey(pose))
             return boundingBox.get(pose);
         else

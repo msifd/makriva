@@ -6,7 +6,6 @@ import msifeed.makriva.model.SharedShape;
 import net.minecraft.entity.player.EntityPlayer;
 
 public class MakrivaCommons {
-
     public static PlayerPose findPose(EntityPlayer player) {
         if (player.isElytraFlying())
             return PlayerPose.elytraFly;
@@ -30,6 +29,6 @@ public class MakrivaCommons {
         if (shape.eyeHeight.isEmpty()) {
             height += MakrivaCompat.getEyeHeightOffset(player, pose);
         }
-        return height;
+        return height * shape.modelScale;
     }
 }
