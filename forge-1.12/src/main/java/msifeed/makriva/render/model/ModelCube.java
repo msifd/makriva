@@ -24,9 +24,9 @@ public class ModelCube {
         float x1 = x - delta;
         float y1 = y - delta;
         float z1 = z - delta;
-        float x2 = x1 + dx + delta;
-        float y2 = y1 + dy + delta;
-        float z2 = z1 + dz + delta;
+        float x2 = x1 + dx + delta * 2;
+        float y2 = y1 + dy + delta * 2;
+        float z2 = z1 + dz + delta * 2;
 
         if (mirror) {
             final float tmp = x2;
