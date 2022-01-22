@@ -9,6 +9,7 @@
   };
 
   let export_action;
+  let paint_explode_model;
 
   function init() {
     let exportOptions = {
@@ -24,7 +25,7 @@
 
     export_action = new Action('makriva_export', {
       name: 'Export Makriva Shape',
-      description: '',
+      category: 'file',
       icon: 'icon-player',
       click: function () {
         exportOptions.skinUrl = "file:makriva/" + Project.name + ".png";
@@ -283,6 +284,37 @@
         animation_mode: false,
         codec: Codecs.project,
     });
+
+    paint_explode_model = new Toggle('paint_explode_model', {
+      icon: () => 'open_in_full',
+      category: 'edit',
+      condition: {modes: ['paint']},
+      name: 'Explode Model (Makriva)',
+      description: 'Toggles an explosion view that allows you to edit covered faces',
+      value: false,
+      onChange(exploded_view) {
+        Undo.initEdit({elements: Cube.all, exploded_view: !exploded_view});
+        Cube.all.forEach(cube => {
+          let center = [
+            cube.from[0] + (cube.to[0] - cube.from[0]) / 2,
+            cube.from[1],
+            cube.from[2] + (cube.to[2] - cube.from[2]) / 2,
+          ]
+          let offset = cube.name.toLowerCase().includes('leg') ? 1 : 0.5;
+          center.V3_multiply(exploded_view ? offset : -offset/(1+offset));
+          cube.from.V3_add(center);
+          cube.to.V3_add(center);
+        })
+        Project.exploded_view = exploded_view;
+        Undo.finishEdit(exploded_view ? 'Explode skin model' : 'Revert exploding skin model', {elements: Cube.all, exploded_view: exploded_view});
+        Canvas.updateView({elements: Cube.all, element_aspects: {geometry: true}});
+        this.setIcon(this.icon);
+      }
+    });
+    Blockbench.on('select_project', () => {
+      paint_explode_model.value = !!Project.exploded_view;
+      paint_explode_model.updateEnabledState();
+    });
   }
 
   Plugin.register('makriva', {
@@ -290,14 +322,24 @@
     author: 'msifeed',
     description: 'Export model to Makriva shape',
     icon: 'icon-player',
-    version: '0.2.0',
+    version: '0.2.1',
     variant: 'both',
     onload() {
       init();
       MenuBar.addAction(export_action, 'file.export');
+
+      // Add paint_explode_model after explode_skin_model
+      const explodeIndex = Toolbars.outliner.children
+        .map(action => action.id)
+        .indexOf('explode_skin_model');
+      if (explodeIndex !== -1)
+        paint_explode_model.pushToolbar(Toolbars.outliner, explodeIndex);
+      else
+        paint_explode_model.pushToolbar(Toolbars.outliner);
     },
     onunload() {
       export_action.delete();
+      paint_explode_model.delete();
     }
   });
 
