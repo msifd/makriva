@@ -8,8 +8,6 @@ public class Bone {
     public BipedPart parent;
     public String texture;
 
-    public int[] textureSize = new int[]{64, 64};
-
     public float[] offset = new float[3];
     public float[] rotationPoint = new float[3];
     public float[] rotation = new float[3];

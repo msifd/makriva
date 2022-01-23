@@ -203,6 +203,10 @@
           textures: {
             skin: exportOptions.skinUrl,
           },
+          textureSize: [
+            Project.texture_width,
+            Project.texture_height
+          ],
           hide: [],
           skeleton: {},
           bones: [],

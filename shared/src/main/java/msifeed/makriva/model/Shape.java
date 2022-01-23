@@ -16,13 +16,15 @@ public class Shape extends SharedShape {
     public static Shape DEFAULT = makeDefaultShape();
 
     public final Map<String, String> metadata = new HashMap<>();
+    public final Map<String, IExpr> debug = new HashMap<>();
+
     public final Map<String, URL> textures = new HashMap<>();
+    public int[] textureSize = new int[]{64, 64};
+
     public final EnumSet<BipedPart> hide = EnumSet.noneOf(BipedPart.class);
     public final Map<BipedPart, float[]> skeleton = new EnumMap<>(BipedPart.class);
     public final AnimationRules animation = new AnimationRules();
     public final List<Bone> bones = new ArrayList<>();
-
-    public final Map<String, IExpr> debug = new HashMap<>();
 
     public transient String name = "";
     public transient byte[] source;

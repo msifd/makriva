@@ -26,7 +26,7 @@ public class ModelBone extends ModelRenderer {
 
     public ModelBone(ModelShape base, Bone spec) {
         super(base, spec.id);
-        setTextureSize(spec.textureSize[0], spec.textureSize[1]);
+        setTextureSize(base.shape.textureSize[0], base.shape.textureSize[1]);
 
         this.base = base;
         this.spec = spec;
