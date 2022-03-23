@@ -285,7 +285,7 @@
         centered_grid: true,
         locators: true,
         display_mode: false,
-        animation_mode: false,
+        animation_mode: true,
         codec: Codecs.project,
     });
 

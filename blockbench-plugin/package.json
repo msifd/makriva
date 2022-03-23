@@ -1,0 +1,19 @@
+{
+  "name": "makriva-blockbench",
+  "version": "1.0.0",
+  "description": "",
+  "main": "makriva.js",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/msifd/makriva.git"
+  },
+  "author": "msifeed",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/msifd/makriva/issues"
+  },
+  "homepage": "https://github.com/msifd/makriva#readme",
+  "devDependencies": {
+    "blockbench-types": "^4.0.0"
+  }
+}
