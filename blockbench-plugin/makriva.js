@@ -8,12 +8,12 @@
     "right_leg": [1.9, 12, 0],
   };
 
-  let export_action;
-  let paint_explode_model;
+  let exportAction;
+  let paintExplodeModel;
 
   function init() {
     let exportOptions = {
-      skinUrl: "file:makriva/cisca.png",
+      skinUrl: "",
       slimModel: false,
       hideHead: false,
       hideBody: false,
@@ -23,32 +23,33 @@
       hideRightLeg: false,
     };
 
-    export_action = new Action('makriva_export', {
+    exportAction = new Action('makriva_export', {
       name: 'Export Makriva Shape',
       category: 'file',
       icon: 'icon-player',
       click: function () {
-        exportOptions.skinUrl = "file:makriva/" + Project.name + ".png";
+        if (Project.textures.length > 0)
+          exportOptions.skinUrl = "file:makriva/" + Project.textures[0].name;
 
         new Dialog({
-            id: "makriva_export",
-            title: "Makriva Shape Export",
-            form: {
-                skinUrl: { label: 'Skin URL', type: 'input', value: exportOptions.skinUrl },
-                slimModel: { label: 'Slim model', type: 'checkbox', value: exportOptions.slimModel },
+          id: "makriva_export",
+          title: "Makriva Shape Export",
+          form: {
+            skinUrl: { label: 'Skin URL', type: 'input', value: exportOptions.skinUrl },
+            slimModel: { label: 'Slim model', type: 'checkbox', value: exportOptions.slimModel },
 
-                hideHead: { label: 'Hide Head', type: 'checkbox', value: exportOptions.hideHead },
-                hideBody: { label: 'Hide Body', type: 'checkbox', value: exportOptions.hideBody },
-                hideRightArm: { label: 'Hide Right Arm', type: 'checkbox', value: exportOptions.hideRightArm },
-                hideLeftArm: { label: 'Hide Left Arm', type: 'checkbox', value: exportOptions.hideLeftArm },
-                hideRightLeg: { label: 'Hide Right Leg', type: 'checkbox', value: exportOptions.hideRightLeg },
-                hideLeftLeg: { label: 'Hide Left Leg', type: 'checkbox', value: exportOptions.hideLeftLeg },
-            },
-            onConfirm: function (formData) {
-                exportOptions = formData;
-                codec.export();
-                this.hide()
-            }
+            hideHead: { label: 'Hide Head', type: 'checkbox', value: exportOptions.hideHead },
+            hideBody: { label: 'Hide Body', type: 'checkbox', value: exportOptions.hideBody },
+            hideRightArm: { label: 'Hide Right Arm', type: 'checkbox', value: exportOptions.hideRightArm },
+            hideLeftArm: { label: 'Hide Left Arm', type: 'checkbox', value: exportOptions.hideLeftArm },
+            hideRightLeg: { label: 'Hide Right Leg', type: 'checkbox', value: exportOptions.hideRightLeg },
+            hideLeftLeg: { label: 'Hide Left Leg', type: 'checkbox', value: exportOptions.hideLeftLeg },
+          },
+          onConfirm: function (formData) {
+            exportOptions = formData;
+            codec.export();
+            this.hide()
+          }
         }).show();
       }
     });
@@ -273,31 +274,31 @@
     });
 
     const format = new ModelFormat({
-        id: "makriva_shape",
-        name: "Makriva Shape",
-        description: "Model for Makriva mod",
-        icon: "icon-player",
-        rotate_cubes: true,
-        box_uv: true,
-        optional_box_uv: false,
-        single_texture: true,
-        bone_rig: true,
-        centered_grid: true,
-        locators: true,
-        display_mode: false,
-        animation_mode: true,
-        codec: Codecs.project,
+      id: "makriva_shape",
+      name: "Makriva Shape",
+      description: "Model for Makriva mod",
+      icon: "icon-player",
+      rotate_cubes: true,
+      box_uv: true,
+      optional_box_uv: false,
+      single_texture: true,
+      bone_rig: true,
+      centered_grid: true,
+      locators: true,
+      display_mode: false,
+      animation_mode: true,
+      codec: Codecs.project,
     });
 
-    paint_explode_model = new Toggle('paint_explode_model', {
+    paintExplodeModel = new Toggle('paint_explode_model', {
       icon: () => 'open_in_full',
       category: 'edit',
-      condition: {modes: ['paint']},
+      condition: { modes: ['paint'] },
       name: 'Explode Model (Makriva)',
       description: 'Toggles an explosion view that allows you to edit covered faces',
       value: false,
       onChange(exploded_view) {
-        Undo.initEdit({elements: Cube.all, exploded_view: !exploded_view});
+        Undo.initEdit({ elements: Cube.all, exploded_view: !exploded_view });
         Cube.all.forEach(cube => {
           let center = [
             cube.from[0] + (cube.to[0] - cube.from[0]) / 2,
@@ -305,23 +306,34 @@
             cube.from[2] + (cube.to[2] - cube.from[2]) / 2,
           ]
           let offset = cube.name.toLowerCase().includes('leg') ? 1 : 0.5;
-          center.V3_multiply(exploded_view ? offset : -offset/(1+offset));
+          center.V3_multiply(exploded_view ? offset : -offset / (1 + offset));
           cube.from.V3_add(center);
           cube.to.V3_add(center);
         })
         Project.exploded_view = exploded_view;
-        Undo.finishEdit(exploded_view ? 'Explode skin model' : 'Revert exploding skin model', {elements: Cube.all, exploded_view: exploded_view});
-        Canvas.updateView({elements: Cube.all, element_aspects: {geometry: true}});
+        Undo.finishEdit(exploded_view ? 'Explode skin model' : 'Revert exploding skin model', { elements: Cube.all, exploded_view: exploded_view });
+        Canvas.updateView({ elements: Cube.all, element_aspects: { geometry: true } });
         this.setIcon(this.icon);
       }
     });
     Blockbench.on('select_project', () => {
-      paint_explode_model.value = !!Project.exploded_view;
-      paint_explode_model.updateEnabledState();
+      paintExplodeModel.value = !!Project.exploded_view;
+      paintExplodeModel.updateEnabledState();
     });
   }
 
-  Plugin.register('makriva', {
+  function registerPaintExplode() {
+    // Add paint_explode_model after explode_skin_model
+    const explodeIndex = Toolbars.outliner.children
+      .map(action => action.id)
+      .indexOf('explode_skin_model');
+    if (explodeIndex !== -1)
+      paintExplodeModel.pushToolbar(Toolbars.outliner, explodeIndex);
+    else
+      paintExplodeModel.pushToolbar(Toolbars.outliner);
+  }
+
+  BBPlugin.register('makriva', {
     title: 'Makriva plugin',
     author: 'msifeed',
     description: 'Export model to Makriva shape',
@@ -330,20 +342,13 @@
     variant: 'both',
     onload() {
       init();
-      MenuBar.addAction(export_action, 'file.export');
+      MenuBar.addAction(exportAction, 'file.export');
 
-      // Add paint_explode_model after explode_skin_model
-      const explodeIndex = Toolbars.outliner.children
-        .map(action => action.id)
-        .indexOf('explode_skin_model');
-      if (explodeIndex !== -1)
-        paint_explode_model.pushToolbar(Toolbars.outliner, explodeIndex);
-      else
-        paint_explode_model.pushToolbar(Toolbars.outliner);
+      registerPaintExplode();
     },
     onunload() {
-      export_action.delete();
-      paint_explode_model.delete();
+      exportAction.delete();
+      paintExplodeModel.delete();
     }
   });
 
