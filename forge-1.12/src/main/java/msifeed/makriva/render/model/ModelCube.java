@@ -46,13 +46,21 @@ public class ModelCube {
         final PositionTextureVertex vert7 = new PositionTextureVertex(x2, y2, z2, 8, 8);
         final PositionTextureVertex vert8 = new PositionTextureVertex(x1, y2, z2, 8, 0);
 
+        final float u2 = (float) Math.floor(u + dz);
+        final float u3 = (float) Math.floor(u + dz + dx);
+        final float uz = (float) Math.floor(u + dz + dz + dx);
+        final float ux = (float) Math.floor(u + dz + dx + dx);
+        final float u5 = (float) Math.floor(u + dz + dz + dx + dx);
+        final float v2 = (float) Math.floor(v + dz);
+        final float v3 = (float) Math.floor(v + dz + dy);
+
         this.quads = new ModelQuad[]{
-                new ModelQuad(new PositionTextureVertex[]{vert6, vert2, vert3, vert7}, u + dz + dx, v + dz, u + dz + dx + dz, v + dz + dy, tw, th),
-                new ModelQuad(new PositionTextureVertex[]{vert1, vert5, vert8, vert4}, u, v + dz, u + dz, v + dz + dy, tw, th),
-                new ModelQuad(new PositionTextureVertex[]{vert6, vert5, vert1, vert2}, u + dz, v, u + dz + dx, v + dz, tw, th),
-                new ModelQuad(new PositionTextureVertex[]{vert3, vert4, vert8, vert7}, u + dz + dx, v + dz, u + dz + dx + dx, v, tw, th),
-                new ModelQuad(new PositionTextureVertex[]{vert2, vert1, vert4, vert3}, u + dz, v + dz, u + dz + dx, v + dz + dy, tw, th),
-                new ModelQuad(new PositionTextureVertex[]{vert5, vert6, vert7, vert8}, u + dz + dx + dz, v + dz, u + dz + dx + dz + dx, v + dz + dy, tw, th),
+                new ModelQuad(new PositionTextureVertex[]{vert6, vert2, vert3, vert7}, u3, v2, uz, v3, tw, th),
+                new ModelQuad(new PositionTextureVertex[]{vert1, vert5, vert8, vert4}, u, v2, u2, v3, tw, th),
+                new ModelQuad(new PositionTextureVertex[]{vert6, vert5, vert1, vert2}, u2, v, u3, v2, tw, th),
+                new ModelQuad(new PositionTextureVertex[]{vert3, vert4, vert8, vert7}, u3, v2, ux, v, tw, th),
+                new ModelQuad(new PositionTextureVertex[]{vert2, vert1, vert4, vert3}, u2, v2, u3, v3, tw, th),
+                new ModelQuad(new PositionTextureVertex[]{vert5, vert6, vert7, vert8}, uz, v2, u5, v3, tw, th),
         };
 
         if (mirror) {
