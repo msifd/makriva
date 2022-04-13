@@ -16,6 +16,7 @@ public class RenderContext implements IEvalContext {
     public PlayerPose currentPose = PlayerPose.stand;
 
     public float limbSwing;
+    public float limbSwingTicks;
     public float partialTicks;
     public float ageInTicks;
     public float netHeadYaw;
@@ -27,8 +28,9 @@ public class RenderContext implements IEvalContext {
         this.currentPose = MakrivaCommons.findPose(player);
     }
 
-    public void update(float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+    public void update(float limbSwingAmount, float limbSwingTicks, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         this.limbSwing = limbSwingAmount;
+        this.limbSwingTicks = limbSwingTicks;
         this.partialTicks = partialTicks;
         this.ageInTicks = ageInTicks;
         this.netHeadYaw = netHeadYaw;
@@ -39,6 +41,11 @@ public class RenderContext implements IEvalContext {
     @Override
     public float playerLimbSwing() {
         return limbSwing;
+    }
+
+    @Override
+    public float playerLimbSwingTicks() {
+        return limbSwingTicks;
     }
 
     @Override

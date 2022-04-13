@@ -19,20 +19,20 @@ public class LayerMakrivaBones implements LayerRenderer<AbstractClientPlayer> {
     }
 
     @Override
-    public void doRenderLayer(AbstractClientPlayer player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+    public void doRenderLayer(AbstractClientPlayer player, float limbSwingTicks, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         if (!player.hasPlayerInfo() || player.isInvisible()) return;
 
         final UUID uuid = player.getGameProfile().getId();
         final ModelShape model = Makriva.MODELS.getModel(renderer, uuid);
         RenderContext.CTX.update(player);
-        RenderContext.CTX.update(limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
+        RenderContext.CTX.update(limbSwingAmount, limbSwingTicks, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
         model.animationState.update();
         model.render = renderer;
 
         if (model.boxList.isEmpty()) return;
 
         renderer.bindTexture(player.getLocationSkin());
-        model.render(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+        model.render(player, limbSwingTicks, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
     }
 
     @Override

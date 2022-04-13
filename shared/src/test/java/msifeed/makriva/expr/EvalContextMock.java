@@ -9,6 +9,11 @@ public class EvalContextMock implements IEvalContext {
     }
 
     @Override
+    public float playerLimbSwingTicks() {
+        return 0;
+    }
+
+    @Override
     public float playerPartialTicks() {
         return 0;
     }

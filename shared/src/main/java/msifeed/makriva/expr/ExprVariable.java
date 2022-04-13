@@ -7,8 +7,10 @@ import java.util.function.Function;
 
 public enum ExprVariable implements IExpr {
     pi(ctx -> ExprVariable.PI),
+    rad(ctx -> ExprVariable.RAD),
 
     limbSwing(IEvalContext::playerLimbSwing),
+    limbSwingTick(IEvalContext::playerLimbSwingTicks),
     partialTicks(IEvalContext::playerPartialTicks),
     age(IEvalContext::playerAge),
     headYaw(IEvalContext::playerHeadYaw),
@@ -38,6 +40,7 @@ public enum ExprVariable implements IExpr {
     ;
 
     private static final float PI = (float) Math.PI;
+    private static final float RAD = (float) (180 / Math.PI);
     private static final HashMap<String, ExprVariable> TABLE = new HashMap<>();
 
     static {

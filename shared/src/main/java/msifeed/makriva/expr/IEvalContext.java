@@ -4,6 +4,7 @@ import msifeed.makriva.model.PlayerPose;
 
 public interface IEvalContext {
     float playerLimbSwing();
+    float playerLimbSwingTicks();
     float playerPartialTicks();
     float playerAge();
     float playerHeadYaw();
