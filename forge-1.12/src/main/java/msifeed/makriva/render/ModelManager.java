@@ -8,6 +8,7 @@ import msifeed.makriva.mixins.skin.NetworkPlayerInfoGetter;
 import msifeed.makriva.model.Shape;
 import msifeed.makriva.render.model.ModelShape;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.ImageBufferDownload;
@@ -17,6 +18,7 @@ import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -112,16 +114,32 @@ public class ModelManager {
         invalidateSkin(Minecraft.getMinecraft().player.getUniqueID());
     }
 
-    private void invalidateSkin(UUID uuid) {
+    public void reloadAllSkins() {
         final NetHandlerPlayClient conn = Minecraft.getMinecraft().getConnection();
         if (conn == null) return;
 
-        final NetworkPlayerInfo net = conn.getPlayerInfo(uuid);
-        if (net != null) {
-            final NetworkPlayerInfoGetter mixin = (NetworkPlayerInfoGetter) net;
-            mixin.getPlayerTextures().clear();
-            mixin.setPlayerTexturesLoaded(false);
+        for (NetworkPlayerInfo net : conn.getPlayerInfoMap()) {
+            this.invalidateSkin(net);
         }
+    }
+
+    private void invalidateSkin(UUID uuid) {
+        final Minecraft mc = Minecraft.getMinecraft();
+        final NetHandlerPlayClient conn = mc.getConnection();
+        if (conn == null) return;
+
+        final NetworkPlayerInfo net = conn.getPlayerInfo(uuid);
+        if (net != null) this.invalidateSkin(net);
+    }
+
+    private void invalidateSkin(@Nonnull NetworkPlayerInfo net) {
+        final NetworkPlayerInfoGetter mixin = (NetworkPlayerInfoGetter) net;
+
+        final TextureManager tx = Minecraft.getMinecraft().getTextureManager();
+        mixin.getPlayerTextures().values().forEach(tx::deleteTexture);
+
+        mixin.getPlayerTextures().clear();
+        mixin.setPlayerTexturesLoaded(false);
     }
 
     private ModelShape buildModel(RenderPlayer render, UUID uuid) {
@@ -138,5 +156,11 @@ public class ModelManager {
             models.clear();
             previewModel = null;
         }
+    }
+
+    @SubscribeEvent
+    public void onStartTrackingPLayer(PlayerEvent.StartTracking event) {
+        if (!(event.getTarget() instanceof AbstractClientPlayer)) return;
+        invalidateSkin(event.getTarget().getUniqueID());
     }
 }
