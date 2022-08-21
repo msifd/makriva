@@ -1,0 +1,14 @@
+{
+  "include": [
+    "src/index.ts"
+  ],
+  "compilerOptions": {
+    "target": "es2021",
+    "module": "es2020",
+    "sourceMap": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "node16"
+  }
+}
