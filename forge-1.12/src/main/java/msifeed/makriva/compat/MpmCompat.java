@@ -37,6 +37,24 @@ public class MpmCompat {
                 return PlayerPose.crawl;
             case SITTING:
                 return PlayerPose.sit;
+            case HUG:
+                return PlayerPose.hug;
+            case DANCING:
+                return PlayerPose.dance;
+            case WAVING:
+                return PlayerPose.wave;
+            case BOW:
+                return PlayerPose.bow;
+            case WAG:
+                return PlayerPose.wag;
+            case CRY:
+                return PlayerPose.cry;
+            case POINT:
+                return PlayerPose.point;
+            case YES:
+                return PlayerPose.yes;
+            case NO:
+                return PlayerPose.no;
             default:
                 return null;
         }

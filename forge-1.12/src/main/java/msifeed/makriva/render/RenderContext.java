@@ -122,6 +122,11 @@ public class RenderContext implements IEvalContext {
     }
 
     @Override
+    public boolean isDying() {
+        return player.deathTime > 0;
+    }
+
+    @Override
     public boolean isOnGround() {
         return player.onGround;
     }

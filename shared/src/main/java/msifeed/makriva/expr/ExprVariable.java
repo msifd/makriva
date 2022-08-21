@@ -30,6 +30,7 @@ public enum ExprVariable implements IExpr {
     riding(IEvalContext::isRiding),
     burning(IEvalContext::isBurning),
     onGround(IEvalContext::isOnGround),
+    dying(IEvalContext::isDying),
 
     standing(ctx -> ctx.isInPose(PlayerPose.stand)),
     sneaking(ctx -> ctx.isInPose(PlayerPose.sneak)),
@@ -37,6 +38,15 @@ public enum ExprVariable implements IExpr {
     sleeping(ctx -> ctx.isInPose(PlayerPose.sleep)),
     elytraFlying(ctx -> ctx.isInPose(PlayerPose.elytraFly)),
     crawling(ctx -> ctx.isInPose(PlayerPose.crawl)),
+    hugging(ctx -> ctx.isInPose(PlayerPose.hug)),
+    dancing(ctx -> ctx.isInPose(PlayerPose.dance)),
+    waving(ctx -> ctx.isInPose(PlayerPose.wave)),
+    bowing(ctx -> ctx.isInPose(PlayerPose.bow)),
+    wagging(ctx -> ctx.isInPose(PlayerPose.wag)),
+    crying(ctx -> ctx.isInPose(PlayerPose.cry)),
+    pointing(ctx -> ctx.isInPose(PlayerPose.point)),
+    yesPose(ctx -> ctx.isInPose(PlayerPose.yes)),
+    noPose(ctx -> ctx.isInPose(PlayerPose.no)),
     ;
 
     private static final float PI = (float) Math.PI;

@@ -18,6 +18,7 @@ public interface IEvalContext {
     boolean isRiding();
     boolean isBurning();
     boolean isOnGround();
+    boolean isDying();
     boolean isInPose(PlayerPose pose);
 
     default boolean bool(IExpr expr) {
