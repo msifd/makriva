@@ -1,5 +1,3 @@
-/// <reference types="./types/blockbench" />
-
 import { version } from "../package.json";
 import "./model-format";
 import { loadExportAction, unloadExportAction } from "./export-action";

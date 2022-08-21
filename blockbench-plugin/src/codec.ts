@@ -2,7 +2,7 @@
 import type { BipedPartName } from "./types/makriva.types";
 import type * as Makriva from "./types/makriva.types";
 
-import { exportOptions } from "./export-options";
+import { exportOptions as opts } from "./export-options";
 import { bipedParts } from "./defines";
 
 interface ParentNode {
@@ -169,7 +169,7 @@ function compile(this: Codec) {
   const shape: Makriva.Shape = {
     metadata: {},
     textures: {
-      skin: exportOptions.skinUrl,
+      skin: opts.skinUrl,
     },
     textureSize: [
       Project.texture_width,
@@ -177,21 +177,21 @@ function compile(this: Codec) {
     ],
     hide: [],
     skeleton: collectSkeletonOffsets(),
-    boundingBox: {},
-    animation: {},
+    boundingBox: opts.boundingBoxJson === "" ? undefined : JSON.parse(opts.boundingBoxJson),
+    animation: opts.exprAnimationJson === "" ? undefined : JSON.parse(opts.exprAnimationJson),
     bones: [],
   };
 
   // Metadata
-  if (exportOptions.slimModel) shape.metadata.model = "slim";
+  if (opts.slimModel) shape.metadata.model = "slim";
 
   // Hide
-  if (exportOptions.hideHead) shape.hide.push("head");
-  if (exportOptions.hideBody) shape.hide.push("body");
-  if (exportOptions.hideLeftArm) shape.hide.push("left_arm");
-  if (exportOptions.hideRightArm) shape.hide.push("right_arm");
-  if (exportOptions.hideLeftLeg) shape.hide.push("left_leg");
-  if (exportOptions.hideRightLeg) shape.hide.push("right_leg");
+  if (opts.hideHead) shape.hide.push("head");
+  if (opts.hideBody) shape.hide.push("body");
+  if (opts.hideLeftArm) shape.hide.push("left_arm");
+  if (opts.hideRightArm) shape.hide.push("right_arm");
+  if (opts.hideLeftLeg) shape.hide.push("left_leg");
+  if (opts.hideRightLeg) shape.hide.push("right_leg");
 
   // Skeleton
 

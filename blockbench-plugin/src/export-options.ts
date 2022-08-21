@@ -1,5 +1,7 @@
 export let exportOptions = {
   skinUrl: "",
+  boundingBoxJson: "",
+  exprAnimationJson: "",
   slimModel: false,
   hideHead: false,
   hideBody: false,
@@ -9,6 +11,8 @@ export let exportOptions = {
   hideRightLeg: false,
 };
 
-export const updateOptions = (opt: object) => {
-  exportOptions = opt as typeof exportOptions;
+export type ExportOptions = typeof exportOptions;
+
+export const updateOptions = (opt: ExportOptions) => {
+  exportOptions = opt;
 };
