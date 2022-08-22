@@ -10,8 +10,11 @@ import msifeed.makriva.model.AnimationRules;
 import msifeed.makriva.model.Shape;
 
 import javax.annotation.Nullable;
+import java.io.ByteArrayInputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.charset.StandardCharsets;
-import java.util.zip.CRC32;
+import java.util.zip.Adler32;
 
 public final class ShapeCodec {
     private static final Gson GSON = new GsonBuilder()
@@ -20,7 +23,7 @@ public final class ShapeCodec {
             .create();
 
     public static long checksum(byte[] bytes) {
-        final CRC32 checksum = new CRC32();
+        final Adler32 checksum = new Adler32();
         checksum.update(bytes);
         return checksum.getValue();
     }
@@ -39,6 +42,7 @@ public final class ShapeCodec {
     }
 
     public static Shape fromBytes(byte[] bytes) throws JsonParseException {
+        final Reader reader = new InputStreamReader(new ByteArrayInputStream(bytes));
         final Shape shape = GSON.fromJson(new String(bytes, StandardCharsets.UTF_8), Shape.class);
         if (shape != null)
             shape.initBytes(bytes);

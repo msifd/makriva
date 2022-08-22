@@ -74,6 +74,11 @@ public class EvalContextMock implements IEvalContext {
     }
 
     @Override
+    public boolean isDying() {
+        return false;
+    }
+
+    @Override
     public boolean isInPose(PlayerPose pose) {
         return false;
     }
