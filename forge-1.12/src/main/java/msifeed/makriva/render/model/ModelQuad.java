@@ -64,6 +64,8 @@ public class ModelQuad {
             this.vertices[2] = new PositionTextureVertex(x1, y2, z, u1 / tw, v2 / th);
             this.vertices[3] = new PositionTextureVertex(x2, y2, z, u2 / tw, v2 / th);
         }
+
+        if (spec.mirror) flipFace();
     }
 
     public ModelQuad(PositionTextureVertex[] vertices, float u1, float v1, float u2, float v2, float tw, float th) {
