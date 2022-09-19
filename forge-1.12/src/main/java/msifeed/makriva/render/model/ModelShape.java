@@ -1,13 +1,11 @@
 package msifeed.makriva.render.model;
 
 import msifeed.makriva.MakrivaCommons;
-import msifeed.makriva.MakrivaShared;
 import msifeed.makriva.model.BipedPart;
 import msifeed.makriva.model.Bone;
 import msifeed.makriva.model.PlayerPose;
 import msifeed.makriva.model.Shape;
 import msifeed.makriva.render.AnimationState;
-import msifeed.makriva.render.ModelManager;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -37,8 +35,6 @@ public class ModelShape extends ModelBase {
         this.render = render;
         this.shape = shape;
         this.animationState = new AnimationState(shape.animation);
-
-        shape.textures.forEach(this::loadTexture);
 
         final List<ModelRenderer> firstLevelBones = new ArrayList<>();
         for (Bone spec : shape.bones) {
@@ -107,15 +103,5 @@ public class ModelShape extends ModelBase {
         }
 
         render.bindTexture(res);
-    }
-
-    private void loadTexture(String name, URL url) {
-        if (name.equals("skin") || name.equals("cape") || name.equals("elytra")) return;
-
-        final String path = url.getProtocol() + url.getPath().replace('/', '-');
-        final ResourceLocation resource = new ResourceLocation(MakrivaShared.MOD_ID, path);
-        textures.put(name, resource);
-
-        ModelManager.loadTexture(resource, path, url);
     }
 }

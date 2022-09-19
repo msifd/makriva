@@ -3,21 +3,15 @@ package msifeed.makriva.render;
 import msifeed.makriva.Makriva;
 import msifeed.makriva.MakrivaShared;
 import msifeed.makriva.mixins.render.RenderManagerMixin;
-import msifeed.makriva.mixins.skin.MinecraftAssetsMixin;
 import msifeed.makriva.mixins.skin.NetworkPlayerInfoGetter;
 import msifeed.makriva.model.Shape;
 import msifeed.makriva.render.model.ModelShape;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
-import net.minecraft.client.renderer.ImageBufferDownload;
-import net.minecraft.client.renderer.ThreadDownloadImageData;
 import net.minecraft.client.renderer.entity.RenderPlayer;
-import net.minecraft.client.renderer.texture.ITextureObject;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.resources.DefaultPlayerSkin;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -26,8 +20,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.io.File;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -39,44 +31,35 @@ public class ModelManager {
 
     private ModelShape previewModel = null;
 
-    public static void loadTexture(ResourceLocation resource, String cacheName, URL url) {
-        final TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
-        final ITextureObject textureObject = textureManager.getTexture(resource);
-        if (textureObject == null) {
-            final MinecraftAssetsMixin assetsMixin = (MinecraftAssetsMixin) Minecraft.getMinecraft();
-            final File makrivaDir = new File(assetsMixin.getFileAssets(), MakrivaShared.MOD_ID);
-            final File cacheFile = url.getProtocol().equals("file")
-                    ? new File(url.getPath())
-                    : new File(makrivaDir, cacheName);
-
-            final ThreadDownloadImageData loader = new ThreadDownloadImageData(cacheFile, url.toString(), DefaultPlayerSkin.getDefaultSkinLegacy(), new ImageBufferDownload());
-            textureManager.loadTexture(resource, loader);
-        }
-    }
-
     public boolean hasShape(UUID uuid) {
         return shapes.containsKey(uuid);
     }
 
     @Nonnull
     public Shape getShape(UUID uuid) {
-        return previewModel != null
-                ? previewModel.shape
-                : shapes.getOrDefault(uuid, Shape.DEFAULT);
+        if (previewModel != null) {
+            final EntityPlayerSP self = Minecraft.getMinecraft().player;
+            if (self.getUniqueID().equals(uuid)) return previewModel.shape;
+        }
+        return shapes.getOrDefault(uuid, Shape.DEFAULT);
     }
 
     @Nonnull
     public ModelShape getModel(RenderPlayer render, UUID uuid) {
-        return previewModel != null
-                ? previewModel
-                : models.computeIfAbsent(uuid, id -> buildModel(render, uuid));
+        if (previewModel != null) {
+            final EntityPlayerSP self = Minecraft.getMinecraft().player;
+            if (self.getUniqueID().equals(uuid)) return previewModel;
+        }
+        return models.computeIfAbsent(uuid, id -> buildModel(render, uuid));
     }
 
     @Nullable
     public ModelShape getModelWithoutBuild(UUID uuid) {
-        return previewModel != null
-                ? previewModel
-                : models.get(uuid);
+        if (previewModel != null) {
+            final EntityPlayerSP self = Minecraft.getMinecraft().player;
+            if (self.getUniqueID().equals(uuid)) return previewModel;
+        }
+        return models.get(uuid);
     }
 
     public void updateShape(UUID uuid, Shape shape) {
@@ -129,14 +112,14 @@ public class ModelManager {
         if (conn == null) return;
 
         final NetworkPlayerInfo net = conn.getPlayerInfo(uuid);
-        if (net != null) this.invalidateSkin(net);
+        if (net != null) {
+            this.invalidateSkin(net);
+            net.getLocationSkin(); // Calls loadPlayerTextures inside
+        }
     }
 
     private void invalidateSkin(@Nonnull NetworkPlayerInfo net) {
         final NetworkPlayerInfoGetter mixin = (NetworkPlayerInfoGetter) net;
-
-        final TextureManager tx = Minecraft.getMinecraft().getTextureManager();
-        mixin.getPlayerTextures().values().forEach(tx::deleteTexture);
 
         mixin.getPlayerTextures().clear();
         mixin.setPlayerTexturesLoaded(false);

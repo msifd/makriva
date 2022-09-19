@@ -37,11 +37,11 @@ public class MinecraftSessionServiceWrap implements MinecraftSessionService {
 
         final Shape shape = Makriva.MODELS.getShape(profile.getId());
         final URL skin = shape.textures.get("skin");
-        if (skin != null) textures.put(Type.SKIN, new MinecraftProfileTexture(skin.toString(), shape.metadata));
+        if (skin != null) textures.put(Type.SKIN, new MakrivaProfileTexture(skin.toString(), shape.metadata));
         final URL cape = shape.textures.get("cape");
-        if (cape != null) textures.put(Type.CAPE, new MinecraftProfileTexture(cape.toString(), null));
+        if (cape != null) textures.put(Type.CAPE, new MakrivaProfileTexture(cape.toString(), null));
         final URL elytra = shape.textures.get("elytra");
-        if (elytra != null) textures.put(Type.ELYTRA, new MinecraftProfileTexture(elytra.toString(), null));
+        if (elytra != null) textures.put(Type.ELYTRA, new MakrivaProfileTexture(elytra.toString(), null));
 
         return textures;
     }

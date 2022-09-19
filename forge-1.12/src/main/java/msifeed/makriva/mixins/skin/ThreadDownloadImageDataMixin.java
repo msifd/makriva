@@ -24,6 +24,7 @@ public class ThreadDownloadImageDataMixin {
     @Shadow
     private String imageUrl;
 
+    @Final
     @Shadow
     private IImageBuffer imageBuffer;
 

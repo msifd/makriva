@@ -2,7 +2,7 @@
   {
     "modid": "makriva",
     "name": "Makriva",
-    "description": "",
+    "description": "Complete player model customization via Blockbench",
     "version": "${version}",
     "mcversion": "${mcversion}",
     "url": "",
