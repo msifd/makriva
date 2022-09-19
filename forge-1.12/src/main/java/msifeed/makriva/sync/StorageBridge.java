@@ -1,6 +1,6 @@
 package msifeed.makriva.sync;
 
-import msifeed.makriva.MakrivaConfig;
+import msifeed.makriva.Makriva;
 import msifeed.makriva.model.Shape;
 import msifeed.makriva.storage.IStorageBridge;
 import net.minecraft.client.Minecraft;
@@ -17,7 +17,8 @@ import javax.annotation.Nullable;
 public class StorageBridge implements IStorageBridge {
     @Override
     public void currentShapeChanged(@Nullable String newShapeName) {
-        MakrivaConfig.client.shape = newShapeName != null ? newShapeName : "";
+        Makriva.CFG.setShape(newShapeName != null ? newShapeName : Shape.DEFAULT.name);
+        Makriva.CFG.save();
     }
 
     @Override

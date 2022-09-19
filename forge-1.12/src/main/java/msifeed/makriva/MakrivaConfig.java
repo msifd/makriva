@@ -1,33 +1,40 @@
 package msifeed.makriva;
 
 import msifeed.makriva.model.Shape;
-import net.minecraftforge.common.config.Config;
-import net.minecraftforge.common.config.ConfigManager;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 
-@Config(modid = MakrivaShared.MOD_ID, name = "Makriva", category = "")
+import java.io.File;
+
 public class MakrivaConfig {
-    @Config.Name("client")
-    public static ClientConfig client = new ClientConfig();
-    @Config.Name("server")
-    public static ServerConfig server = new ServerConfig();
+    private final Configuration config;
 
-    public static void sync() {
-        MakrivaShared.LOG.info("Sync config");
-        ConfigManager.sync(MakrivaShared.MOD_ID, Config.Type.INSTANCE);
+    public String shape;
+    public float maxEyeHeight;
+    public float minBBHeight;
+
+    public MakrivaConfig(File cfgFile) {
+        config = new Configuration(cfgFile);
+        readConfig();
+        config.save();
     }
 
-    public static class ClientConfig {
-        @Config.Comment("Current selected shape")
-        public String shape = Shape.DEFAULT.name;
+    public void readConfig() {
+        shape = getShapeProp().getString();
+        maxEyeHeight = config.getFloat("maxEyeHeight", "server", 3.0f, 0, 16f, "Maximal height of player eye position");
+        minBBHeight = config.getFloat("minBBHeight", "server", 0.4f, 0, 1.62f, "Minimal height of player custom bounding box");
     }
 
-    public static class ServerConfig {
-        @Config.Comment("Maximal height of player' eye position")
-        @Config.RangeDouble(min = 0)
-        public float maxEyeHeight = 4.0f;
+    public void setShape(String name) {
+        shape = name;
+        getShapeProp().setValue(name);
+    }
 
-        @Config.Comment("Minimal height of player' custom bounding box")
-        @Config.RangeDouble(min = 0)
-        public float minBBHeight = 0.6f;
+    public Property getShapeProp() {
+        return config.get("client", "shape", Shape.DEFAULT.name, "Current selected shape");
+    }
+
+    public void save() {
+        config.save();
     }
 }

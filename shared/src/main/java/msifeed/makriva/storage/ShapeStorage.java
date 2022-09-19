@@ -21,14 +21,12 @@ public class ShapeStorage {
     private final Map<String, Shape> shapes = new HashMap<>();
     private final IStorageBridge bridge;
 
-    private String currentShapeName = null;
+    private String currentShapeName = "initial non-null value";
 
-    public ShapeStorage(IStorageBridge bridge) {
+    public ShapeStorage(IStorageBridge bridge, String lastShapeName) {
+        this.shapes.put(Shape.DEFAULT.name, Shape.DEFAULT);
         this.bridge = bridge;
-        shapes.put(Shape.DEFAULT.name, Shape.DEFAULT);
-    }
 
-    public void init() {
         final Path dir = Paths.get(MakrivaShared.MOD_ID);
 
         try {
@@ -45,6 +43,9 @@ public class ShapeStorage {
         } catch (IOException e) {
             MakrivaShared.LOG.error(STORAGE, "Failed to walk through existing shapes", e);
         }
+
+        this.currentShapeName = null;
+        selectCurrentShape(lastShapeName);
 
         try {
             new Thread(new StorageWatcher(dir, this)).start();

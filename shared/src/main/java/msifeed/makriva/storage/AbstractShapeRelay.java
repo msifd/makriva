@@ -15,6 +15,7 @@ public abstract class AbstractShapeRelay {
     protected final Gson gson = new Gson();
 
     protected abstract void relayAll(Map<UUID, CheckedBytes> toRelay);
+
     protected abstract void updateSharedData(UUID uuid, SharedShape shared);
 
     protected void maybeAddShape(UUID uuid, byte[] shapeBytes) {
