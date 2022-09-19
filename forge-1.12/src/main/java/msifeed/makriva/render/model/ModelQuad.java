@@ -16,13 +16,14 @@ public class ModelQuad {
     private PositionTextureVertex[] vertices = new PositionTextureVertex[4];
 
     public ModelQuad(ModelRenderer renderer, Quad spec) {
-        final float u1 = spec.uv[0];
         final float v1 = spec.uv[1];
         final float tw = renderer.textureWidth;
         final float th = renderer.textureHeight;
 
         if (spec.size[0] == 0) {
-            final float u2 = (float) Math.floor(u1 + spec.size[2]);
+            final float u = spec.uv[0];
+            final float u1 = spec.mirror ? (float) Math.floor(u + spec.size[2]) : u;
+            final float u2 = spec.mirror ? u : (float) Math.floor(u + spec.size[2]);
             final float v2 = (float) Math.floor(v1 + spec.size[1]);
 
             final float y1 = spec.pos[1] - spec.delta;
@@ -36,7 +37,9 @@ public class ModelQuad {
             this.vertices[2] = new PositionTextureVertex(x, y2, z2, u1 / tw, v2 / th);
             this.vertices[3] = new PositionTextureVertex(x, y2, z1, u2 / tw, v2 / th);
         } else if (spec.size[1] == 0) {
-            final float u2 = (float) Math.floor(u1 + spec.size[0]);
+            final float u = spec.uv[0];
+            final float u1 = spec.mirror ? (float) Math.floor(u + spec.size[0]) : u;
+            final float u2 = spec.mirror ? u : (float) Math.floor(u + spec.size[0]);
             final float v2 = (float) Math.floor(v1 + spec.size[2]);
 
             final float x1 = spec.pos[0] - spec.delta;
@@ -50,7 +53,9 @@ public class ModelQuad {
             this.vertices[2] = new PositionTextureVertex(x1, y, z1, u1 / tw, v2 / th);
             this.vertices[3] = new PositionTextureVertex(x2, y, z1, u2 / tw, v2 / th);
         } else {
-            final float u2 = (float) Math.floor(u1 + spec.size[0]);
+            final float u = spec.uv[0];
+            final float u1 = spec.mirror ? (float) Math.floor(u + spec.size[0]) : u;
+            final float u2 = spec.mirror ? u : (float) Math.floor(u + spec.size[0]);
             final float v2 = (float) Math.floor(v1 + spec.size[1]);
 
             final float x1 = spec.pos[0] - spec.delta;
@@ -64,8 +69,6 @@ public class ModelQuad {
             this.vertices[2] = new PositionTextureVertex(x1, y2, z, u1 / tw, v2 / th);
             this.vertices[3] = new PositionTextureVertex(x2, y2, z, u2 / tw, v2 / th);
         }
-
-        if (spec.mirror) flipFace();
     }
 
     public ModelQuad(PositionTextureVertex[] vertices, float u1, float v1, float u2, float v2, float tw, float th) {
