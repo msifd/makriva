@@ -12,6 +12,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -120,7 +121,10 @@ public class ModelManager {
 
     private void invalidateSkin(@Nonnull NetworkPlayerInfo net) {
         final NetworkPlayerInfoGetter mixin = (NetworkPlayerInfoGetter) net;
+        final TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
 
+        MakrivaShared.LOG.info("Invalidate textures of player {}", net.getGameProfile().getName());
+        mixin.getPlayerTextures().forEach((type, res) -> textureManager.deleteTexture(res));
         mixin.getPlayerTextures().clear();
         mixin.setPlayerTexturesLoaded(false);
     }
