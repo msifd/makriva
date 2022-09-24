@@ -9,13 +9,9 @@ interface ParentNode {
   origin: [number, number, number]
 }
 
-function isZeroed(arr: [number, number, number] | undefined): boolean {
-  return !arr || arr[0] == 0 && arr[1] == 0 && arr[2] == 0;
-}
-
-function isQuad(c: BCube) {
-  return c.to[0] == c.from[0] || c.to[1] == c.from[1] || c.to[2] == c.from[2];
-}
+const isZeroed = (arr: [number, number, number] | undefined): boolean => !arr || arr[0] == 0 && arr[1] == 0 && arr[2] == 0;
+const areSame = (a: number, b: number): boolean => Math.abs((a - b) / b) < 0.000001;
+const isQuad = (c: BCube) => areSame(c.to[0], c.from[0]) || areSame(c.to[1], c.from[1]) || areSame(c.to[2], c.from[2]);
 
 function compileCube(bb: BCube, parent: ParentNode): Makriva.Cube {
   return {
@@ -177,8 +173,8 @@ function compile(this: Codec) {
     ],
     hide: [],
     skeleton: collectSkeletonOffsets(),
-    boundingBox: opts.boundingBoxJson === "" ? undefined : JSON.parse(opts.boundingBoxJson),
-    animation: opts.exprAnimationJson === "" ? undefined : JSON.parse(opts.exprAnimationJson),
+    boundingBox: opts.boundingBoxJson ? JSON.parse(opts.boundingBoxJson) : undefined,
+    animation: opts.exprAnimationJson ? JSON.parse(opts.exprAnimationJson) : undefined,
     bones: [],
   };
 
