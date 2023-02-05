@@ -1,30 +1,44 @@
 package msifeed.makriva.sync;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 import msifeed.makriva.model.Shape;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class MessageUpload implements IMessage {
-    public byte[] shapeBytes;
+import java.util.UUID;
+
+public class MessageUpload implements IMessage, IMessageHandler<MessageUpload, IMessage> {
+    private final PayloadUpload payload;
 
     public MessageUpload() {
+        this.payload = new PayloadUpload();
     }
 
     public MessageUpload(Shape shape) {
-        this.shapeBytes = shape.source;
+        this.payload = new PayloadUpload(shape);
     }
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        final int len = buf.readInt();
-        shapeBytes = ByteBufUtil.getBytes(buf, buf.readerIndex(), len);
-        buf.readerIndex(buf.readerIndex() + len);
+        payload.decodeFrom(buf);
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
-        buf.writeInt(shapeBytes.length);
-        buf.writeBytes(shapeBytes);
+        payload.encodeInto(buf);
+    }
+
+    @Override
+    public IMessage onMessage(MessageUpload message, MessageContext ctx) {
+        if (message.payload.shapeBytes == null || message.payload.shapeBytes.length == 0) return null;
+
+        FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> {
+            final UUID uuid = ctx.getServerHandler().player.getGameProfile().getId();
+            PayloadUpload.serverHandle(message.payload, uuid);
+        });
+
+        return null;
     }
 }

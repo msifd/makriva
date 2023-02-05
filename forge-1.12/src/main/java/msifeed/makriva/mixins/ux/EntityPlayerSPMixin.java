@@ -1,6 +1,6 @@
 package msifeed.makriva.mixins.ux;
 
-import msifeed.makriva.Makriva;
+import msifeed.makriva.MakrivaShared;
 import msifeed.makriva.model.PlayerPose;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.math.BlockPos;
@@ -28,7 +28,7 @@ public class EntityPlayerSPMixin {
     }
 
     private boolean willSuffocate(EntityPlayerSP self) {
-        final float standEyeHeight = Makriva.STORAGE.getCurrentShape().getEyeHeight(PlayerPose.stand);
+        final float standEyeHeight = MakrivaShared.STORAGE.getCurrentShape().getEyeHeight(PlayerPose.stand);
 
         final BlockPos.PooledMutableBlockPos pool = BlockPos.PooledMutableBlockPos.retain();
 

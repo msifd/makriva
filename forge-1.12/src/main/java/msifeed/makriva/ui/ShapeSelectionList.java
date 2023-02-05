@@ -1,6 +1,6 @@
 package msifeed.makriva.ui;
 
-import msifeed.makriva.Makriva;
+import msifeed.makriva.MakrivaShared;
 import msifeed.makriva.model.Shape;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiListExtended;
@@ -16,7 +16,7 @@ public class ShapeSelectionList extends GuiListExtended {
         super(mcIn, widthIn, heightIn, topIn, bottomIn, slotHeightIn);
         showSelectionBox = false;
 
-        for (Shape s : Makriva.STORAGE.getShapes().values()) {
+        for (Shape s : MakrivaShared.STORAGE.getShapes().values()) {
             entries.add(new ShapeListEntry(screen, s));
         }
 

@@ -1,6 +1,5 @@
 package msifeed.makriva.render;
 
-import msifeed.makriva.Makriva;
 import msifeed.makriva.render.model.ModelShape;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.RenderPlayer;
@@ -23,9 +22,10 @@ public class LayerMakrivaBones implements LayerRenderer<AbstractClientPlayer> {
         if (!player.hasPlayerInfo() || player.isInvisible()) return;
 
         final UUID uuid = player.getGameProfile().getId();
-        final ModelShape model = Makriva.MODELS.getModel(renderer, uuid);
-        RenderContext.CTX.update(player);
-        RenderContext.CTX.update(limbSwingAmount, limbSwingTicks, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
+        final ModelShape model = RenderBridge.getModel(uuid);
+        RenderUtils.updateEvalPlayer(player);
+        RenderUtils.updateEvalTicks(limbSwingAmount, limbSwingTicks, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
+
         model.animationState.update();
         model.render = renderer;
 

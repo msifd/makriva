@@ -1,8 +1,8 @@
 buildscript {
     repositories {
         mavenCentral()
-        maven { url = 'https://maven.minecraftforge.net/' }
-        maven { url = 'https://repo.spongepowered.org/repository/maven-public' }
+        maven { url 'https://maven.minecraftforge.net/' }
+        maven { url 'https://repo.spongepowered.org/repository/maven-public' }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:3.+'
@@ -18,7 +18,7 @@ version = makrivaVersion + '-1.12'
 group = 'msifeed.makriva'
 archivesBaseName = 'makriva'
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = JavaVersion.VERSION_1_8
 
 minecraft {
     mappings channel: 'stable', version: '39-1.12'

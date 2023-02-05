@@ -1,7 +1,7 @@
 package msifeed.makriva.mixins.skin;
 
 import com.mojang.authlib.GameProfile;
-import msifeed.makriva.Makriva;
+import msifeed.makriva.MakrivaShared;
 import msifeed.makriva.model.Shape;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import org.spongepowered.asm.mixin.Final;
@@ -19,7 +19,7 @@ public class NetworkPlayerInfoMixin {
 
     @Inject(method = "getSkinType", at = @At("HEAD"), cancellable = true)
     public void getSkinType(CallbackInfoReturnable<String> cir) {
-        final Shape shape = Makriva.MODELS.getShape(gameProfile.getId());
+        final Shape shape = MakrivaShared.MODELS.getShape(gameProfile.getId());
         final String modelType = shape.metadata.get("model");
         if (modelType != null) cir.setReturnValue(modelType);
     }

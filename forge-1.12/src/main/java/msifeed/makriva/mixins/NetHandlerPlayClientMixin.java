@@ -1,7 +1,6 @@
 package msifeed.makriva.mixins;
 
-import msifeed.makriva.Makriva;
-import msifeed.makriva.sync.SyncRelay;
+import msifeed.makriva.MakrivaShared;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.play.server.SPacketJoinGame;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,6 +12,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class NetHandlerPlayClientMixin {
     @Inject(method = "handleJoinGame", at = @At("RETURN"))
     public void handleJoinGame(SPacketJoinGame packetIn, CallbackInfo ci) {
-        SyncRelay.upload(Makriva.STORAGE.getCurrentShape());
+        MakrivaShared.RELAY.upload(MakrivaShared.STORAGE.getCurrentShape());
     }
 }

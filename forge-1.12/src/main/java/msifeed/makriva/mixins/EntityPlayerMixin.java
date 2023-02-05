@@ -1,7 +1,7 @@
 package msifeed.makriva.mixins;
 
-import msifeed.makriva.Makriva;
 import msifeed.makriva.MakrivaCommons;
+import msifeed.makriva.MakrivaShared;
 import msifeed.makriva.model.PlayerPose;
 import msifeed.makriva.model.SharedShape;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,7 +24,7 @@ public abstract class EntityPlayerMixin {
         final EntityPlayer self = (EntityPlayer) (Object) this;
 
         final UUID uuid = self.getGameProfile().getId();
-        final SharedShape shape = Makriva.SHARED.get(uuid);
+        final SharedShape shape = MakrivaShared.SHARED.get(uuid);
         final PlayerPose pose = MakrivaCommons.findPose(self);
         return MakrivaCommons.calculateEyeHeight(self, shape, pose);
     }
@@ -38,7 +38,7 @@ public abstract class EntityPlayerMixin {
         final EntityPlayer self = (EntityPlayer) (Object) this;
 
         final UUID uuid = self.getGameProfile().getId();
-        final SharedShape shape = Makriva.SHARED.get(uuid);
+        final SharedShape shape = MakrivaShared.SHARED.get(uuid);
 
         final float[] sizes = shape.getBox(MakrivaCommons.findPose(self));
         if (sizes.length == 2) {

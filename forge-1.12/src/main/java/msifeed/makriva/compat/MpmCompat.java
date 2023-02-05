@@ -1,6 +1,6 @@
 package msifeed.makriva.compat;
 
-import msifeed.makriva.Makriva;
+import msifeed.makriva.MakrivaShared;
 import msifeed.makriva.model.BipedPart;
 import msifeed.makriva.model.PlayerPose;
 import msifeed.makriva.model.Shape;
@@ -74,9 +74,9 @@ public class MpmCompat {
     public static void renderHand(RenderHandEvent event) {
         final AbstractClientPlayer player = Minecraft.getMinecraft().player;
         final UUID uuid = player.getGameProfile().getId();
-        if (!Makriva.MODELS.hasShape(uuid)) return;
-        final Shape shape = Makriva.MODELS.getShape(uuid);
+        if (!MakrivaShared.MODELS.hasShape(uuid)) return;
 
+        final Shape shape = MakrivaShared.MODELS.getShape(uuid);
         prioritizeSkin(player, shape);
     }
 
@@ -91,9 +91,9 @@ public class MpmCompat {
 
         final AbstractClientPlayer player = (AbstractClientPlayer) event.getEntity();
         final UUID uuid = player.getGameProfile().getId();
-        if (!Makriva.MODELS.hasShape(uuid)) return;
-        final Shape shape = Makriva.MODELS.getShape(uuid);
+        if (!MakrivaShared.MODELS.hasShape(uuid)) return;
 
+        final Shape shape = MakrivaShared.MODELS.getShape(uuid);
         prioritizeSkin(player, shape);
 
         // ... and disable head wear

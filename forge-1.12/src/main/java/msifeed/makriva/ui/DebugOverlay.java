@@ -1,9 +1,9 @@
 package msifeed.makriva.ui;
 
-import msifeed.makriva.Makriva;
 import msifeed.makriva.MakrivaCommons;
 import msifeed.makriva.expr.IEvalContext;
-import msifeed.makriva.render.RenderContext;
+import msifeed.makriva.render.RenderBridge;
+import msifeed.makriva.render.SharedRenderState;
 import msifeed.makriva.render.model.ModelShape;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -18,7 +18,7 @@ public class DebugOverlay {
         if (event.getType() != RenderGameOverlayEvent.ElementType.TEXT) return;
 
         final UUID uuid = Minecraft.getMinecraft().getSession().getProfile().getId();
-        final ModelShape model = Makriva.MODELS.getModelWithoutBuild(uuid);
+        final ModelShape model = RenderBridge.getModelWithoutBuild(uuid);
         if (model == null || model.shape.debug.isEmpty()) return;
 
         final Printer p = new Printer();
@@ -27,7 +27,7 @@ public class DebugOverlay {
         p.print("Pose: " + MakrivaCommons.findPose(Minecraft.getMinecraft().player));
         p.print("Model: " + model.render.getMainModel().getClass().getSimpleName());
 
-        final IEvalContext ctx = RenderContext.CTX;
+        final IEvalContext ctx = SharedRenderState.EVAL_CTX;
         model.shape.debug.forEach((s, expr) -> p.print(s + ": " + ctx.num(expr)));
     }
 

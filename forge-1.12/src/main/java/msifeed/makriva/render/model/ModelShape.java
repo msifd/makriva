@@ -6,6 +6,7 @@ import msifeed.makriva.model.Bone;
 import msifeed.makriva.model.PlayerPose;
 import msifeed.makriva.model.Shape;
 import msifeed.makriva.render.AnimationState;
+import msifeed.makriva.render.IShapeModel;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -22,7 +23,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.*;
 
 @SideOnly(Side.CLIENT)
-public class ModelShape extends ModelBase {
+public class ModelShape extends ModelBase implements IShapeModel {
     public final Shape shape;
     public final Map<String, ResourceLocation> textures = new HashMap<>();
     public final Map<EnumHandSide, List<ModelBone>> handBones = new EnumMap<>(EnumHandSide.class);
@@ -50,6 +51,11 @@ public class ModelShape extends ModelBase {
         // Removes sub-child bones
         boxList.clear();
         boxList.addAll(firstLevelBones);
+    }
+
+    @Override
+    public Shape getShape() {
+        return shape;
     }
 
     public float[] getSkeletonOffset(BipedPart part) {

@@ -3,8 +3,11 @@ package msifeed.makriva;
 import msifeed.makriva.compat.MakrivaCompat;
 import msifeed.makriva.compat.MpmCompat;
 import msifeed.makriva.render.ModelManager;
+import msifeed.makriva.render.RenderBridge;
+import msifeed.makriva.render.RenderContext;
+import msifeed.makriva.render.SharedRenderState;
 import msifeed.makriva.storage.ShapeStorage;
-import msifeed.makriva.sync.SharedShapes;
+import msifeed.makriva.sync.NetworkBridge;
 import msifeed.makriva.sync.StorageBridge;
 import msifeed.makriva.sync.SyncRelay;
 import msifeed.makriva.ui.DebugOverlay;
@@ -19,26 +22,22 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 @Mod.EventBusSubscriber
 @Mod(modid = MakrivaShared.MOD_ID)
-public class Makriva {
-    public static final SyncRelay RELAY = new SyncRelay();
-    public static final SharedShapes SHARED = new SharedShapes();
-
-    public static MakrivaConfig CFG;
-    public static ShapeStorage STORAGE;
-    public static ModelManager MODELS;
-
+public class MakrivaMod {
     @EventHandler
-    public void preInit(FMLPreInitializationEvent event) {
-        CFG = new MakrivaConfig(event.getSuggestedConfigurationFile());
-        RELAY.init();
+    public void init(FMLPreInitializationEvent event) {
+        MakrivaShared.CFG = new ConfigWrapper(event.getSuggestedConfigurationFile());
+        MakrivaShared.RELAY = new SyncRelay(new NetworkBridge());
 
         if (FMLCommonHandler.instance().getSide().isClient()) {
             MinecraftForge.EVENT_BUS.register(DebugOverlay.class);
             MakrivaKeybinds.init();
 
-            STORAGE = new ShapeStorage(new StorageBridge(), CFG.shape);
-            MODELS = new ModelManager();
-            MinecraftForge.EVENT_BUS.register(MODELS);
+            MakrivaShared.STORAGE = new ShapeStorage(new StorageBridge());
+            MakrivaShared.MODELS = new ModelManager<>(new RenderBridge());
+            SharedRenderState.EVAL_CTX = new RenderContext();
+
+            MinecraftForge.EVENT_BUS.register(new ClientEventsHandler());
+            MinecraftForge.EVENT_BUS.register(MakrivaShared.MODELS);
         }
     }
 

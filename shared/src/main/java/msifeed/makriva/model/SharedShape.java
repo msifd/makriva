@@ -5,9 +5,9 @@ import java.util.EnumMap;
 import java.util.Map;
 
 public class SharedShape {
-    public static SharedShape DEFAULT_SHARED = new SharedShape();
     private static final float standingEyeHeight = 1.62f;
     private static final float[] standingBBox = new float[]{0.6f, 1.8f};
+    public static SharedShape DEFAULT_SHARED = new SharedShape();
 
     static {
         DEFAULT_SHARED.eyeHeight.put(PlayerPose.stand, standingEyeHeight);

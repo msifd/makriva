@@ -32,7 +32,7 @@ public class AnimationState {
         skeleton.clear();
         rotations.clear();
         hidden.clear();
-        rules.acceptActive(RenderContext.CTX, this::visitRule);
+        rules.acceptActive(SharedRenderState.EVAL_CTX, this::visitRule);
     }
 
     private void visitRule(AnimationRules rule) {
@@ -48,15 +48,15 @@ public class AnimationState {
                 merge3(rots, params.rotation);
             }
             if (params.visible != null) {
-                if (!RenderContext.CTX.bool(params.visible))
+                if (!SharedRenderState.EVAL_CTX.bool(params.visible))
                     hidden.add(entry.getKey());
             }
         }
     }
 
     private void merge3(float[] values, IExpr[] expr) {
-        values[0] += RenderContext.CTX.num(expr[0]);
-        values[1] += RenderContext.CTX.num(expr[1]);
-        values[2] += RenderContext.CTX.num(expr[2]);
+        values[0] += SharedRenderState.EVAL_CTX.num(expr[0]);
+        values[1] += SharedRenderState.EVAL_CTX.num(expr[1]);
+        values[2] += SharedRenderState.EVAL_CTX.num(expr[2]);
     }
 }

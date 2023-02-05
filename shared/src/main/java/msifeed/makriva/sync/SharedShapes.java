@@ -1,7 +1,7 @@
 package msifeed.makriva.sync;
 
-import msifeed.makriva.Makriva;
 import msifeed.makriva.MakrivaShared;
+import msifeed.makriva.config.ConfigData;
 import msifeed.makriva.model.SharedShape;
 
 import javax.annotation.Nonnull;
@@ -20,8 +20,9 @@ public class SharedShapes {
     public void update(UUID uuid, SharedShape shape) {
         MakrivaShared.LOG.info("Update shared shape {}", uuid);
 
-        shape.eyeHeight.replaceAll((p, h) -> Math.min(h, Makriva.CFG.maxEyeHeight));
-        shape.boundingBox.forEach((p, s) -> s[1] = Math.max(s[1], Makriva.CFG.minBBHeight));
+        final ConfigData cfg = MakrivaShared.CFG.get();
+        shape.eyeHeight.replaceAll((p, h) -> Math.min(h, cfg.maxEyeHeight));
+        shape.boundingBox.forEach((p, s) -> s[1] = Math.max(s[1], cfg.minBBHeight));
 
         shapes.put(uuid, shape);
     }

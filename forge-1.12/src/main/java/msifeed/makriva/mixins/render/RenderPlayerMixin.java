@@ -1,10 +1,11 @@
 package msifeed.makriva.mixins.render;
 
-import msifeed.makriva.Makriva;
+import msifeed.makriva.MakrivaShared;
 import msifeed.makriva.model.BipedPart;
 import msifeed.makriva.model.Shape;
 import msifeed.makriva.render.LayerMakrivaBones;
 import msifeed.makriva.render.PartSelector;
+import msifeed.makriva.render.RenderBridge;
 import msifeed.makriva.render.RenderUtils;
 import msifeed.makriva.render.model.ModelBone;
 import msifeed.makriva.render.model.ModelShape;
@@ -46,7 +47,7 @@ public class RenderPlayerMixin {
     private void setModelVisibilities(AbstractClientPlayer clientPlayer, CallbackInfo ci) {
         final RenderPlayer self = (RenderPlayer) (Object) this;
         final ModelPlayer model = self.getMainModel();
-        final Shape shape = Makriva.MODELS.getShape(clientPlayer.getGameProfile().getId());
+        final Shape shape = MakrivaShared.MODELS.getShape(clientPlayer.getGameProfile().getId());
         for (BipedPart bp : shape.hide) {
             for (ModelRenderer part : PartSelector.findParts(model, bp)) {
                 part.showModel = false;
@@ -56,7 +57,7 @@ public class RenderPlayerMixin {
 
     @Inject(method = "preRenderCallback*", at = @At("RETURN"))
     private void preRenderCallback(AbstractClientPlayer clientPlayer, float partialTickTime, CallbackInfo ci) {
-        final Shape shape = Makriva.MODELS.getShape(clientPlayer.getGameProfile().getId());
+        final Shape shape = MakrivaShared.MODELS.getShape(clientPlayer.getGameProfile().getId());
 
         ((RenderMixin) this).setShadowSize(0.5f * shape.modelScale);
 
@@ -67,9 +68,8 @@ public class RenderPlayerMixin {
 
     @Inject(method = "renderRightArm", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GlStateManager;disableBlend()V"))
     private void renderRightArm(AbstractClientPlayer player, CallbackInfo ci) {
-        final RenderPlayer self = (RenderPlayer) (Object) this;
         final UUID uuid = player.getGameProfile().getId();
-        final ModelShape model = Makriva.MODELS.getModel(self, uuid);
+        final ModelShape model = RenderBridge.getModel(uuid);
 
         final List<ModelBone> bones = model.handBones.get(EnumHandSide.RIGHT);
         if (bones == null) return;
@@ -81,9 +81,8 @@ public class RenderPlayerMixin {
 
     @Inject(method = "renderLeftArm", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GlStateManager;disableBlend()V"))
     private void renderLeftArm(AbstractClientPlayer player, CallbackInfo ci) {
-        final RenderPlayer self = (RenderPlayer) (Object) this;
         final UUID uuid = player.getGameProfile().getId();
-        final ModelShape model = Makriva.MODELS.getModel(self, uuid);
+        final ModelShape model = RenderBridge.getModel(uuid);
 
         final List<ModelBone> bones = model.handBones.get(EnumHandSide.LEFT);
         if (bones == null) return;

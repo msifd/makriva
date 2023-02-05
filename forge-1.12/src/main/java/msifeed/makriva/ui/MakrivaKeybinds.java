@@ -1,6 +1,6 @@
 package msifeed.makriva.ui;
 
-import msifeed.makriva.Makriva;
+import msifeed.makriva.MakrivaShared;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.text.TextComponentString;
@@ -29,7 +29,7 @@ public class MakrivaKeybinds {
     public static void onKeyTyped(InputEvent.KeyInputEvent event) {
         if (RELOAD_SKINS.isKeyDown()) {
             Minecraft.getMinecraft().player.sendStatusMessage(new TextComponentString("Reload skins..."), true);
-            Makriva.MODELS.reloadAllSkins();
+            MakrivaShared.MODELS.invalidateAllSkins();
         } else if (SHAPES_MENU.isKeyDown()) {
             Minecraft.getMinecraft().displayGuiScreen(new ScreenShapeList());
         }

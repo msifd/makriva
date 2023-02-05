@@ -1,7 +1,7 @@
 package msifeed.makriva.render;
 
-import msifeed.makriva.Makriva;
 import msifeed.makriva.MakrivaCommons;
+import msifeed.makriva.MakrivaShared;
 import msifeed.makriva.model.BipedPart;
 import msifeed.makriva.model.PlayerPose;
 import msifeed.makriva.model.Shape;
@@ -11,11 +11,15 @@ import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.UUID;
 import java.util.function.Consumer;
 
+@SideOnly(Side.CLIENT)
 public class RenderUtils {
+
     public static void renderWithExternalTransform(ModelRenderer model, float scale, Consumer<Float> render) {
         GlStateManager.translate(model.offsetX, model.offsetY, model.offsetZ);
 
@@ -55,7 +59,7 @@ public class RenderUtils {
 
     public static void setPlayerSkeletonOffsets(ModelPlayer biped, AbstractClientPlayer entity, float scale) {
         final UUID uuid = entity.getGameProfile().getId();
-        final ModelShape model = Makriva.MODELS.getModelWithoutBuild(uuid);
+        final ModelShape model = RenderBridge.getModelWithoutBuild(uuid);
         if (model == null) return;
 
         for (BipedPart bp : BipedPart.values()) {
@@ -70,7 +74,7 @@ public class RenderUtils {
     }
 
     public static void setBipedSkeletonOffsets(ModelBiped biped, AbstractClientPlayer entity, float scale) {
-        final ModelShape model = Makriva.MODELS.getModelWithoutBuild(entity.getUniqueID());
+        final ModelShape model = RenderBridge.getModelWithoutBuild(entity.getUniqueID());
         if (model == null) return;
 
         for (BipedPart bp : BipedPart.values()) {
@@ -83,7 +87,7 @@ public class RenderUtils {
     }
 
     public static double adjustYPosOfScaledModel(AbstractClientPlayer player, double y) {
-        final Shape shape = Makriva.MODELS.getShape(player.getGameProfile().getId());
+        final Shape shape = MakrivaShared.MODELS.getShape(player.getGameProfile().getId());
         if (shape.modelScale != 1) {
             if (player.isSneaking())
                 y += 0.125 - 0.125 * shape.modelScale;
@@ -91,5 +95,22 @@ public class RenderUtils {
                 y += 0.5 * (1 - shape.modelScale);
         }
         return y;
+    }
+
+    public static void updateEvalPlayer(AbstractClientPlayer player) {
+        final RenderContext ctx = (RenderContext) SharedRenderState.EVAL_CTX;
+        ctx.player = player;
+        ctx.currentPose = MakrivaCommons.findPose(player);
+    }
+
+    public static void updateEvalTicks(float limbSwingAmount, float limbSwingTicks, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+        final RenderContext ctx = (RenderContext) SharedRenderState.EVAL_CTX;
+        ctx.limbSwing = limbSwingAmount;
+        ctx.limbSwingTicks = limbSwingTicks;
+        ctx.partialTicks = partialTicks;
+        ctx.ageInTicks = ageInTicks;
+        ctx.netHeadYaw = netHeadYaw;
+        ctx.headPitch = headPitch;
+        ctx.scale = scale;
     }
 }

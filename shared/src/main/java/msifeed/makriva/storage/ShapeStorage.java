@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class ShapeStorage {
     private static final Marker STORAGE = MarkerManager.getMarker("Storage");
@@ -23,7 +24,7 @@ public class ShapeStorage {
 
     private String currentShapeName = "initial non-null value";
 
-    public ShapeStorage(IStorageBridge bridge, String lastShapeName) {
+    public ShapeStorage(IStorageBridge bridge) {
         this.shapes.put(Shape.DEFAULT.name, Shape.DEFAULT);
         this.bridge = bridge;
 
@@ -36,16 +37,15 @@ public class ShapeStorage {
             return;
         }
 
-        try {
-            Files.walk(dir)
-                    .filter(file -> file.toString().endsWith(".json"))
+        try (Stream<Path> files = Files.walk(dir)) {
+            files.filter(file -> file.toString().endsWith(".json"))
                     .forEach(this::loadShapeFile);
         } catch (IOException e) {
             MakrivaShared.LOG.error(STORAGE, "Failed to walk through existing shapes", e);
         }
 
         this.currentShapeName = null;
-        selectCurrentShape(lastShapeName);
+        selectCurrentShape(MakrivaShared.CFG.get().shape);
 
         try {
             new Thread(new StorageWatcher(dir, this)).start();
@@ -82,10 +82,11 @@ public class ShapeStorage {
         if (isKnownShape(name)) {
             MakrivaShared.LOG.info("Select current shape: " + name);
             currentShapeName = name;
-            bridge.uploadShape(getCurrentShape());
-            bridge.currentShapeChanged(name);
+
+            MakrivaShared.RELAY.upload(getCurrentShape());
+            MakrivaShared.CFG.selectShape(name);
         } else if (currentShapeName != null) {
-            bridge.currentShapeChanged(null);
+            MakrivaShared.CFG.selectShape(Shape.DEFAULT.name);
         }
     }
 
@@ -100,7 +101,7 @@ public class ShapeStorage {
             selectCurrentShape(name);
         }
         if (isCurrentShape(name)) {
-            bridge.uploadShape(shape);
+            MakrivaShared.RELAY.upload(shape);
         }
     }
 

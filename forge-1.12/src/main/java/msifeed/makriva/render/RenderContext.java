@@ -1,6 +1,5 @@
 package msifeed.makriva.render;
 
-import msifeed.makriva.MakrivaCommons;
 import msifeed.makriva.expr.IEvalContext;
 import msifeed.makriva.model.PlayerPose;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -10,8 +9,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderContext implements IEvalContext {
-    public static final RenderContext CTX = new RenderContext();
-
     public AbstractClientPlayer player = null;
     public PlayerPose currentPose = PlayerPose.stand;
 
@@ -23,19 +20,22 @@ public class RenderContext implements IEvalContext {
     public float headPitch;
     public float scale;
 
-    public void update(AbstractClientPlayer player) {
-        this.player = player;
-        this.currentPose = MakrivaCommons.findPose(player);
-    }
-
-    public void update(float limbSwingAmount, float limbSwingTicks, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        this.limbSwing = limbSwingAmount;
-        this.limbSwingTicks = limbSwingTicks;
-        this.partialTicks = partialTicks;
-        this.ageInTicks = ageInTicks;
-        this.netHeadYaw = netHeadYaw;
-        this.headPitch = headPitch;
-        this.scale = scale;
+    private static EntityEquipmentSlot convertSlot(InventorySlot slot) {
+        switch (slot) {
+            default:
+            case MAINHAND:
+                return EntityEquipmentSlot.MAINHAND;
+            case OFFHAND:
+                return EntityEquipmentSlot.OFFHAND;
+            case HEAD:
+                return EntityEquipmentSlot.HEAD;
+            case CHEST:
+                return EntityEquipmentSlot.CHEST;
+            case LEGS:
+                return EntityEquipmentSlot.LEGS;
+            case FEET:
+                return EntityEquipmentSlot.FEET;
+        }
     }
 
     @Override
@@ -76,24 +76,6 @@ public class RenderContext implements IEvalContext {
     @Override
     public boolean hasItemInSlot(InventorySlot slot) {
         return !player.getItemStackFromSlot(convertSlot(slot)).isEmpty();
-    }
-
-    private static EntityEquipmentSlot convertSlot(InventorySlot slot) {
-        switch (slot) {
-            default:
-            case MAINHAND:
-                return EntityEquipmentSlot.MAINHAND;
-            case OFFHAND:
-                return EntityEquipmentSlot.OFFHAND;
-            case HEAD:
-                return EntityEquipmentSlot.HEAD;
-            case CHEST:
-                return EntityEquipmentSlot.CHEST;
-            case LEGS:
-                return EntityEquipmentSlot.LEGS;
-            case FEET:
-                return EntityEquipmentSlot.FEET;
-        }
     }
 
     @Override

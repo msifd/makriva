@@ -1,9 +1,9 @@
 package msifeed.makriva.ui;
 
-import msifeed.makriva.Makriva;
 import msifeed.makriva.MakrivaShared;
 import msifeed.makriva.model.PlayerPose;
 import msifeed.makriva.model.Shape;
+import msifeed.makriva.render.RenderBridge;
 import msifeed.makriva.render.model.ModelShape;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.GuiButton;
@@ -30,7 +30,7 @@ public class ScreenShapeList extends GuiScreen implements GuiPageButtonList.GuiR
     private int menuY = 0;
 
     private float modelRotation = 0;
-    private Shape selectedShape = Makriva.STORAGE.getCurrentShape();
+    private Shape selectedShape = MakrivaShared.STORAGE.getCurrentShape();
 
     private ShapeSelectionList shapesList;
     private GuiButton editBtn;
@@ -86,12 +86,12 @@ public class ScreenShapeList extends GuiScreen implements GuiPageButtonList.GuiR
     }
 
     private void updateButtons() {
-        final ModelShape preview = Makriva.MODELS.getPreviewModel();
+        final ModelShape preview = RenderBridge.getPreviewModel();
         final Shape curr = preview != null
                 ? preview.shape
-                : Makriva.STORAGE.getCurrentShape();
+                : MakrivaShared.STORAGE.getCurrentShape();
 
-        selectBtn.enabled = Makriva.STORAGE.getCurrentShape() != selectedShape;
+        selectBtn.enabled = MakrivaShared.STORAGE.getCurrentShape() != selectedShape;
         editBtn.enabled = !curr.internal;
     }
 
@@ -108,7 +108,7 @@ public class ScreenShapeList extends GuiScreen implements GuiPageButtonList.GuiR
 
         final float modelRealWidth;
         final float modelRealHeight;
-        final ModelShape preview = Makriva.MODELS.getPreviewModel();
+        final ModelShape preview = RenderBridge.getPreviewModel();
         if (preview != null) {
             modelRealWidth = preview.shape.getBox(PlayerPose.stand)[0];
             modelRealHeight = preview.shape.getBox(PlayerPose.stand)[1];
@@ -177,7 +177,7 @@ public class ScreenShapeList extends GuiScreen implements GuiPageButtonList.GuiR
 
     @Override
     public void onGuiClosed() {
-        Makriva.MODELS.clearPreview();
+        MakrivaShared.MODELS.clearPreview();
     }
 
     @Override
@@ -199,14 +199,14 @@ public class ScreenShapeList extends GuiScreen implements GuiPageButtonList.GuiR
                 break;
             case 0xb02:
                 selectBtn.enabled = false;
-                Makriva.STORAGE.selectCurrentShape(selectedShape.name);
+                MakrivaShared.STORAGE.selectCurrentShape(selectedShape.name);
                 break;
         }
     }
 
     public void selectShape(Shape shape) {
         selectedShape = shape;
-        Makriva.MODELS.selectPreview(selectedShape.name);
+        MakrivaShared.MODELS.selectPreview(selectedShape.name);
 
         updateButtons();
     }
@@ -234,10 +234,8 @@ public class ScreenShapeList extends GuiScreen implements GuiPageButtonList.GuiR
 
     @Override
     public void setEntryValue(int id, float value) {
-        switch (id) {
-            case 0xc02:
-                modelRotation = value;
-                break;
+        if (id == 0xc02) {
+            modelRotation = value;
         }
     }
 

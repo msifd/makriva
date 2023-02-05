@@ -1,7 +1,8 @@
 package msifeed.makriva.ui;
 
-import msifeed.makriva.Makriva;
+import msifeed.makriva.MakrivaShared;
 import msifeed.makriva.model.Shape;
+import msifeed.makriva.render.RenderBridge;
 import msifeed.makriva.render.model.ModelShape;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -30,12 +31,12 @@ public class ShapeListEntry implements GuiListExtended.IGuiListEntry {
     }
 
     private boolean isShapeSelected() {
-        final ModelShape preview = Makriva.MODELS.getPreviewModel();
+        final ModelShape preview = RenderBridge.getPreviewModel();
         if (preview != null) {
             return preview.shape.name.equals(shape.name);
         }
 
-        final Shape current = Makriva.STORAGE.getCurrentShape();
+        final Shape current = MakrivaShared.STORAGE.getCurrentShape();
         return current.name.equals(shape.name);
     }
 
