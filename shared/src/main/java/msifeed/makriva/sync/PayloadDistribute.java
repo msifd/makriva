@@ -1,11 +1,13 @@
 package msifeed.makriva.sync;
 
+import com.google.gson.JsonParseException;
 import io.netty.buffer.ByteBuf;
 import msifeed.makriva.MakrivaShared;
 import msifeed.makriva.encoding.ShapeCodec;
 import msifeed.makriva.model.Shape;
 import msifeed.makriva.storage.CheckedBytes;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -33,8 +35,18 @@ public class PayloadDistribute {
         shapes = new HashMap<>(len);
         for (int i = 0; i < len; i++) {
             final UUID uuid = new UUID(buf.readLong(), buf.readLong());
-            final Shape shape = ShapeCodec.readShape(buf);
-            shapes.put(uuid, shape);
+
+            final int shapeLen = buf.readInt();
+            final byte[] compressed = new byte[shapeLen];
+            buf.readBytes(compressed);
+
+            try {
+                shapes.put(uuid, ShapeCodec.fromCompressed(compressed));
+            } catch (IOException | JsonParseException e) {
+                final long checksum = ShapeCodec.checksum(compressed);
+                MakrivaShared.LOG.warn("Failed to decode remote shape: " + checksum);
+                e.printStackTrace();
+            }
         }
     }
 
@@ -44,9 +56,9 @@ public class PayloadDistribute {
             buf.writeLong(e.getKey().getMostSignificantBits());
             buf.writeLong(e.getKey().getLeastSignificantBits());
 
-            final byte[] bytes = e.getValue().bytes;
-            buf.writeInt(bytes.length);
-            buf.writeBytes(bytes);
+            final byte[] compressed = e.getValue().compressed;
+            buf.writeInt(compressed.length);
+            buf.writeBytes(compressed);
         }
     }
 }

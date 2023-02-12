@@ -14,7 +14,6 @@ import java.util.UUID;
 
 @Mixin(EntityPlayer.class)
 public abstract class EntityPlayerMixin {
-
     /**
      * @author msifeed
      * @reason To categorize by poses

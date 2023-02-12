@@ -3,18 +3,15 @@ package msifeed.makriva.encoding;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 import msifeed.makriva.expr.IExpr;
 import msifeed.makriva.model.AnimationRules;
 import msifeed.makriva.model.Shape;
 
-import javax.annotation.Nullable;
-import java.io.ByteArrayInputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.zip.Adler32;
+import java.util.zip.DeflaterOutputStream;
+import java.util.zip.InflaterInputStream;
 
 public final class ShapeCodec {
     private static final Gson GSON = new GsonBuilder()
@@ -28,24 +25,35 @@ public final class ShapeCodec {
         return checksum.getValue();
     }
 
-    @Nullable
-    public static Shape readShape(ByteBuf buf) {
-        final int len = buf.readInt();
-        final byte[] bytes = ByteBufUtil.getBytes(buf, buf.readerIndex(), len);
-        buf.readerIndex(buf.readerIndex() + len);
+    public static Shape fromString(String source) throws JsonParseException {
+        final Shape shape = GSON.fromJson(source, Shape.class);
+        if (shape == null) throw new IllegalStateException("Failed to parse shape bytes");
 
-        try {
-            return ShapeCodec.fromBytes(bytes);
-        } catch (JsonParseException e) {
-            return null;
+        final byte[] compressed = compress(source.getBytes(StandardCharsets.UTF_8));
+        shape.initCompressedBytes(compressed);
+
+        return shape;
+    }
+
+    private static byte[] compress(byte[] raw) {
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream(raw.length);
+             DeflaterOutputStream zip = new DeflaterOutputStream(bos)) {
+            zip.write(raw);
+            zip.close();
+            bos.close();
+            return bos.toByteArray();
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to compress shape! Error: " + e.getMessage());
         }
     }
 
-    public static Shape fromBytes(byte[] bytes) throws JsonParseException {
-        final Reader reader = new InputStreamReader(new ByteArrayInputStream(bytes));
-        final Shape shape = GSON.fromJson(new String(bytes, StandardCharsets.UTF_8), Shape.class);
-        if (shape != null)
-            shape.initBytes(bytes);
+    public static Shape fromCompressed(byte[] compressed) throws JsonParseException, IOException {
+        final Reader reader = new BufferedReader(new InputStreamReader(new InflaterInputStream(new ByteArrayInputStream(compressed)), StandardCharsets.UTF_8));
+        final Shape shape = GSON.fromJson(reader, Shape.class);
+        if (shape == null) throw new IllegalStateException("Failed to parse shape bytes");
+
+        shape.initCompressedBytes(compressed);
+
         return shape;
     }
 }

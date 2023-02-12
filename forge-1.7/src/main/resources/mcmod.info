@@ -1,0 +1,18 @@
+[
+  {
+    "modid": "makriva",
+    "name": "Makriva",
+    "description": "Complete player model customization via Blockbench",
+    "version": "${version}",
+    "mcversion": "1.7.10",
+    "url": "",
+    "updateUrl": "",
+    "authorList": [
+      "msifeed"
+    ],
+    "credits": "The Forge and FML guys. Noppes for MPM and Gamepiaynmo for CPM",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
+]

@@ -6,7 +6,6 @@ import msifeed.makriva.encoding.ShapeCodec;
 import msifeed.makriva.expr.IExpr;
 
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,21 +23,22 @@ public class Shape extends SharedShape {
     public final AnimationRules animation = new AnimationRules();
     public final List<Bone> bones = new ArrayList<>();
     public int[] textureSize = new int[]{64, 64};
+
     public transient String name = "";
-    public transient byte[] source;
+    public transient byte[] compressed;
     public transient long checksum;
     public transient boolean internal = false;
 
     private static Shape makeDefaultShape() {
-        final Shape shape = ShapeCodec.fromBytes("{}".getBytes(StandardCharsets.UTF_8));
+        final Shape shape = ShapeCodec.fromString("{}");
         shape.name = "<empty>";
         shape.internal = true;
         return shape;
     }
 
-    public void initBytes(byte[] bytes) {
-        this.source = bytes;
-        this.checksum = ShapeCodec.checksum(bytes);
+    public void initCompressedBytes(byte[] compressed) {
+        this.compressed = compressed;
+        this.checksum = ShapeCodec.checksum(compressed);
     }
 
     public void validate() throws Exception {

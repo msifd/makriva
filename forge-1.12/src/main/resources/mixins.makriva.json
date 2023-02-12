@@ -10,6 +10,7 @@
   ],
   "client": [
     "NetHandlerPlayClientMixin",
+    "pov.EntityPlayerSPMixin",
     "render.ModelBipedMixin",
     "render.ModelPlayerGetterMixin",
     "render.ModelRendererMixin",
@@ -17,11 +18,9 @@
     "render.RenderMixin",
     "render.RenderPlayerMixin",
     "skin.ImageBufferDownloadMixin",
-    "skin.MinecraftAssetsMixin",
     "skin.NetworkPlayerInfoGetter",
     "skin.NetworkPlayerInfoMixin",
     "skin.SkinManagerMixin",
-    "skin.ThreadDownloadImageDataMixin",
-    "ux.EntityPlayerSPMixin"
+    "skin.ThreadDownloadImageDataMixin"
   ]
 }

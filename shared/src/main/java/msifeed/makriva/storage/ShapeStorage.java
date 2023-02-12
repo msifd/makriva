@@ -8,12 +8,14 @@ import org.apache.logging.log4j.MarkerManager;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ShapeStorage {
@@ -93,7 +95,7 @@ public class ShapeStorage {
     public void addShape(String name, Shape shape) {
         if (shape == null || isKnownShape(name, shape)) return;
 
-        MakrivaShared.LOG.info("Update shape: " + name + ":" + shape.checksum);
+        MakrivaShared.LOG.info("Update shape: " + name + ":" + shape.checksum + " size: " + shape.compressed.length);
         shape.name = name;
         shapes.put(name, shape);
 
@@ -118,33 +120,29 @@ public class ShapeStorage {
 
     public void loadShapeFile(Path filePath) {
         final String filename = filePath.getFileName().toString();
+        final String name = filename.replace(".json", "");
+        if (!isValidName(name)) return;
 
-        final byte[] bytes;
-        try {
-            bytes = Files.readAllBytes(filePath);
-            if (bytes.length == 0) return;
+        final String source;
+        try (BufferedReader reader = Files.newBufferedReader(filePath)) {
+            source = reader.lines().collect(Collectors.joining());
         } catch (IOException e) {
             MakrivaShared.LOG.error(STORAGE, "Failed to read shape {}. Error: {}", filename, e);
             return;
         }
 
-        final String name = filename.replace(".json", "");
-        if (!isValidName(name)) return;
-
-        final long checksum = ShapeCodec.checksum(bytes);
-        if (shapes.getOrDefault(name, Shape.DEFAULT).checksum == checksum) return;
-
-        final Shape shape;
         try {
-            shape = ShapeCodec.fromBytes(bytes);
+            final Shape shape = ShapeCodec.fromString(source);
+
+            // Ignore if shape is the same
+            if (shapes.getOrDefault(name, Shape.DEFAULT).checksum == shape.checksum) return;
+
+            addShape(name, shape);
         } catch (Exception e) {
-            e.printStackTrace();
             MakrivaShared.LOG.warn(STORAGE, "Failed to parse shape {}. Error: {}", filePath.getFileName(), e);
             bridge.displayError("Failed to parse shape " + filePath.getFileName() + ". Error: " + e.getMessage());
-            return;
+            e.printStackTrace();
         }
-
-        addShape(name, shape);
     }
 
     public boolean isValidName(String name) {

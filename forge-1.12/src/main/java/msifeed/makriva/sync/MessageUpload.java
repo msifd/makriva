@@ -32,7 +32,7 @@ public class MessageUpload implements IMessage, IMessageHandler<MessageUpload, I
 
     @Override
     public IMessage onMessage(MessageUpload message, MessageContext ctx) {
-        if (message.payload.shapeBytes == null || message.payload.shapeBytes.length == 0) return null;
+        if (message.payload.compressed == null || message.payload.compressed.length == 0) return null;
 
         FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> {
             final UUID uuid = ctx.getServerHandler().player.getGameProfile().getId();

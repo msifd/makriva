@@ -1,3 +1,4 @@
 rootProject.name = 'makriva'
 include 'shared'
+include 'forge-1.7'
 include 'forge-1.12'

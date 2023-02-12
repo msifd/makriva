@@ -3,6 +3,8 @@ package msifeed.makriva.mixins.skin;
 import msifeed.makriva.utils.FilesystemTextureLoader;
 import net.minecraft.client.renderer.IImageBuffer;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -14,6 +16,10 @@ import java.io.File;
 import java.nio.file.Paths;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Adds support of local file skins via URL like "file:makriva/skin.png"
+ */
+@SideOnly(Side.CLIENT)
 @Mixin(ThreadDownloadImageData.class)
 public class ThreadDownloadImageDataMixin {
     @Final

@@ -39,22 +39,12 @@ public class SyncRelay {
         bridge.upload(shape);
     }
 
-    public void update(UUID uuid, SharedShape shape) {
-        MakrivaShared.LOG.info("Update shared shape {}", uuid);
-
-        final ConfigData cfg = MakrivaShared.CFG.get();
-        shape.eyeHeight.replaceAll((p, h) -> Math.min(h, cfg.maxEyeHeight));
-        shape.boundingBox.forEach((p, s) -> s[1] = Math.max(s[1], cfg.minBBHeight));
-
-        sharedShapes.put(uuid, shape);
-    }
-
-    public void maybeAddShape(UUID uuid, byte[] shapeBytes) {
-        final long checksum = ShapeCodec.checksum(shapeBytes);
+    public void maybeAddShape(UUID uuid, byte[] compressed) {
+        final long checksum = ShapeCodec.checksum(compressed);
         if (!isKnownShape(uuid, checksum)) {
-            final CheckedBytes checked = new CheckedBytes(shapeBytes, checksum);
+            final CheckedBytes checked = new CheckedBytes(compressed, checksum);
             encodedShapes.put(uuid, checked);
-            updateSharedShape(uuid, shapeBytes);
+            updateSharedShape(uuid, compressed);
             bridge.relayToAll(Collections.singletonMap(uuid, checked));
         }
     }
@@ -68,8 +58,18 @@ public class SyncRelay {
     protected void updateSharedShape(UUID uuid, byte[] shapeBytes) {
         final String str = new String(shapeBytes, StandardCharsets.UTF_8);
         try {
-            MakrivaShared.SHARED.update(uuid, gson.fromJson(str, SharedShape.class));
+            update(uuid, gson.fromJson(str, SharedShape.class));
         } catch (Exception ignored) {
         }
+    }
+
+    private void update(UUID uuid, SharedShape shape) {
+        MakrivaShared.LOG.info("Update shared shape " + uuid);
+
+        final ConfigData cfg = MakrivaShared.CFG.get();
+        shape.eyeHeight.replaceAll((p, h) -> Math.min(h, cfg.maxEyeHeight));
+        shape.boundingBox.forEach((p, s) -> s[1] = Math.max(s[1], cfg.minBBHeight));
+
+        sharedShapes.put(uuid, shape);
     }
 }

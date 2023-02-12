@@ -69,11 +69,11 @@ public class ModelManager<Model extends IShapeModel> {
     public void selectPreview(String name) {
         final Shape shape = MakrivaShared.STORAGE.getShapes().get(name);
         if (shape == null) {
-            MakrivaShared.LOG.warn("Can't preview unknown shape: {}", name);
+            MakrivaShared.LOG.warn("Can't preview unknown shape: " + name);
             return;
         }
 
-        MakrivaShared.LOG.debug("Build shape preview model checksum: {}", shape.checksum);
+        MakrivaShared.LOG.debug("Build shape preview model checksum: " + shape.checksum);
         previewModel = bridge.buildModel(shape);
         invalidateSkin(bridge.getPlayerUuid());
 

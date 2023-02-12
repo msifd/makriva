@@ -18,7 +18,7 @@ public class SharedShapes {
     }
 
     public void update(UUID uuid, SharedShape shape) {
-        MakrivaShared.LOG.info("Update shared shape {}", uuid);
+        MakrivaShared.LOG.info("Update shared shape " + uuid);
 
         final ConfigData cfg = MakrivaShared.CFG.get();
         shape.eyeHeight.replaceAll((p, h) -> Math.min(h, cfg.maxEyeHeight));
