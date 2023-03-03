@@ -11,8 +11,8 @@ public class SharedShape {
 
     static {
         DEFAULT_SHARED.eyeHeight.put(PlayerPose.stand, standingEyeHeight);
-        DEFAULT_SHARED.eyeHeight.put(PlayerPose.sneak, 1.62f - 0.08f);
-        DEFAULT_SHARED.eyeHeight.put(PlayerPose.sit, 1.62f);
+        DEFAULT_SHARED.eyeHeight.put(PlayerPose.sneak, 1.62f - 0.07f);
+        DEFAULT_SHARED.eyeHeight.put(PlayerPose.sit, 1.62f - 0.6f);
         DEFAULT_SHARED.eyeHeight.put(PlayerPose.sleep, 0.2f);
         DEFAULT_SHARED.eyeHeight.put(PlayerPose.elytraFly, 0.4f);
         DEFAULT_SHARED.eyeHeight.put(PlayerPose.crawl, 0.4f);
@@ -30,6 +30,7 @@ public class SharedShape {
     public float modelScale = 1;
 
     public float getEyeHeight(PlayerPose pose) {
+//        if (pose == PlayerPose.sit) return 1.62f;
         if (eyeHeight.containsKey(pose))
             return eyeHeight.get(pose);
         else

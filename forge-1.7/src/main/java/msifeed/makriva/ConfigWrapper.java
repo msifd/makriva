@@ -27,6 +27,7 @@ public class ConfigWrapper implements IConfigWrapper {
     public void selectShape(String name) {
         data.shape = name;
         getShapeProp().setValue(name);
+        write();
     }
 
     @Override

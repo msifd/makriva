@@ -2,6 +2,7 @@ package msifeed.makriva.mixins.pov;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import msifeed.makriva.utils.PlayerDimensionsMath;
 import net.minecraft.client.renderer.EntityRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,8 +22,6 @@ public class EntityRendererMixin {
             require = 1
     )
     private float orientCamera(float eyesOffset) {
-        return eyesOffset;
-//        final EntityLivingBase entity = Minecraft.getMinecraft().renderViewEntity;
-//        return eyesOffset + 1.62f - entity.getEyeHeight();
+        return PlayerDimensionsMath.modifyEyeOffsetToOrientCamera(eyesOffset);
     }
 }

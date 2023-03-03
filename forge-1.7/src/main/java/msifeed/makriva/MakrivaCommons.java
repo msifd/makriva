@@ -27,6 +27,9 @@ public class MakrivaCommons {
         if (shape.eyeHeight.isEmpty()) {
             height += MakrivaCompat.getEyeHeightOffset(player, pose);
         }
+        if (player.isRiding()) {
+            height += player.ridingEntity.getMountedYOffset();
+        }
         return height * shape.modelScale;
     }
 }

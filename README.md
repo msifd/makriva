@@ -6,10 +6,11 @@ The custom player models mod.
 - [x] Supports Blockbench modelling via [plugin](https://raw.githubusercontent.com/msifd/makriva/master/blockbench-plugin/makriva.js)
 - [x] Animations with math expressions and conditions
 - [x] HD skins via URL
-- [x] Custom bounding boxes in different poses
-- [x] User-hosted models (no need to upload)
+- [x] Custom bounding boxes (tall characters may not fit in a door frame)
+- [x] Different bounding boxes for MPM poses (you can crawl into a hole or fit into door frame while sneaking)
+- [x] User-hosted models (no need to manually upload models)
 - [x] Automatic model refresh on file change
-- [x] MorePlayerModels poses (sit, crawl, etc.) and skin itegration
+- [x] MorePlayerModels poses (sit, crawl, etc.) and skin integration
 - [ ] Multi-texture support
 
 ## Documentation
@@ -18,3 +19,12 @@ The custom player models mod.
 ## Examples
 - [Blockbench models](/blockbench)
 - [Shape examples](/examples)
+
+## Bugs to fix in 1.7
+- [x] hand in first person
+- [ ] some MPM pose reset themselves???
+- [x] fix eye height
+- [ ] fix suffocation in tight spaces
+- [ ] impl sneak locking in tight spaces
+- [x] local file skins
+- [x] y offset while siting

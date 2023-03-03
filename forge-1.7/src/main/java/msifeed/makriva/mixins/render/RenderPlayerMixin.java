@@ -1,16 +1,14 @@
 package msifeed.makriva.mixins.render;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import msifeed.makriva.MakrivaShared;
 import msifeed.makriva.model.BipedPart;
 import msifeed.makriva.model.Shape;
-import msifeed.makriva.render.PartSelector;
-import msifeed.makriva.render.RenderBridge;
+import msifeed.makriva.render.RenderHandler;
 import msifeed.makriva.render.RenderUtils;
-import msifeed.makriva.render.model.ModelBone;
-import msifeed.makriva.render.model.ModelShape;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,8 +20,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.UUID;
-
+@SideOnly(Side.CLIENT)
 @Mixin(RenderPlayer.class)
 public class RenderPlayerMixin {
     /**
@@ -40,18 +37,22 @@ public class RenderPlayerMixin {
     }
 
     /**
-     * Hide hidden body parts
+     * Hides hidden body parts
      */
     @Inject(method = "shouldRenderPass(Lnet/minecraft/client/entity/AbstractClientPlayer;IF)I", at = @At("RETURN"))
     private void setModelVisibilities(AbstractClientPlayer clientPlayer, int modelType, float scale, CallbackInfoReturnable<Integer> ci) {
         final RenderPlayer self = (RenderPlayer) (Object) this;
         final ModelBiped model = self.modelBipedMain;
         final Shape shape = MakrivaShared.MODELS.getShape(clientPlayer.getGameProfile().getId());
-        for (BipedPart bp : shape.hide) {
-            for (ModelRenderer part : PartSelector.findParts(model, bp)) {
-                part.showModel = false;
-            }
-        }
+
+        // Check every time to un-hide when shape changes
+        model.bipedHead.showModel = !shape.hide.contains(BipedPart.head);
+        model.bipedHeadwear.showModel = model.bipedHead.showModel;
+        model.bipedBody.showModel = !shape.hide.contains(BipedPart.body);
+        model.bipedRightArm.showModel = !shape.hide.contains(BipedPart.right_arm);
+        model.bipedLeftArm.showModel = !shape.hide.contains(BipedPart.left_arm);
+        model.bipedRightLeg.showModel = !shape.hide.contains(BipedPart.right_leg);
+        model.bipedLeftLeg.showModel = !shape.hide.contains(BipedPart.left_leg);
     }
 
     /**
@@ -69,15 +70,15 @@ public class RenderPlayerMixin {
     }
 
     /**
-     * Render shape model hand in the first person
+     * Render shape model hand in the first person and hide original arm if requested
      */
-    @Inject(method = "renderFirstPersonArm", at = @At("RETURN"))
+    @Inject(
+            method = "renderFirstPersonArm",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/ModelRenderer;render(F)V"),
+            cancellable = true
+    )
     private void renderFirstPersonArm(EntityPlayer player, CallbackInfo ci) {
-        final UUID uuid = player.getGameProfile().getId();
-        final ModelShape model = RenderBridge.getModel(uuid);
-
-        for (ModelBone bone : model.handBones) {
-            bone.render(0.0625f);
-        }
+        final boolean armIsHidden = RenderHandler.renderFirstPersonArm((AbstractClientPlayer) player);
+        if (armIsHidden) ci.cancel();
     }
 }

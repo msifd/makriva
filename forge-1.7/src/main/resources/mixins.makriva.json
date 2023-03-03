@@ -4,7 +4,7 @@
   "refmap": "makriva.refmap.json",
   "mixins": [
     "EntityMixin",
-    "EntityPlayerMixin",
+    "pov.EntityPlayerMixin",
     "pov.NetHandlerPlayServerMixin"
   ],
   "client": [
