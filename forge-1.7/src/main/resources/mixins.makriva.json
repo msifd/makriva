@@ -22,6 +22,7 @@
     "render.RenderPlayerMixin",
     "skin.ImageBufferDownloadMixin",
     "skin.SkinManagerMixin",
+    "skin.TextureManagerMixin",
     "skin.ThreadDownloadImageDataMixin"
   ]
 }

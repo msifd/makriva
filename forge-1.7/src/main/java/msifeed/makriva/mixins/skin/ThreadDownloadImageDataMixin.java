@@ -27,11 +27,12 @@ public class ThreadDownloadImageDataMixin {
     @Shadow
     private File field_152434_e;
 
-
     @Inject(method = "<init>", at = @At("RETURN"))
     protected void constructor(File cacheFile, String url, ResourceLocation res, IImageBuffer buffer, CallbackInfo ci) {
+//        System.out.println("download image: " + url);
         if (!url.startsWith("file:")) return;
 
+        // use url as cache file to skip downloading
         this.field_152434_e = Paths.get(url.replace("file:", "")).toFile();
     }
 }

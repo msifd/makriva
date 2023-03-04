@@ -13,6 +13,6 @@
     "credits": "The Forge and FML guys. Noppes for MPM and Gamepiaynmo for CPM",
     "logoFile": "",
     "screenshots": [],
-    "dependencies": []
+    "dependants": ["moreplayermodels"]
   }
 ]

@@ -5,6 +5,7 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import msifeed.makriva.MakrivaShared;
+import msifeed.makriva.mixins.skin.TextureManagerMixin;
 import msifeed.makriva.model.Shape;
 import msifeed.makriva.render.model.ModelShape;
 import net.minecraft.client.Minecraft;
@@ -12,6 +13,7 @@ import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.SkinManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -88,10 +90,9 @@ public class RenderBridge implements IRenderBridge<ModelShape> {
 
         final ResourceLocation defaultSkin = AbstractClientPlayer.locationStevePng;
 
-        // Delete texture from manager to force it to download it
-//        if (!player.getLocationSkin().equals(defaultSkin))
-//            Minecraft.getMinecraft().getTextureManager().deleteTexture(player.getLocationSkin());
-//        Minecraft.getMinecraft().getTextureManager().deleteTexture(player.getLocationCape());
+        // Delete texture from manager to force download
+        if (!player.getLocationSkin().equals(defaultSkin)) deleteTexture(player.getLocationSkin());
+        deleteTexture(player.getLocationCape());
 
         // Clear player textures
         player.func_152121_a(MinecraftProfileTexture.Type.SKIN, null);
@@ -100,5 +101,13 @@ public class RenderBridge implements IRenderBridge<ModelShape> {
         // Trigger download
         final SkinManager skinManager = Minecraft.getMinecraft().func_152342_ad();
         skinManager.func_152790_a(profile, player, true);
+    }
+
+    private void deleteTexture(@Nullable ResourceLocation res) {
+        if (res == null) return;
+
+        final TextureManager textures = Minecraft.getMinecraft().getTextureManager();
+        textures.deleteTexture(res);
+        ((TextureManagerMixin) textures).getMapTextureObjects().remove(res);
     }
 }
