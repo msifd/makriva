@@ -7,11 +7,13 @@ import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.entity.player.EntityPlayer;
 import noppes.mpm.client.RenderMPM;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @SideOnly(Side.CLIENT)
+@Pseudo
 @Mixin(RenderMPM.class)
 public class RenderMpmMixin {
     /**
@@ -19,7 +21,7 @@ public class RenderMpmMixin {
      */
     @Inject(
             method = "renderFirstPersonArm",
-            at = @At(value = "INVOKE", target = "Lnoppes/mpm/client/model/ModelMPM;renderArms(Lnet/minecraft/entity/Entity;FZ)V"),
+            at = @At(value = "INVOKE", target = "Lnoppes/mpm/client/model/ModelMPM;renderArms(Lnet/minecraft/entity/Entity;FZ)V", remap = false),
             cancellable = true
     )
     private void renderFirstPersonArm(EntityPlayer player, CallbackInfo ci) {

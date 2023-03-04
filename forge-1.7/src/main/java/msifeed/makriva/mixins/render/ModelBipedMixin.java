@@ -7,7 +7,6 @@ import msifeed.makriva.render.RenderUtils;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.Entity;
-import noppes.mpm.client.model.ModelMPM;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -28,9 +27,6 @@ public class ModelBipedMixin {
         if (!(entity instanceof AbstractClientPlayer)) return;
 
         final ModelBiped model = (ModelBiped) (Object) this;
-        if (model instanceof ModelMPM)
-            RenderUtils.setPlayerSkeletonOffsets(model, (AbstractClientPlayer) entity, scale);
-        else
-            RenderUtils.setBipedSkeletonOffsets(model, (AbstractClientPlayer) entity, scale);
+        RenderUtils.setPlayerSkeletonOffsets(model, (AbstractClientPlayer) entity, scale);
     }
 }

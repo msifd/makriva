@@ -31,7 +31,7 @@ public class MinecraftSessionServiceWrap implements MinecraftSessionService {
 
     @Override
     public Map<Type, MinecraftProfileTexture> getTextures(GameProfile profile, boolean requireSecure) {
-        final Map<Type, MinecraftProfileTexture> textures = inner.getTextures(profile, requireSecure);
+        final Map<Type, MinecraftProfileTexture> textures = inner.getTextures(profile, false);
 
         final Shape shape = MakrivaShared.MODELS.getShape(profile.getId());
         final URL skin = shape.textures.get("skin");

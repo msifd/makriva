@@ -13,7 +13,7 @@ buildscript {
 apply plugin: 'forge'
 apply plugin: 'idea'
 
-version = makrivaVersion + '-1.7-alpha.1'
+version = makrivaVersion + '-1.7-alpha.2'
 group = 'msifeed.makriva'
 archivesBaseName = 'makriva'
 
@@ -26,10 +26,11 @@ minecraft {
     // Add args:
     // --tweakClass org.spongepowered.asm.launch.MixinTweaker --mixin mixins.makriva.json
     // --username msifeed
+    // Add JVM args:
+    // -Dfml.coreMods.load=msifeed.makriva.mixins.DepsMixinHook
 }
 
 // Setup Mixin library manually
-def yourMixinConfig = 'mixins.makriva.json'
 def refMapForYourConfig = 'mixins.makriva.refmap.json'
 
 tasks.withType(JavaCompile) {
@@ -57,7 +58,7 @@ dependencies {
         exclude module: 'log4j-core'
     }
 
-    implementation files('deps/MorePlayerModels_1.7.10b-deobf.jar')
+    compile files('deps/MorePlayerModels_1.7.10b-deobf.jar')
 }
 
 sourceSets {
@@ -75,11 +76,12 @@ jar {
     from refMap
 
     manifest.attributes(
-            'TweakOrder': 0,
             'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
+            'TweakOrder': 0,
             'MixinConfigs': 'mixins.makriva.json',
-            'FMLCorePluginContainsFMLMod': 'true',
-            'ForceLoadAsMod': 'true',
+            'FMLCorePluginContainsFMLMod': true,
+            'FMLCorePlugin': 'msifeed.makriva.mixins.DepsMixinHook',
+            'ForceLoadAsMod': true,
     )
 }
 

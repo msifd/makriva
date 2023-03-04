@@ -1,7 +1,10 @@
 {
+  "target": "@env(DEFAULT)",
+  "minVersion": "0.7.11",
   "compatibilityLevel": "JAVA_8",
+  "required": true,
+  "refmap": "mixins.makriva.refmap.json",
   "package": "msifeed.makriva.mixins",
-  "refmap": "makriva.refmap.json",
   "mixins": [
     "EntityMixin",
     "pov.EntityPlayerMixin",
@@ -13,11 +16,9 @@
     "pov.EntityRendererMixin",
     "pov.ItemRendererMixin",
     "render.ModelBipedMixin",
-    "render.ModelMpmMixin",
     "render.ModelRendererMixin",
     "render.RendererLivingEntityMixin",
     "render.RenderMixin",
-    "render.RenderMpmMixin",
     "render.RenderPlayerMixin",
     "skin.ImageBufferDownloadMixin",
     "skin.SkinManagerMixin",
