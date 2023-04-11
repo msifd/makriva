@@ -22,4 +22,13 @@ public class ModelMpmMixin {
 
         RenderHandler.onModelRender((AbstractClientPlayer) entity, limbSwingTicks, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
     }
+
+    /**
+     * Render shape model hand in the first person and hide original arm if requested
+     */
+    @Inject(method = "renderArms", at = @At("HEAD"), cancellable = true, remap = false)
+    public void renderArms(Entity entity, float f, boolean bo, CallbackInfo ci) {
+        final boolean armIsHidden = RenderHandler.renderFirstPersonArm((AbstractClientPlayer) entity);
+        if (armIsHidden) ci.cancel();
+    }
 }

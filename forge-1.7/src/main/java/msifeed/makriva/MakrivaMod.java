@@ -16,6 +16,14 @@ import msifeed.makriva.ui.DebugOverlay;
 import msifeed.makriva.ui.MakrivaKeybinds;
 import net.minecraftforge.common.MinecraftForge;
 
+/**
+ * Known bugs:
+ * - [ ] textures don't work properly outside dev env
+ * - [x] you bump your head when unsneak in tight spaces
+ * - [x] makriva gui is dark at night
+ * - [x] mpm can't do sleeping pose
+ * - [ ] Support mpm-ari
+ */
 @Mod(modid = MakrivaShared.MOD_ID)
 public class MakrivaMod {
     @Mod.EventHandler

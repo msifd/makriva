@@ -70,10 +70,10 @@ public class ScreenShapeList extends GuiScreen {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        this.drawDefaultBackground();
         shapesList.drawScreen(mouseX, mouseY, partialTicks);
-        GL11.glColor4f(1, 1, 1, 1);
 
-        drawBackground();
+        drawBackgroundTexture();
         super.drawScreen(mouseX, mouseY, partialTicks);
 
         drawModel(mouseX, mouseY);
@@ -94,7 +94,7 @@ public class ScreenShapeList extends GuiScreen {
         editBtn.enabled = !curr.internal;
     }
 
-    private void drawBackground() {
+    private void drawBackgroundTexture() {
         mc.getTextureManager().bindTexture(TEXTURE);
         drawTexturedModalRect(menuX, menuY, 0, 0, menuWidth, menuHeight);
     }
@@ -118,21 +118,21 @@ public class ScreenShapeList extends GuiScreen {
         }
 
         final AbstractClientPlayer self = mc.thePlayer;
-        final float scaleFactorToSteve = 1.8f / modelRealHeight;
-        final float modelScale = ((viewHeight * 0.95f) / 2) * scaleFactorToSteve;
+        final float scaleFactorToSteve = modelRealHeight / 1.8f;
+        final float modelScale = ((viewHeight * 0.95f) / 2) / scaleFactorToSteve;
         final int modelWidth = (int) (modelRealWidth * modelScale);
         final int modelHeight = (int) (modelRealHeight * modelScale);
 
         final int modelX = menuX + viewX + (viewWidth + modelWidth) / 2 - modelWidth / 2;
-        final int modelY = menuY + viewY + viewHeight + 9 - modelHeight;
+        final int modelY = (int) ((menuY + viewY + 25) * scaleFactorToSteve);
+        final int modelEyes = modelY + viewHeight - modelHeight - 10;
         final float modelMouseX = modelX - mouseX;
-        final float modelMouseY = modelY - mouseY - self.getEyeHeight() * modelScale;
+        final float modelMouseY = modelEyes - mouseY - self.getEyeHeight() * modelScale;
 
-        RenderHelper.enableGUIStandardItemLighting();
+        GL11.glColor4f(1, 1, 1, 1);
         GL11.glEnable(GL11.GL_COLOR_MATERIAL);
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glColor4f(1, 1, 1, 1);
 
         GL11.glPushMatrix();
         GL11.glTranslated(modelX, modelY, 50);
@@ -146,6 +146,7 @@ public class ScreenShapeList extends GuiScreen {
         float f5 = self.rotationYaw;
 
         GL11.glRotated(135.0F, 0.0F, 1.0F, 0.0F);
+        RenderHelper.enableStandardItemLighting(); // enable here to get correct shadows!
         GL11.glRotated(-135.0F, 0.0F, 1.0F, 0.0F);
         GL11.glRotated((float) -Math.atan(modelMouseY / 40.0F) * 20, 1, 0, 0);
         self.prevRenderYawOffset = -modelRotation;
@@ -154,10 +155,8 @@ public class ScreenShapeList extends GuiScreen {
         self.rotationPitch = (float) -Math.atan(modelMouseY / 40d) * 20;
         self.rotationYaw = self.prevRotationYawHead;
 
-//        manager.setRenderShadow(false);
         RenderManager.instance.playerViewY = 180.0F;
         RenderManager.instance.renderEntityWithPosYaw(self, 0, 0, 0, 0, 0);
-//        manager.setRenderShadow(true);
 
         self.prevRenderYawOffset = f1;
         self.prevRotationYawHead = f2;
@@ -169,8 +168,8 @@ public class ScreenShapeList extends GuiScreen {
 
         RenderHelper.disableStandardItemLighting();
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
         OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
         OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
     }
 

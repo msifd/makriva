@@ -7,6 +7,7 @@
   "package": "msifeed.makriva.mixins",
   "client": [
     "render.ModelMpmMixin",
-    "render.RenderMpmMixin"
+    "render.RenderMpmMixin",
+    "skin.ImageBufferDownloadMpmMixin"
   ]
 }

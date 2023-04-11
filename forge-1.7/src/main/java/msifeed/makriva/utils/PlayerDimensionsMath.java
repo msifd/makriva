@@ -10,6 +10,7 @@ import msifeed.makriva.model.SharedShape;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.AxisAlignedBB;
 
 import java.util.UUID;
@@ -19,6 +20,32 @@ public class PlayerDimensionsMath {
         final UUID uuid = self.getGameProfile().getId();
         final SharedShape shape = MakrivaShared.SHARED.get(uuid);
         final PlayerPose pose = MakrivaCommons.findPose(self);
+
+        final float oldEyeHeight = self.eyeHeight;
+        final float rawEyeHeight = MakrivaCommons.calculateEyeHeight(self, shape, pose);
+
+        // Server uses normal eye height but 1.7 client is special.
+        // Convert to client-oriented format if needed.
+        final float newEyeHeight;
+        if (self instanceof EntityPlayerMP) newEyeHeight = rawEyeHeight;
+        else newEyeHeight = self.getDefaultEyeHeight() - 1.62f + rawEyeHeight;
+
+        if (newEyeHeight != oldEyeHeight) {
+            self.eyeHeight = newEyeHeight;
+
+            if (self.isEntityInsideOpaqueBlock()) {
+                shape.retainingEyeHeight = true;
+                shape.retainedEyeHeight = oldEyeHeight;
+
+                self.eyeHeight = oldEyeHeight;
+                return;
+            }
+
+            if (shape.retainingEyeHeight) {
+                shape.retainingEyeHeight = false;
+                shape.retainedEyeHeight = 0;
+            }
+        }
 
         final float[] sizes = shape.getBox(pose);
         if (sizes.length == 2) {
@@ -35,10 +62,6 @@ public class PlayerDimensionsMath {
                 }
             }
         }
-
-        final float eyeHeight = MakrivaCommons.calculateEyeHeight(self, shape, pose);
-        // Normalize to 1.7 "eye height" definition
-        self.eyeHeight = self.getDefaultEyeHeight() - 1.62f + eyeHeight;
     }
 
     @SideOnly(Side.CLIENT)
@@ -48,10 +71,11 @@ public class PlayerDimensionsMath {
 
         final EntityPlayer player = (EntityPlayer) entity;
         final SharedShape shape = MakrivaShared.SHARED.get(player.getGameProfile().getId());
+        if (shape.retainingEyeHeight)
+            return eyesOffset - shape.retainedEyeHeight;
 
         final PlayerPose pose = MakrivaCommons.findPose(player);
         final float eyeHeight = MakrivaCommons.calculateEyeHeight(player, shape, pose);
-
         return eyesOffset + 1.62f - eyeHeight;
     }
 }

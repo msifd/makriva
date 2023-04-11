@@ -21,7 +21,7 @@ public class DepsMixinHook implements IFMLLoadingPlugin {
 
     private final List<String> REFERENCES =
             Stream.of(
-                            "noppes.mpm.client.RenderMPM"
+                            "noppes.mpm.ModelData"
                     )
                     .map(s -> s.replace('.', '/') + ".class")
                     .collect(Collectors.toList());

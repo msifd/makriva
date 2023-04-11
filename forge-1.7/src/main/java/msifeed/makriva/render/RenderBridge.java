@@ -5,6 +5,7 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import msifeed.makriva.MakrivaShared;
+import msifeed.makriva.compat.MpmCompat;
 import msifeed.makriva.mixins.skin.TextureManagerMixin;
 import msifeed.makriva.model.Shape;
 import msifeed.makriva.render.model.ModelShape;
@@ -50,9 +51,7 @@ public class RenderBridge implements IRenderBridge<ModelShape> {
 
     @Override
     public ModelShape buildModel(Shape shape) {
-        final Minecraft mc = Minecraft.getMinecraft();
         final Render render = RenderManager.instance.getEntityClassRenderObject(EntityPlayer.class);
-
         return new ModelShape((RenderPlayer) render, shape);
     }
 
@@ -91,14 +90,15 @@ public class RenderBridge implements IRenderBridge<ModelShape> {
         final ResourceLocation defaultSkin = AbstractClientPlayer.locationStevePng;
 
         // Delete texture from manager to force download
-        if (!player.getLocationSkin().equals(defaultSkin)) deleteTexture(player.getLocationSkin());
-        deleteTexture(player.getLocationCape());
+//        if (!player.getLocationSkin().equals(defaultSkin)) deleteTexture(player.getLocationSkin());
+//        deleteTexture(player.getLocationCape());
 
         // Clear player textures
         player.func_152121_a(MinecraftProfileTexture.Type.SKIN, null);
         player.func_152121_a(MinecraftProfileTexture.Type.CAPE, null);
 
         // Trigger download
+        MpmCompat.reloadSkin(player);
         final SkinManager skinManager = Minecraft.getMinecraft().func_152342_ad();
         skinManager.func_152790_a(profile, player, true);
     }

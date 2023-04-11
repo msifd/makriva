@@ -23,6 +23,7 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class MpmCompat {
+    public static String SKIN_URL = null;
     private static byte headWearType = 0;
 
     @Nullable
@@ -144,14 +145,20 @@ public class MpmCompat {
 
     @SideOnly(Side.CLIENT)
     private void prioritizeSkin(AbstractClientPlayer player, Shape shape) {
-        if (player.ticksExisted > 200) return;
+//        if (player.ticksExisted > 200) return;
+//
+//        final ModelData data = PlayerDataController.instance.getPlayerData(player);
+//
+//        if (shape.textures.containsKey("skin")) {
+//            data.loaded = true; // Prioritize makriva skin
+//        } else if (player.ticksExisted == 100) {
+//            data.loaded = false; // Fix too-fast skin load by loading the skin again
+//        }
+    }
 
+    @SideOnly(Side.CLIENT)
+    public static void reloadSkin(AbstractClientPlayer player) {
         final ModelData data = PlayerDataController.instance.getPlayerData(player);
-
-        if (shape.textures.containsKey("skin")) {
-            data.loaded = true; // Prioritize makriva skin
-        } else if (player.ticksExisted == 100) {
-            data.loaded = false; // Fix too-fast skin load by loading the skin again
-        }
+        data.loaded = false;
     }
 }

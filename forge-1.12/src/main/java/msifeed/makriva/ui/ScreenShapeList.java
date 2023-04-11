@@ -127,7 +127,6 @@ public class ScreenShapeList extends GuiScreen implements GuiPageButtonList.GuiR
         final float modelMouseX = modelX - mouseX;
         final float modelMouseY = modelY - mouseY - mc.player.getEyeHeight() * modelScale;
 
-        RenderHelper.enableGUIStandardItemLighting();
         GlStateManager.enableColorMaterial();
         GlStateManager.enableTexture2D();
         GlStateManager.enableDepth();
@@ -146,6 +145,7 @@ public class ScreenShapeList extends GuiScreen implements GuiPageButtonList.GuiR
         float f5 = self.rotationYaw;
 
         GlStateManager.rotate(135.0F, 0.0F, 1.0F, 0.0F);
+        RenderHelper.enableStandardItemLighting();
         GlStateManager.rotate(-135.0F, 0.0F, 1.0F, 0.0F);
         GlStateManager.rotate((float) -Math.atan(modelMouseY / 40.0F) * 20, 1, 0, 0);
         self.prevRenderYawOffset = -modelRotation;
