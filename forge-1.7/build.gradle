@@ -13,7 +13,7 @@ buildscript {
 apply plugin: 'forge'
 apply plugin: 'idea'
 
-version = makrivaVersion + '-1.7-alpha.2'
+version = makrivaVersion + '-1.7-alpha.3'
 group = 'msifeed.makriva'
 archivesBaseName = 'makriva'
 
@@ -58,7 +58,8 @@ dependencies {
         exclude module: 'log4j-core'
     }
 
-    compile files('deps/MorePlayerModels_1.7.10b-deobf.jar')
+//    compile files('deps/MorePlayerModels_1.7.10b-deobf.jar')
+    compile files('deps/mpm-ariadna-1.19.7-deobf.jar')
 }
 
 sourceSets {

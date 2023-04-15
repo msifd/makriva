@@ -14,10 +14,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
-import noppes.mpm.ModelData;
 import noppes.mpm.MorePlayerModels;
-import noppes.mpm.PlayerDataController;
 import noppes.mpm.constants.EnumAnimation;
+import noppes.mpm.data.ModelData;
+import noppes.mpm.data.PlayerDataController;
 
 import javax.annotation.Nullable;
 import java.util.UUID;

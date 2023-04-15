@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @SideOnly(Side.CLIENT)
 @Pseudo
 @Mixin(ModelMPM.class)
-public class ModelMpmMixin {
+public class ModelMpmaMixin {
     @Inject(method = "render", at = @At("RETURN"))
     public void render(Entity entity, float limbSwingTicks, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale, CallbackInfo ci) {
         if (!(entity instanceof AbstractClientPlayer)) return;

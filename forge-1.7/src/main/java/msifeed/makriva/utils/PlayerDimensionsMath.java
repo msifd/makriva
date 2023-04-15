@@ -34,10 +34,12 @@ public class PlayerDimensionsMath {
             self.eyeHeight = newEyeHeight;
 
             if (self.isEntityInsideOpaqueBlock()) {
-                shape.retainingEyeHeight = true;
-                shape.retainedEyeHeight = oldEyeHeight;
+                if (!shape.retainingEyeHeight) {
+                    shape.retainingEyeHeight = true;
+                    shape.retainedEyeHeight = oldEyeHeight;
+                }
 
-                self.eyeHeight = oldEyeHeight;
+                self.eyeHeight = shape.retainedEyeHeight;
                 return;
             }
 

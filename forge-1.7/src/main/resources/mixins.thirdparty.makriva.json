@@ -6,8 +6,6 @@
   "refmap": "mixins.makriva.refmap.json",
   "package": "msifeed.makriva.mixins",
   "client": [
-    "render.ModelMpmMixin",
-    "render.RenderMpmMixin",
-    "skin.ImageBufferDownloadMpmMixin"
+    "render.ModelMpmaMixin"
   ]
 }
