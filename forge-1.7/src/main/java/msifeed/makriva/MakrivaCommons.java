@@ -30,6 +30,9 @@ public class MakrivaCommons {
         if (player.isRiding()) {
             height += player.ridingEntity.getMountedYOffset();
         }
-        return height * shape.modelScale;
+        if (pose == PlayerPose.sleep || pose == PlayerPose.crawl) {
+            height += 1;
+        }
+        return height;
     }
 }

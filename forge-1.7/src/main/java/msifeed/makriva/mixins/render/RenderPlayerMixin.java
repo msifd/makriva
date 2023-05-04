@@ -3,12 +3,10 @@ package msifeed.makriva.mixins.render;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import msifeed.makriva.MakrivaShared;
-import msifeed.makriva.model.BipedPart;
 import msifeed.makriva.model.Shape;
 import msifeed.makriva.render.RenderHandler;
 import msifeed.makriva.render.RenderUtils;
 import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,7 +16,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @SideOnly(Side.CLIENT)
 @Mixin(RenderPlayer.class)
@@ -34,25 +31,6 @@ public class RenderPlayerMixin {
     )
     private double adjustYPosOfScaledModel(EntityLivingBase player, double x, double y, double z, float yaw, float ticks) {
         return RenderUtils.adjustYPosOfScaledModel((AbstractClientPlayer) player, y);
-    }
-
-    /**
-     * Hides hidden body parts
-     */
-    @Inject(method = "shouldRenderPass(Lnet/minecraft/client/entity/AbstractClientPlayer;IF)I", at = @At("RETURN"))
-    private void setModelVisibilities(AbstractClientPlayer clientPlayer, int modelType, float scale, CallbackInfoReturnable<Integer> ci) {
-        final RenderPlayer self = (RenderPlayer) (Object) this;
-        final ModelBiped model = self.modelBipedMain;
-        final Shape shape = MakrivaShared.MODELS.getShape(clientPlayer.getGameProfile().getId());
-
-        // Check every time to un-hide when shape changes
-        model.bipedHead.showModel = !shape.hide.contains(BipedPart.head);
-        model.bipedHeadwear.showModel = model.bipedHead.showModel;
-        model.bipedBody.showModel = !shape.hide.contains(BipedPart.body);
-        model.bipedRightArm.showModel = !shape.hide.contains(BipedPart.right_arm);
-        model.bipedLeftArm.showModel = !shape.hide.contains(BipedPart.left_arm);
-        model.bipedRightLeg.showModel = !shape.hide.contains(BipedPart.right_leg);
-        model.bipedLeftLeg.showModel = !shape.hide.contains(BipedPart.left_leg);
     }
 
     /**

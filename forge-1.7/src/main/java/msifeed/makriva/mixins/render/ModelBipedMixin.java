@@ -15,10 +15,26 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @SideOnly(Side.CLIENT)
 @Mixin(ModelBiped.class)
 public class ModelBipedMixin {
+    @Inject(method = "render", at = @At("HEAD"))
+    public void hideParts(Entity entity, float limbSwingTicks, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale, CallbackInfo ci) {
+        RenderHandler.preModelRender((AbstractClientPlayer) entity, (ModelBiped) (Object) this);
+    }
+
     @Inject(method = "render", at = @At("RETURN"))
+    public void resetHiddenParts(Entity entity, float limbSwingTicks, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale, CallbackInfo ci) {
+        RenderHandler.postModelRender((AbstractClientPlayer) entity, (ModelBiped) (Object) this);
+    }
+
+    @Inject(
+            method = "render",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/model/ModelBiped;setRotationAngles(FFFFFFLnet/minecraft/entity/Entity;)V",
+                    shift = At.Shift.AFTER
+            )
+    )
     public void render(Entity entity, float limbSwingTicks, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale, CallbackInfo ci) {
         if (!(entity instanceof AbstractClientPlayer)) return;
-
         RenderHandler.onModelRender((AbstractClientPlayer) entity, limbSwingTicks, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
     }
 

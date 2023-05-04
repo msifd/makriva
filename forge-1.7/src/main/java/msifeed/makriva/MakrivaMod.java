@@ -22,7 +22,17 @@ import net.minecraftforge.common.MinecraftForge;
  * - [x] you bump your head when unsneak in tight spaces
  * - [x] makriva gui is dark at night
  * - [x] mpm can't do sleeping pose
- * - [ ] Support mpm-ari
+ * - [x] Support mpm-ari
+ * - [ ] Support mpm
+ * - [x] double hand
+ * - [x] other players disappear!
+ * - [x] players share rotations
+ * - [x] sleep/crawl eye height
+ * - [x] stuff shifts on sneak
+ * - [x] low age resolution in expressions
+ * - [x] blending opacity
+ * - [ ] multi distribute exploit
+ * - [ ] shapes don't sync :\
  */
 @Mod(modid = MakrivaShared.MOD_ID)
 public class MakrivaMod {

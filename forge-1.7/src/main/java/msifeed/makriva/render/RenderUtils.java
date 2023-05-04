@@ -95,21 +95,45 @@ public class RenderUtils {
         return y;
     }
 
+    public static void resetModelBipedVisibilities(ModelBiped model) {
+        model.bipedHead.isHidden = false;
+        model.bipedHeadwear.isHidden = false;
+        model.bipedBody.isHidden = false;
+        model.bipedRightArm.isHidden = false;
+        model.bipedLeftArm.isHidden = false;
+        model.bipedRightLeg.isHidden = false;
+        model.bipedLeftLeg.isHidden = false;
+    }
+
+    public static void setModelBipedVisibilities(ModelBiped model, Shape shape) {
+        model.bipedHead.isHidden |= shape.hide.contains(BipedPart.head);
+        model.bipedHeadwear.isHidden |= model.bipedHead.isHidden;
+        model.bipedBody.isHidden |= shape.hide.contains(BipedPart.body);
+        model.bipedRightArm.isHidden |= shape.hide.contains(BipedPart.right_arm);
+        model.bipedLeftArm.isHidden |= shape.hide.contains(BipedPart.left_arm);
+        model.bipedRightLeg.isHidden |= shape.hide.contains(BipedPart.right_leg);
+        model.bipedLeftLeg.isHidden |= shape.hide.contains(BipedPart.left_leg);
+    }
+
     public static void updateEvalPlayer(AbstractClientPlayer player) {
         final RenderContext ctx = (RenderContext) SharedRenderState.EVAL_CTX;
         ctx.player = player;
         ctx.sneaking = player.isSneaking();
         ctx.currentPose = MakrivaCommons.findPose(player);
-        ctx.limbSwing = player.limbSwingAmount;
-        ctx.limbSwingTicks = player.limbSwing;
-        ctx.ageInTicks = player.getAge();
-        ctx.netHeadYaw = player.getRotationYawHead();
-        ctx.headPitch = player.rotationPitch;
     }
 
     public static void updateEvalPartialTicks(float partialTicks) {
         final RenderContext ctx = (RenderContext) SharedRenderState.EVAL_CTX;
         ctx.partialTicks = partialTicks;
+    }
+
+    public static void updateEvalPlayerValues(float limbSwingTicks, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        final RenderContext ctx = (RenderContext) SharedRenderState.EVAL_CTX;
+        ctx.limbSwing = limbSwingAmount;
+        ctx.limbSwingTicks = limbSwingTicks;
+        ctx.ageInTicks = ageInTicks;
+        ctx.netHeadYaw = netHeadYaw;
+        ctx.headPitch = headPitch;
     }
 
     public static void updateEvalScale(float scale) {

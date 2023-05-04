@@ -14,7 +14,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
-import noppes.mpm.MorePlayerModels;
 import noppes.mpm.constants.EnumAnimation;
 import noppes.mpm.data.ModelData;
 import noppes.mpm.data.PlayerDataController;
@@ -68,28 +67,16 @@ public class MpmCompat {
     }
 
     private static float getOffsetCamera(ModelData data, EntityPlayer player) {
-        if (!MorePlayerModels.EnablePOV) {
-            return 0.0F;
-        } else {
-            float offset = -data.offsetY();
-            if (data.animation == EnumAnimation.SITTING) {
-                offset += 0.5F - data.getLegsY();
-            }
-
-            if (data.isSleeping()) {
-                offset = 1.18F;
-            }
-
-            if (data.animation == EnumAnimation.CRAWLING) {
-                offset = 0.8F;
-            }
-
-            if (offset < -0.2F && isBlocked(player)) {
-                offset = -0.2F;
-            }
-
-            return offset;
+        float offset = -data.offsetY() + 1.8f - 1.62f;
+        if (data.animation == EnumAnimation.SITTING) {
+            offset -= data.getLegsY();
         }
+
+        if (offset < -0.2F && isBlocked(player)) {
+            offset = -0.2F;
+        }
+
+        return offset;
     }
 
     private static boolean isBlocked(EntityPlayer player) {

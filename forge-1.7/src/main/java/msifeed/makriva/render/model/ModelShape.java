@@ -2,10 +2,8 @@ package msifeed.makriva.render.model;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import msifeed.makriva.MakrivaCommons;
 import msifeed.makriva.model.BipedPart;
 import msifeed.makriva.model.Bone;
-import msifeed.makriva.model.PlayerPose;
 import msifeed.makriva.model.Shape;
 import msifeed.makriva.render.AnimationState;
 import msifeed.makriva.render.IShapeModel;
@@ -16,9 +14,7 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -76,42 +72,10 @@ public class ModelShape extends ModelBase implements IShapeModel {
 
     @Override
     public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        GL11.glPushMatrix();
-
-        final PlayerPose pose = MakrivaCommons.findPose((EntityPlayer) entity);
-        if (entity.isSneaking())
-            GL11.glTranslated(0, 0.2, 0);
-
-        // Fixes "levitation" when sitting
-        if (pose == PlayerPose.sit) {
-            final float[] legOffset = getSkeletonOffset(BipedPart.left_leg);
-            if (legOffset[1] != 0)
-                GL11.glTranslated(0, -legOffset[1] * scale, 0);
-        }
-
-        for (ModelRenderer box : (List<ModelRenderer>) boxList) {
-            if (box instanceof ModelBone)
-                bindTexture((AbstractClientPlayer) entity, (ModelBone) box);
-            box.render(scale);
-        }
-
-        GL11.glPopMatrix();
-    }
-
-    private void bindTexture(AbstractClientPlayer player, ModelBone bone) {
         final TextureManager tex = Minecraft.getMinecraft().getTextureManager();
+        tex.bindTexture(((AbstractClientPlayer) entity).getLocationSkin());
 
-        if (bone.spec.texture == null) {
-            tex.bindTexture(player.getLocationSkin());
-            return;
-        }
-
-        final ResourceLocation res = textures.get(bone.spec.texture);
-        if (res == null) {
-            tex.bindTexture(player.getLocationSkin());
-            return;
-        }
-
-        tex.bindTexture(res);
+        for (ModelBone box : (List<ModelBone>) boxList)
+            box.render(scale);
     }
 }
