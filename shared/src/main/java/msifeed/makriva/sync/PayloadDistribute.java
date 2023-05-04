@@ -8,11 +8,11 @@ import msifeed.makriva.model.Shape;
 import msifeed.makriva.storage.CheckedBytes;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class PayloadDistribute {
+    public static final long DIST_MAX_CHUNK_SIZE = 1024 * 1024;
+
     public Map<UUID, CheckedBytes> shapeBytes;
     public Map<UUID, Shape> shapes;
 
@@ -21,6 +21,27 @@ public class PayloadDistribute {
 
     public PayloadDistribute(Map<UUID, CheckedBytes> shapeBytes) {
         this.shapeBytes = shapeBytes;
+    }
+
+    public static List<Map<UUID, CheckedBytes>> splitIntoChunks(Map<UUID, CheckedBytes> allShapes) {
+        final List<Map<UUID, CheckedBytes>> chunks = new ArrayList<>();
+        Map<UUID, CheckedBytes> currentChunk = new HashMap<>();
+        long chunkSize = 0;
+
+        for (Map.Entry<UUID, CheckedBytes> e : allShapes.entrySet()) {
+            currentChunk.put(e.getKey(), e.getValue());
+            chunkSize += e.getValue().compressed.length;
+            if (chunkSize > DIST_MAX_CHUNK_SIZE) {
+                chunks.add(currentChunk);
+                currentChunk = new HashMap<>();
+                chunkSize = 0;
+            }
+        }
+        if (!currentChunk.isEmpty()) {
+            chunks.add(currentChunk);
+        }
+
+        return chunks;
     }
 
     public static void clientHandle(PayloadDistribute message) {

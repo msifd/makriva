@@ -9,5 +9,5 @@ import java.util.UUID;
 public interface INetworkBridge {
     void upload(Shape shape);
 
-    void relayToAll(Map<UUID, CheckedBytes> encodedShapes);
+    void relayToAll(UUID uuid, CheckedBytes encodedShape);
 }

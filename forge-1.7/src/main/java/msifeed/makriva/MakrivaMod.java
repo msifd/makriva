@@ -31,8 +31,8 @@ import net.minecraftforge.common.MinecraftForge;
  * - [x] stuff shifts on sneak
  * - [x] low age resolution in expressions
  * - [x] blending opacity
- * - [ ] multi distribute exploit
- * - [ ] shapes don't sync :\
+ * - [x] multi distribute exploit
+ * - [x] shapes don't sync :\
  */
 @Mod(modid = MakrivaShared.MOD_ID)
 public class MakrivaMod {

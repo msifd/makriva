@@ -45,7 +45,7 @@ public class SyncRelay {
             final CheckedBytes checked = new CheckedBytes(compressed, checksum);
             encodedShapes.put(uuid, checked);
             updateSharedShape(uuid, compressed);
-            bridge.relayToAll(Collections.singletonMap(uuid, checked));
+            bridge.relayToAll(uuid, checked);
         }
     }
 

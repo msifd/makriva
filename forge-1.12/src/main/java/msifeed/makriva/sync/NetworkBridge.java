@@ -11,6 +11,8 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -33,18 +35,19 @@ public class NetworkBridge implements INetworkBridge {
     }
 
     @Override
-    public void relayToAll(Map<UUID, CheckedBytes> encodedShapes) {
-        MakrivaShared.LOG.debug("Relay {} shapes to all", encodedShapes.size());
-
-        network.sendToAll(new MessageDistribute(encodedShapes));
+    public void relayToAll(UUID uuid, CheckedBytes encodedShape) {
+        MakrivaShared.LOG.info("Relay to all from: {} shape: {}", uuid, encodedShape.checksum);
+        network.sendToAll(new MessageDistribute(Collections.singletonMap(uuid, encodedShape)));
     }
 
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
-        final Map<UUID, CheckedBytes> encodedShapes = MakrivaShared.RELAY.getEncodedShapes();
-        if (encodedShapes.isEmpty()) return;
+        final Map<UUID, CheckedBytes> allShapes = MakrivaShared.RELAY.getEncodedShapes();
+        if (allShapes.isEmpty()) return;
 
-        MakrivaShared.LOG.debug("Relay {} shapes to {} on login", encodedShapes.size(), event.player.getDisplayNameString());
-        network.sendTo(new MessageDistribute(encodedShapes), (EntityPlayerMP) event.player);
+        final List<Map<UUID, CheckedBytes>> chunks = PayloadDistribute.splitIntoChunks(allShapes);
+        MakrivaShared.LOG.info("Relay {} shapes in {} chunks to {} on login", allShapes.size(), chunks.size(), event.player.getDisplayName());
+
+        chunks.forEach(c -> network.sendTo(new MessageDistribute(c), (EntityPlayerMP) event.player));
     }
 }
