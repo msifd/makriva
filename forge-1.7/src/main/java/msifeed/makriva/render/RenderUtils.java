@@ -11,6 +11,7 @@ import msifeed.makriva.render.model.ModelShape;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.entity.player.EntityPlayer;
 import org.lwjgl.opengl.GL11;
 
 import java.util.UUID;
@@ -55,7 +56,7 @@ public class RenderUtils {
         }
     }
 
-    public static void setPlayerSkeletonOffsets(ModelBiped biped, AbstractClientPlayer entity, float scale) {
+    public static void setPlayerSkeletonOffsets(ModelBiped biped, EntityPlayer entity, float scale) {
         final UUID uuid = entity.getGameProfile().getId();
         final ModelShape model = RenderBridge.getModelWithoutBuild(uuid);
         if (model == null) return;
@@ -71,7 +72,7 @@ public class RenderUtils {
         }
     }
 
-    public static void setBipedSkeletonOffsets(ModelBiped biped, AbstractClientPlayer entity, float scale) {
+    public static void setBipedSkeletonOffsets(ModelBiped biped, EntityPlayer entity, float scale) {
         final ModelShape model = RenderBridge.getModelWithoutBuild(entity.getUniqueID());
         if (model == null) return;
 
@@ -84,7 +85,7 @@ public class RenderUtils {
         }
     }
 
-    public static double adjustYPosOfScaledModel(AbstractClientPlayer player, double y) {
+    public static double adjustYPosOfScaledModel(EntityPlayer player, double y) {
         final Shape shape = MakrivaShared.MODELS.getShape(player.getGameProfile().getId());
         if (shape.modelScale != 1) {
             if (player.isSneaking())

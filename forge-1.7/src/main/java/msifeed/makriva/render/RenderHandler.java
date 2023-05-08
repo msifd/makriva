@@ -10,6 +10,7 @@ import msifeed.makriva.render.model.ModelBone;
 import msifeed.makriva.render.model.ModelShape;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import org.lwjgl.opengl.GL11;
 
@@ -32,7 +33,7 @@ public class RenderHandler {
         model.render = event.renderer;
     }
 
-    public static void preModelRender(AbstractClientPlayer player, ModelBiped model) {
+    public static void preModelRender(EntityPlayer player, ModelBiped model) {
         GL11.glPushMatrix();
 
         // Same sneaking and blending logic as in 1.12 and others
@@ -45,12 +46,12 @@ public class RenderHandler {
         RenderUtils.setModelBipedVisibilities(model, shape);
     }
 
-    public static void postModelRender(AbstractClientPlayer player, ModelBiped model) {
+    public static void postModelRender(EntityPlayer player, ModelBiped model) {
         RenderUtils.resetModelBipedVisibilities(model);
         GL11.glPopMatrix();
     }
 
-    public static void onModelRender(AbstractClientPlayer player, float limbSwingTicks, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+    public static void onModelRender(EntityPlayer player, float limbSwingTicks, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         if (player.isInvisible()) return;
 
         final UUID uuid = player.getGameProfile().getId();
